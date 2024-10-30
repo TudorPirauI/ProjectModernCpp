@@ -28,13 +28,16 @@
 #include <vector>
 #include <cstdint>
 
+import Card;
+import Player;
+
 export module Game;
 
-import Player;
-import Card;
 
 export class Game {
 public:
+    virtual ~Game() = default;
+
     enum class GameMode : uint8_t {
         Antrenament,
         DuelulVrajitorilor,
@@ -43,11 +46,14 @@ public:
         Viteza
     };
 
+    // Game will be a virtual class btw
+    // this function will be implemented in the future class ;)
+
     virtual void DecideWinner() = 0;
     Game(Player player1, Player player2, GameMode mode);
     void DecideTurn();
-    void SetPlayer1();
-    void SetPlayer2();
+    void SetPlayer1(Player player);
+    void SetPlayer2(Player player);
     Player getPlayer1();
     Player getPlayer2();
 
