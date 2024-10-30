@@ -26,6 +26,7 @@
 
 #include <stack>
 #include <vector>
+#include <cstdint>
 
 export module Game;
 
@@ -33,14 +34,30 @@ import Player;
 import Card;
 
 export class Game {
+public:
+    enum class GameMode : uint8_t {
+        Antrenament,
+        DuelulVrajitorilor,
+        DuelulElementelor,
+        Turneu,
+        Viteza
+    };
+
+    virtual void DecideWinner() = 0;
+    Game(Player player1, Player player2, GameMode mode);
+    void DecideTurn();
+    void SetPlayer1();
+    void SetPlayer2();
+    Player getPlayer1();
+    Player getPlayer2();
+
     private:
         // switch later to object from class gameBoard :)
         std::vector<std::vector<std::stack<Card>>> m_gameBoard;
+        GameMode m_mode;
         Player m_player1;
         Player m_player2;
         bool m_gameOver;
         bool m_turn;
-    public:
-
 };
 
