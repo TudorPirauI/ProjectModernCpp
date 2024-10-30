@@ -8,5 +8,6 @@ add_executable(Eter main.cpp
         Player.ixx
         Card.ixx
         Player.cpp
-        Card.cpp)
+        Card.cpp
+        Game.ixx)
 
