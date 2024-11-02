@@ -10,11 +10,12 @@ Hidden: placed face down, opponent can't see the value, can try placing a card
       wastes the turn
  */
 
-import Card;
+#include <stdexcept>
 
-Card::Card(const std::string& cardType, uint8_t value)
-    : m_cardType(cardType), m_value(value) {
-    if (value < 1 || value >4 ) {
+#include "Card.h"
+
+Card::Card(const std::string &cardType, uint8_t value) : m_cardType(cardType), m_value(value) {
+    if (value < 1 || value > 4) {
         throw std::invalid_argument("Card value must be between 1 and 4(including 1 and 4).");
     }
 
@@ -23,9 +24,7 @@ Card::Card(const std::string& cardType, uint8_t value)
     }
 }
 
-uint8_t Card::getValue() const {
-    return m_value;
-}
+uint8_t Card::getValue() const { return m_value; }
 
 void Card::setValue(uint8_t value) {
     if (value >= 1 && value <= 4) {
@@ -35,14 +34,8 @@ void Card::setValue(uint8_t value) {
     }
 }
 
-const std::string& Card::getCardType() const {
-    return m_cardType;
-}
+const std::string &Card::getCardType() const { return m_cardType; }
 
-bool Card::isMovable() const {
-    return m_isMovable;
-}
+bool Card::isMovable() const { return m_isMovable; }
 
-bool Card::isHidden() const {
-    return m_isHidden;
-}
+bool Card::isHidden() const { return m_isHidden; }

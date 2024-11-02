@@ -1,55 +1,48 @@
 // Player.cpp
 
-//class Player {
+// class Player {
 
-  /*
-  current game mode an uint4_t
-  cardsOnHand std::vector of Card (will start with X default cards or W/E)
+/*
+current game mode an uint4_t
+cardsOnHand std::vector of Card (will start with X default cards or W/E)
 
-  specialCards same stuff as above, but with the Hidden and Eter card (+
-  other I haven't botherd reading about)
+specialCards same stuff as above, but with the Hidden and Eter card (+
+other I haven't botherd reading about)
 
-  score: uint8_t -> sum of all placed cards
+score: uint8_t -> sum of all placed cards
 
- we may move the stuff below to a different class / game class
+we may move the stuff below to a different class / game class
 
-  isAi: bool -> true if AI, false if human
-  difficulty: enum -> easy, medium, hard, impossible
-  safetySwitch: bool -> if true, if the game is lost by the human player
-  their PC will BSOD / Kernel Panic
-  */
+isAi: bool -> true if AI, false if human
+difficulty: enum -> easy, medium, hard, impossible
+safetySwitch: bool -> if true, if the game is lost by the human player
+their PC will BSOD / Kernel Panic
+*/
 //};
 
-import Player;
-import Card;
+#include <iostream>
 
-Player::Player(uint8_t gameMode, const std::vector<Card>& cards)
-    : m_gameMode(gameMode), m_cards(cards) {}
+#include "Game.h"
+#include "Player.h"
 
-uint8_t Player::getGameMode() const {
-    return m_gameMode;
-}
+Player::Player(uint8_t gameMode, const std::vector<Card> &cards) : m_gameMode(gameMode), m_cards(cards) {}
 
-void Player::setGameMode(uint8_t gameMode) {
-    m_gameMode = gameMode;
-}
+uint8_t Player::getGameMode() const { return m_gameMode; }
 
-uint8_t Player::getScore() const {
-    return m_score;
-}
+void Player::setGameMode(uint8_t gameMode) { m_gameMode = gameMode; }
 
-void Player::setScore(uint8_t score) {
-    m_score = score;
-}
+uint8_t Player::getScore() const { return m_score; }
+
+void Player::setScore(uint8_t score) { m_score = score; }
 
 void Player::calculateScore() {
     m_score = 0;
-    for (const auto& card : m_cards) {
-        m_score += card.getValue(); //de implementat getValue in Card
+    for (const auto &card: m_cards) {
+        m_score += card.getValue(); // de implementat getValue in Card
     }
 }
 
-void Player::addCard(const Card& card) {
+void Player::addCard(const Card &card) {
     m_cards.push_back(card);
     calculateScore();
 }
@@ -67,9 +60,9 @@ void Player::makeMove() {
     if (m_isAi) {
         switch (m_difficulty) {
             case Difficulty::Easy:
-                    break;
+                break;
             case Difficulty::Medium:
-                    break;
+                break;
             case Difficulty::Hard:
             case Difficulty::Impossible:
                 break;
