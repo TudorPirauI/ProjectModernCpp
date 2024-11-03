@@ -34,18 +34,7 @@ void Card::setValue(uint8_t value) {
     }
 }
 
-std::string Card::getCardType() const {
-    switch (m_cardType) {
-        case CardType::Normal:
-            return "Normal";
-        case CardType::Eter:
-            return "Eter";
-        case CardType::Flipped:
-            return "Flipped";
-        default:
-            return "Unknown";
-    }
-}
+const CardType &Card::getCardType() const { return m_cardType; }
 
 bool Card::isMovable() const { return m_canBeCovered; }
 

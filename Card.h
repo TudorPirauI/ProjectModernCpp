@@ -6,22 +6,22 @@
 enum class CardType { Normal, Eter, Flipped };
 
 class Card {
-    uint8_t  m_value;
+    uint8_t  m_value{};
     CardType m_cardType;
     bool     m_canBeCovered = true;
     bool     m_isHidden     = false;
 
 public:
     Card() = default;
-    Card(const CardType  &cardType, uint8_t value);
+    Card(const CardType &cardType, uint8_t value);
 
 
-    uint8_t getValue() const;
-    void    setValue(uint8_t value);
+    [[nodiscard]] uint8_t getValue() const;
+    void                  setValue(uint8_t value);
 
-    std::string getCardType() const;
-    bool        isMovable() const;
-    bool        isHidden() const;
+    [[nodiscard]] const CardType &getCardType() const;
+    [[nodiscard]] bool            isMovable() const;
+    [[nodiscard]] bool            isHidden() const;
 
     ~Card() = default;
 };
