@@ -33,15 +33,14 @@ class Wizard {
     bool        m_wasUsed = false;
 
 public:
-    virtual ~Wizard() = default;
-    Wizard() = default;
-    Wizard(std::string name, EPower power);
-
-    void virtual setName(std::string name);
-    [[nodiscard]] std::string virtual getName() const;
-    void virtual setPower(EPower power);
-    [[nodiscard]] EPower virtual getPower() const;
-    [[nodiscard]] bool virtual isUsed() const;
+    virtual ~                         Wizard() = default;
+                                      Wizard() = default;
+                                      Wizard(std::string name, EPower power);
+    virtual void                      setName(std::string name);
+    [[nodiscard]] virtual std::string getName() const;
+    virtual void                      setPower(EPower power);
+    [[nodiscard]] virtual EPower      getPower() const;
+    [[nodiscard]] virtual bool        isUsed() const;
 };
 
 
