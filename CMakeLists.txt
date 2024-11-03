@@ -10,5 +10,7 @@ add_executable(Eter main.cpp
         Player.cpp
         Card.cpp
         Game.h
-        Game.cpp)
+        Game.cpp
+        Wizard.cpp
+        Wizard.h)
 
