@@ -3,23 +3,25 @@
 
 #include <cstdint>
 #include <string>
+enum class CardType { Normal, Eter, Flipped };
 
 class Card {
-    uint8_t     m_value;
-    std::string m_cardType;
-    bool        m_isMovable = true;
-    bool        m_isHidden  = false;
+    uint8_t  m_value;
+    CardType m_cardType;
+    bool     m_canBeCovered = true;
+    bool     m_isHidden     = false;
 
 public:
     Card() = default;
-    Card(const std::string &cardType, uint8_t value);
+    Card(const CardType  &cardType, uint8_t value);
+
 
     uint8_t getValue() const;
     void    setValue(uint8_t value);
 
-    const std::string &getCardType() const;
-    bool               isMovable() const;
-    bool               isHidden() const;
+    std::string getCardType() const;
+    bool        isMovable() const;
+    bool        isHidden() const;
 
     ~Card() = default;
 };

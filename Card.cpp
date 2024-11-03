@@ -14,14 +14,14 @@ Hidden: placed face down, opponent can't see the value, can try placing a card
 
 #include "Card.h"
 
-Card::Card(const std::string &cardType, uint8_t value) : m_cardType(cardType), m_value(value) {
+Card::Card(const CardType &cardType, uint8_t value) : m_cardType(cardType), m_value(value) {
     if (value < 1 || value > 4) {
         throw std::invalid_argument("Card value must be between 1 and 4(including 1 and 4).");
     }
 
-    if (m_cardType == "eter") {
-        m_isMovable = false;
-    }
+
+    m_canBeCovered = (m_cardType != CardType::Eter);
+    m_isHidden     = true;
 }
 
 uint8_t Card::getValue() const { return m_value; }
@@ -34,8 +34,19 @@ void Card::setValue(uint8_t value) {
     }
 }
 
-const std::string &Card::getCardType() const { return m_cardType; }
+std::string Card::getCardType() const {
+    switch (m_cardType) {
+        case CardType::Normal:
+            return "Normal";
+        case CardType::Eter:
+            return "Eter";
+        case CardType::Flipped:
+            return "Flipped";
+        default:
+            return "Unknown";
+    }
+}
 
-bool Card::isMovable() const { return m_isMovable; }
+bool Card::isMovable() const { return m_canBeCovered; }
 
 bool Card::isHidden() const { return m_isHidden; }
