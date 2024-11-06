@@ -14,5 +14,6 @@ add_executable(Eter main.cpp
         Wizard.cpp
         Wizard.h
         Antrenament.cpp
+        Antrenament.h
         Antrenament.h)
 
