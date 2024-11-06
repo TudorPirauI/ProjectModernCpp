@@ -12,5 +12,7 @@ add_executable(Eter main.cpp
         Game.h
         Game.cpp
         Wizard.cpp
-        Wizard.h)
+        Wizard.h
+        Antrenament.cpp
+        Antrenament.h)
 
