@@ -8,20 +8,19 @@
 #include "Game.h"
 
 class Antrenament : public Game {
+private:
+    void SetCards() override;
 public:
-    Antrenament(Player player1, Player player2) {
-        this->m_player1 = player1;
-        this->m_player2 = player2;
-        this->m_mode = GameMode::Antrenament;
-    }
+    Antrenament(Player player1, Player player2);
 
     // need methods from player and card :))))))))))))
     // player -> getCards of the player public method
-    // card -> constructor with value and more (with all the values)
-    void DecideWinner() override;
+    // to be implemented in the future DecideWinner() methods
+    void DecideWinner() override; // for turn to be more precise
     void StartGame() override;
-    void EndGame() override;
-    void SetCards() override;
+    void NewTurn() override;
+    std::optional<Player> EndGame() override;
+
 };
 
 #endif //ANTRENAMENT_H

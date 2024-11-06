@@ -26,6 +26,7 @@ willBecomeIsolated(effect: Effect, int row/column) TBD, based on special cards
 #pragma once
 
 #include <cstdint>
+#include <optional>
 #include <stack>
 #include <vector>
 
@@ -43,8 +44,8 @@ public:
 
     virtual void DecideWinner() = 0;
     virtual void StartGame() = 0;
-    virtual void EndGame() = 0;
-    virtual void SetCards() = 0;
+    virtual std::optional<Player> EndGame() = 0;
+    virtual void NewTurn() = 0;
                  Game(Player player1, Player player2, GameMode mode);
     void         DecideTurn();
     void         SetPlayer1(Player player);
@@ -62,4 +63,6 @@ protected:
     bool                                       m_turn;
     int                                        m_pointsPlayer1;
     int                                        m_pointsPlayer2;
+
+    virtual void SetCards() = 0;
 };
