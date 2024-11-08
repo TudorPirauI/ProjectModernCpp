@@ -6,7 +6,7 @@
 enum class CardType { Normal, Eter, Flipped };
 
 class Card {
-    uint8_t  m_value{};
+    uint8_t  m_value;
     CardType m_cardType;
     bool     m_canBeCovered;
     bool     m_isHidden;
@@ -22,6 +22,8 @@ public:
     [[nodiscard]] const CardType &getCardType() const;
     [[nodiscard]] bool            isMovable() const;
     [[nodiscard]] bool            isHidden() const;
+
+    void showCardInfo() const;
 
     ~Card() = default;
 };

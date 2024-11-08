@@ -54,6 +54,13 @@ std::vector<Card> Player::getCards() const {
     return m_cards;
 }
 
+void Player::showCards() const {
+    for (size_t i = 0; i < m_cards.size(); ++i) {
+        std::cout << "Card no." << i << " is ";
+        m_cards[i].showCardInfo();
+    }
+}
+
 
 void Player::calculateScore() {
     m_score = 0;

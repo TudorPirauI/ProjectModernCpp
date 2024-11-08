@@ -30,6 +30,7 @@ public:
     void setAntrenamentCards();
     std::vector<Card> getCards() const;
 
+    void showCards() const;
     void calculateScore();
     void addCard(const Card &card);
     void playCard(size_t index);

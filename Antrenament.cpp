@@ -12,7 +12,7 @@ void Antrenament::StartGame() {
     NewTurn();
 }
 
-std::optional<Player> Antrenament::EndGame() {  // Fără override aici
+std::optional<Player> Antrenament::EndGame() {
     if (m_pointsPlayer1 == 3) {
         return m_player1;
     } else if (m_pointsPlayer2 == 3) {
@@ -22,7 +22,7 @@ std::optional<Player> Antrenament::EndGame() {  // Fără override aici
     }
 }
 
-void Antrenament::SetCards() {  // Fără override aici
+void Antrenament::SetCards() {
     Card card1(CardType::Normal, 1, false);
     Card card2(CardType::Normal, 2, false);
     Card card3(CardType::Normal, 3, false);
