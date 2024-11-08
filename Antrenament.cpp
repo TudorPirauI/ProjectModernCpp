@@ -1,36 +1,28 @@
-//
-// Created by edi on 06.11.2024.
-//
-
 #include "Antrenament.h"
 
 Antrenament::Antrenament(Player player1, Player player2) {
-     this->m_player1 = player1;
-     this->m_player2 = player2;
-     this->m_mode = GameMode::Antrenament;
+    this->m_player1 = player1;
+    this->m_player2 = player2;
+    this->m_mode = GameMode::Antrenament;
 }
 
 void Antrenament::StartGame() {
     SetCards();
-
     m_turn = false;
-
     NewTurn();
 }
 
-std::optional<Player> Antrenament::EndGame() override {
+std::optional<Player> Antrenament::EndGame() {  // Fără override aici
     if (m_pointsPlayer1 == 3) {
         return m_player1;
-    }
-    else if (m_pointsPlayer2 == 3) {
+    } else if (m_pointsPlayer2 == 3) {
         return m_player2;
-    }
-    else {
+    } else {
         return std::nullopt;
     }
 }
 
-void Antrenament::SetCards() override {
+void Antrenament::SetCards() {  // Fără override aici
     Card card1(CardType::Normal, 1, false);
     Card card2(CardType::Normal, 2, false);
     Card card3(CardType::Normal, 3, false);
@@ -50,6 +42,10 @@ void Antrenament::SetCards() override {
     m_player2.addCard(card4);
 }
 
+void Antrenament::DecideWinner() {
 
+}
 
+void Antrenament::NewTurn() {
 
+}

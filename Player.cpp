@@ -3,7 +3,7 @@
 // class Player {
 
 /*
-current game mode an uint4_t
+current game mode an uint8_t
 cardsOnHand std::vector of Card (will start with X default cards or W/E)
 
 specialCards same stuff as above, but with the Hidden and Eter card (+
@@ -35,12 +35,34 @@ uint8_t Player::getScore() const { return m_score; }
 
 void Player::setScore(uint8_t score) { m_score = score; }
 
+void Player::setAntrenamentCards() {
+    Card card1(CardType::Normal, 1, false);
+    Card card2(CardType::Normal, 2, false);
+    Card card3(CardType::Normal, 3, false);
+    Card card4(CardType::Normal, 4, false);
+
+    for (int i = 0; i < 2; ++i) {
+        m_cards.push_back(card1);
+        m_cards.push_back(card2);
+        m_cards.push_back(card3);
+    }
+
+    m_cards.push_back(card4);
+}
+
+std::vector<Card> Player::getCards() const {
+    return m_cards;
+}
+
+
 void Player::calculateScore() {
     m_score = 0;
     for (const auto &card: m_cards) {
         m_score += card.getValue(); // de implementat getValue in Card
     }
 }
+
+//getCards
 
 void Player::addCard(const Card &card) {
     m_cards.push_back(card);

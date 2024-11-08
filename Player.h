@@ -27,6 +27,9 @@ public:
     uint8_t getScore() const;
     void    setScore(uint8_t score);
 
+    void setAntrenamentCards();
+    std::vector<Card> getCards() const;
+
     void calculateScore();
     void addCard(const Card &card);
     void playCard(size_t index);
