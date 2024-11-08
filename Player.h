@@ -28,6 +28,8 @@ public:
     void    setScore(uint8_t score);
 
     void setAntrenamentCards();
+    void setDuelulVrajitorilorCards();
+    void setDuelulElementelorCards();
     std::vector<Card> getCards() const;
 
     void showCards() const;

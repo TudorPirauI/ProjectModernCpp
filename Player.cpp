@@ -50,6 +50,37 @@ void Player::setAntrenamentCards() {
     m_cards.push_back(card4);
 }
 
+void Player::setDuelulVrajitorilorCards() {
+    Card card1(CardType::Normal, 1, false);
+    Card card2(CardType::Normal, 2, false);
+    Card card3(CardType::Normal, 3, false);
+    Card card4(CardType::Normal, 4, false);
+
+    for (int i = 0; i < 2; ++i) {
+        m_cards.push_back(card1);
+        m_cards.push_back(card2);
+        m_cards.push_back(card3);
+    }
+    m_cards.push_back(card2);
+    m_cards.push_back(card3);
+    m_cards.push_back(card4);
+}
+
+void Player::setDuelulElementelorCards() {
+    Card card1(CardType::Normal, 1, false);
+    Card card2(CardType::Normal, 2, false);
+    Card card3(CardType::Normal, 3, false);
+    Card card4(CardType::Normal, 4, false);
+
+    m_cards.push_back(card1);
+    for (int i = 0; i < 3; ++i) {
+        m_cards.push_back(card2);
+        m_cards.push_back(card3);
+    }
+    m_cards.push_back(card4);
+}
+
+
 std::vector<Card> Player::getCards() const {
     return m_cards;
 }
