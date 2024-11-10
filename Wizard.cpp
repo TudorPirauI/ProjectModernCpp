@@ -32,14 +32,54 @@ void Wizard::UsePower(const std::pair<int, int> &locatie) {
 
     m_WasUsed = true;
     switch (m_power) {
-        // TO DO: case-urile
-        default:;
+        case EPower::EliminaCarteAcoperita:
+            std::cout << "Elimină o carte acoperită a oponentului.\n";
+            break;
+        case EPower::EliminaRandCarti:
+            std::cout << "Elimină un rând de cărți.\n";
+            break;
+        case EPower::AcoperaCarteOponent:
+            std::cout << "Acoperă o carte a oponentului.\n";
+            break;
+        case EPower::CreeazaGroapa:
+            std::cout << "Creează o groapă pe tablă.\n";
+            break;
+        case EPower::MutaTeancPropriu:
+            std::cout << "Mută teancul propriu.\n";
+            break;
+        case EPower::ExtraCarteEter:
+            std::cout << "Primește o carte Eter.\n";
+            break;
+        case EPower::MutaTeancOponent:
+            std::cout << "Mută teancul oponentului.\n";
+            break;
+        case EPower::MutaRandMargine:
+            std::cout << "Mută un rând de la margine.\n";
+            break;
+        default:
+            throw std::invalid_argument("Unknown power");
     }
 }
 
 std::string Wizard::ToString(EPower power) {
     switch (power) {
-
-        default:;
+        case EPower::EliminaCarteAcoperita:
+            return "Elimină o carte acoperită";
+        case EPower::EliminaRandCarti:
+            return "Elimină un rând de cărți";
+        case EPower::AcoperaCarteOponent:
+            return "Acoperă o carte a oponentului";
+        case EPower::CreeazaGroapa:
+            return "Creează o groapă";
+        case EPower::MutaTeancPropriu:
+            return "Mută teancul propriu";
+        case EPower::ExtraCarteEter:
+            return "Extra carte Eter";
+        case EPower::MutaTeancOponent:
+            return "Mută teancul oponentului";
+        case EPower::MutaRandMargine:
+            return "Mută un rând de la margine";
+        default:
+            return "Putere necunoscută";
     }
 }
