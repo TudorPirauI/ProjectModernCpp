@@ -24,13 +24,20 @@ public:
 #include <utility>
 
 enum class EPower {
-    /// TO DO
+    EliminaCarteAcoperita,
+    EliminaRandCarti,
+    AcoperaCarteOponent,
+    CreeazaGroapa,
+    MutaTeancPropriu,
+    ExtraCarteEter,
+    MutaTeancOponent,
+    MutaRandMargine
 };
 
 class Wizard {
     std::string m_name;
     EPower      m_power;
-    bool        m_wasUsed = false;
+    bool        m_WasUsed = false;
 
 public:
     virtual ~                         Wizard() = default;
@@ -40,7 +47,11 @@ public:
     [[nodiscard]] virtual std::string getName() const;
     virtual void                      setPower(EPower power);
     [[nodiscard]] virtual EPower      getPower() const;
-    [[nodiscard]] virtual bool        isUsed() const;
+    [[nodiscard]] virtual bool        IsUsed() const;
+
+    [[nodiscard]] virtual bool CanUsePower(const std::pair<int, int> &locatie) const;
+    virtual void               UsePower(const std::pair<int, int> &locatie);
+    [[nodiscard]] std::string  ToString(EPower power) const;
 };
 
 
