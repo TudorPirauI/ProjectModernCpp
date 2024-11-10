@@ -30,7 +30,7 @@ willBecomeIsolated(effect: Effect, int row/column) TBD, based on special cards
 #include <stack>
 #include <vector>
 
-#include "Player.h"
+#include "../Player.h"
 
 class Game {
 public:

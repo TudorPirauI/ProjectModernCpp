@@ -8,7 +8,6 @@
 #include "Game.h"
 
 class Antrenament : public Game {
-private:
     void SetCards() override;
 
 public:

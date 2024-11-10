@@ -3,7 +3,7 @@
 //
 
 #include "Game.h"
-#include "Player.h"
+#include "../Player.h"
 
 Game::Game(Player player1, Player player2, GameMode mode) {
     this->m_player1       = player1;
