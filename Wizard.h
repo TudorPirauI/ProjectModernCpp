@@ -34,6 +34,7 @@ enum class EPower {
     MutaRandMargine
 };
 
+
 class Wizard {
     std::string m_name;
     EPower      m_power;
@@ -54,5 +55,16 @@ public:
     [[nodiscard]] std::string  ToString(EPower power) const;
 };
 
+class RemoveWizardCard : public Wizard {
+public:
+    void UsePower(const std::pair<int, int> &locatie) override {
+        // TO DO
+    }
+};
 
+class PowerStrategy {
+public:
+    virtual ~    PowerStrategy()                              = default;
+    virtual void UsePower(const std::pair<int, int> &locatie) = 0;
+};
 #endif // WIZARD_H

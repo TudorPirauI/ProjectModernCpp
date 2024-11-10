@@ -33,28 +33,28 @@ void Wizard::UsePower(const std::pair<int, int> &locatie) {
     m_WasUsed = true;
     switch (m_power) {
         case EPower::EliminaCarteAcoperita:
-            std::cout << "Elimină o carte acoperită a oponentului.\n";
+            std::cout << "Remove an opponent's covered card.\n";
             break;
         case EPower::EliminaRandCarti:
-            std::cout << "Elimină un rând de cărți.\n";
+            std::cout << "Remove a row of cards.\n";
             break;
         case EPower::AcoperaCarteOponent:
-            std::cout << "Acoperă o carte a oponentului.\n";
+            std::cout << "Cover an opponent's card.\n";
             break;
         case EPower::CreeazaGroapa:
-            std::cout << "Creează o groapă pe tablă.\n";
+            std::cout << "Create a hole in the board.\n";
             break;
         case EPower::MutaTeancPropriu:
-            std::cout << "Mută teancul propriu.\n";
+            std::cout << "Move your own pile.\n";
             break;
         case EPower::ExtraCarteEter:
-            std::cout << "Primește o carte Eter.\n";
+            std::cout << "Receive an Eter card.\n";
             break;
         case EPower::MutaTeancOponent:
-            std::cout << "Mută teancul oponentului.\n";
+            std::cout << "Moves the opponent's pile.\n";
             break;
         case EPower::MutaRandMargine:
-            std::cout << "Mută un rând de la margine.\n";
+            std::cout << "Moves a row from the edge.\n";
             break;
         default:
             throw std::invalid_argument("Unknown power");
