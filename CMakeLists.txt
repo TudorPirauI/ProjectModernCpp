@@ -4,19 +4,21 @@ project(Eter)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Eter main.cpp
-        Player.h
-        Card.h
-        Player.cpp
-        Card.cpp
-        Game.h
-        Game.cpp
-        Wizard.cpp
-        Wizard.h
-        Antrenament.cpp
-        Antrenament.h
-        Antrenament.h
-        Antrenament.cpp
-        GameBoard.cpp
-        GameBoard.h)
+add_executable(Eter src/main.cpp
+        src/Player.h
+        src/Card.h
+        src/Player.cpp
+        src/Card.cpp
+        src/Game/Game.h
+        src/Game/Game.cpp
+        src/Wizard.cpp
+        src/Wizard.h
+        src/Game/Antrenament.cpp
+        src/Game/Antrenament.h
+        src/Game/Antrenament.h
+        src/Game/Antrenament.cpp
+        src/Board/GameBoard.cpp
+        src/Board/GameBoard.h
+        src/Board/CardStack.cpp
+        src/Board/CardStack.h)
 
