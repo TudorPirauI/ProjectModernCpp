@@ -49,14 +49,13 @@ void Card::showCardInfo() const {
     switch (m_cardType) {
         case CardType::Normal:
             std::cout << "Normal";
-        break;
+            break;
         case CardType::Eter:
             std::cout << "Eter";
-        break;
+            break;
         case CardType::Flipped:
             std::cout << "Flipped";
-        break;
+            break;
     }
     std::cout << ", Hidden: " << (m_isHidden ? "Yes" : "No") << std::endl;
 }
-

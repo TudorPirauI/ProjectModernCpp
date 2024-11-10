@@ -81,9 +81,7 @@ void Player::setDuelulElementelorCards() {
 }
 
 
-std::vector<Card> Player::getCards() const {
-    return m_cards;
-}
+std::vector<Card> Player::getCards() const { return m_cards; }
 
 void Player::showCards() const {
     for (size_t i = 0; i < m_cards.size(); ++i) {
@@ -100,7 +98,7 @@ void Player::calculateScore() {
     }
 }
 
-//getCards
+// getCards
 
 void Player::addCard(const Card &card) {
     m_cards.push_back(card);

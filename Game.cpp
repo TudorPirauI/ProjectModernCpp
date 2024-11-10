@@ -6,13 +6,13 @@
 #include "Player.h"
 
 Game::Game(Player player1, Player player2, GameMode mode) {
-    this->m_player1  = player1;
-    this->m_player2  = player2;
-    this->m_mode     = mode;
+    this->m_player1       = player1;
+    this->m_player2       = player2;
+    this->m_mode          = mode;
     this->m_pointsPlayer1 = 0;
     this->m_pointsPlayer2 = 0;
-    this->m_turn     = false;
-    this->m_gameOver = false;
+    this->m_turn          = false;
+    this->m_gameOver      = false;
 }
 
 Player Game::getPlayer1() { return this->m_player1; }
@@ -36,6 +36,6 @@ void Game::SetPlayer2(Player player) { this->m_player2 = player; }
 Game::Game() {
     this->m_pointsPlayer1 = 0;
     this->m_pointsPlayer2 = 0;
-    this->m_turn = false;
-    this->m_gameOver = false;
+    this->m_turn          = false;
+    this->m_gameOver      = false;
 }

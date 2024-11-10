@@ -16,5 +16,7 @@ add_executable(Eter main.cpp
         Antrenament.cpp
         Antrenament.h
         Antrenament.h
-        Antrenament.cpp)
+        Antrenament.cpp
+        GameBoard.cpp
+        GameBoard.h)
 

@@ -34,7 +34,7 @@ willBecomeIsolated(effect: Effect, int row/column) TBD, based on special cards
 
 class Game {
 public:
-    Game();
+             Game();
     virtual ~Game() = default;
 
     enum class GameMode : uint8_t { Antrenament, DuelulVrajitorilor, DuelulElementelor, Turneu, Viteza };
@@ -42,16 +42,16 @@ public:
     // Game will be a virtual class btw
     // this function will be implemented in the future class ;)
 
-    virtual void DecideWinner() = 0;
-    virtual void StartGame() = 0;
-    virtual std::optional<Player> EndGame() = 0;
-    virtual void NewTurn() = 0;
-                 Game(Player player1, Player player2, GameMode mode);
-    void         DecideTurn();
-    void         SetPlayer1(Player player);
-    void         SetPlayer2(Player player);
-    Player       getPlayer1();
-    Player       getPlayer2();
+    virtual void                  DecideWinner() = 0;
+    virtual void                  StartGame()    = 0;
+    virtual std::optional<Player> EndGame()      = 0;
+    virtual void                  NewTurn()      = 0;
+                                  Game(Player player1, Player player2, GameMode mode);
+    void                          DecideTurn();
+    void                          SetPlayer1(Player player);
+    void                          SetPlayer2(Player player);
+    Player                        getPlayer1();
+    Player                        getPlayer2();
 
 protected:
     // switch later to object from class gameBoard :)

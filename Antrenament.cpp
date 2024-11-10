@@ -3,7 +3,7 @@
 Antrenament::Antrenament(Player player1, Player player2) {
     this->m_player1 = player1;
     this->m_player2 = player2;
-    this->m_mode = GameMode::Antrenament;
+    this->m_mode    = GameMode::Antrenament;
 }
 
 void Antrenament::StartGame() {
@@ -42,10 +42,6 @@ void Antrenament::SetCards() {
     m_player2.addCard(card4);
 }
 
-void Antrenament::DecideWinner() {
+void Antrenament::DecideWinner() {}
 
-}
-
-void Antrenament::NewTurn() {
-
-}
+void Antrenament::NewTurn() {}
