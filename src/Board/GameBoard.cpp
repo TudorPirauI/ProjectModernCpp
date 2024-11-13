@@ -4,8 +4,10 @@
 
 #include "GameBoard.h"
 
+#include <optional>
 #include <queue>
 #include <unordered_set>
+
 void GameBoard::growBoardIfNeeded() {
     const auto    rows    = m_GameBoard.size();
     const auto    cols    = m_GameBoard[0].size();
@@ -15,7 +17,7 @@ void GameBoard::growBoardIfNeeded() {
 
     // Check if we need to expand at the top
     for (int j = 0; j < cols; ++j) {
-        if (m_GameBoard[0][j].getTopCard()) {
+        if (m_GameBoard[0][j]->getTopCard()) {
             expandTop = true;
             break;
         }
@@ -23,7 +25,7 @@ void GameBoard::growBoardIfNeeded() {
 
     // Check if we need to expand at the bottom
     for (int j = 0; j < cols; ++j) {
-        if (m_GameBoard[rows - 1][j].getTopCard()) {
+        if (m_GameBoard[rows - 1][j]->getTopCard()) {
             expandBottom = true;
             break;
         }
@@ -31,7 +33,7 @@ void GameBoard::growBoardIfNeeded() {
 
     // Check if we need to expand to the left
     for (int i = 0; i < rows; ++i) {
-        if (m_GameBoard[i][0].getTopCard()) {
+        if (m_GameBoard[i][0]->getTopCard()) {
             expandLeft = true;
             break;
         }
@@ -39,7 +41,7 @@ void GameBoard::growBoardIfNeeded() {
 
     // Check if we need to expand to the right
     for (int i = 0; i < rows; ++i) {
-        if (m_GameBoard[i][cols - 1].getTopCard()) {
+        if (m_GameBoard[i][cols - 1]->getTopCard()) {
             expandRight = true;
             break;
         }
@@ -47,22 +49,26 @@ void GameBoard::growBoardIfNeeded() {
 
     // Expand as necessary without exceeding the maximum size
     if (expandTop && rows < maxSize) {
-        m_GameBoard.insert(m_GameBoard.begin(), std::vector<std::optional<CardStack>>(cols));
+        m_GameBoard.insert(m_GameBoard.begin(), std::vector<std::optional<CardStack>>(cols, std::nullopt));
     }
+
     if (expandBottom && rows < maxSize) {
-        m_GameBoard.push_back(std::vector<std::optional<CardStack>>(cols));
+        m_GameBoard.emplace_back(cols, std::nullopt);
     }
+
     if (expandLeft && cols < maxSize) {
         for (auto &row: m_GameBoard) {
             row.insert(row.begin(), std::nullopt);
         }
     }
+
     if (expandRight && cols < maxSize) {
         for (auto &row: m_GameBoard) {
-            row.push_back(std::nullopt);
+            row.emplace_back(std::nullopt);
         }
     }
 }
+
 void GameBoard::placeCard(const Card &card, u_int8_t row, u_int8_t column) {}
 
 struct pair_hash {
@@ -82,7 +88,7 @@ bool GameBoard::checkIsolation() const {
     std::vector<std::pair<int, int>> cardPositions;
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            if (m_GameBoard[i][j].getTopCard()) { // if there is a card at this position
+            if (m_GameBoard[i][j]->getTopCard()) { // if there is a card at this position
                 cardPositions.emplace_back(i, j);
             }
         }
@@ -108,7 +114,7 @@ bool GameBoard::checkIsolation() const {
         for (const auto &[dx, dy]: directions) {
             int nx = x + dx;
             int ny = y + dy;
-            if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && m_GameBoard[nx][ny].getTopCard() &&
+            if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && m_GameBoard[nx][ny]->getTopCard() &&
                 visited.insert({nx, ny}).second) {
                 toVisit.emplace(nx, ny);
             }

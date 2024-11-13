@@ -9,7 +9,7 @@
 #include <stack>
 #include <vector>
 
-#include "Card.h"
+#include "../Card.h"
 #include "CardStack.h"
 
 /*
@@ -87,15 +87,15 @@ respectiv.
 * Cronometrul se resetează la fiecare joc.
  */
 
-using Board = std::vector<std::vector<CardStack>>;
+using Board = std::vector<std::vector<std::optional<CardStack>>>;
 
 class GameBoard {
     Board m_GameBoard;
     bool  m_IsLocked{false};
 
 public:
-    void growBoardIfNeeded();
-    void placeCard(const Card &card, u_int8_t row, u_int8_t column);
+    void        growBoardIfNeeded();
+    static void placeCard(const Card &card, u_int8_t row, u_int8_t column);
 
     [[nodiscard]] bool checkIsolation() const;
 };

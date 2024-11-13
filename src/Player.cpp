@@ -22,7 +22,7 @@ their PC will BSOD / Kernel Panic
 
 #include <iostream>
 
-#include "Game.h"
+#include "./Game/Game.h"
 #include "Player.h"
 
 Player::Player(uint8_t gameMode, const std::vector<Card> &cards) : m_gameMode(gameMode), m_cards(cards) {}

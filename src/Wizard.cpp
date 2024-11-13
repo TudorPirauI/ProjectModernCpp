@@ -4,7 +4,7 @@
 #include <utility>
 
 
-Wizard::Wizard(std::string name, EPower power) : m_name(std::move(name)), m_power(power), m_wasUsed(false) {}
+Wizard::Wizard(std::string name, EPower power) : m_name(std::move(name)), m_power(power), m_WasUsed(false) {}
 
 void Wizard::setName(std::string name) { m_name = std::move(name); }
 
@@ -61,7 +61,7 @@ void Wizard::UsePower(const std::pair<int, int> &locatie) {
     }
 }
 
-std::string Wizard::ToString(EPower power) {
+const std::string &Wizard::ToString(const EPower &power) const {
     switch (power) {
         case EPower::EliminaCarteAcoperita:
             return "Elimină o carte acoperită";
