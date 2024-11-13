@@ -69,7 +69,7 @@ void GameBoard::growBoardIfNeeded() {
     }
 }
 
-void GameBoard::placeCard(const Card &card, u_int8_t row, u_int8_t column) {}
+void GameBoard::placeCard(const Card &card, uint8_t row, uint8_t column) {}
 
 struct pair_hash {
     template<class T1, class T2>

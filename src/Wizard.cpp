@@ -1,12 +1,11 @@
 #include "Wizard.h"
-
 #include <iostream>
 #include <utility>
-
+#include <cstdint>
 
 Wizard::Wizard(std::string name, EPower power) : m_name(std::move(name)), m_power(power), m_WasUsed(false) {}
 
-void Wizard::setName(std::string name) { m_name = std::move(name); }
+void Wizard::setName(std::string name) { m_name = name; }
 
 std::string Wizard::getName() const { return m_name; }
 
@@ -15,7 +14,6 @@ void Wizard::setPower(EPower power) { m_power = power; }
 EPower Wizard::getPower() const { return m_power; }
 
 bool Wizard::IsUsed() const { return m_WasUsed; }
-
 
 bool Wizard::CanUsePower(const std::pair<int, int> &locatie) const {
     if (m_WasUsed) {
@@ -61,7 +59,7 @@ void Wizard::UsePower(const std::pair<int, int> &locatie) {
     }
 }
 
-const std::string &Wizard::ToString(const EPower &power) const {
+std::string Wizard::ToString(const EPower &power) const {
     switch (power) {
         case EPower::EliminaCarteAcoperita:
             return "Elimină o carte acoperită";

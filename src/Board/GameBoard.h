@@ -8,6 +8,7 @@
 #include <memory>
 #include <stack>
 #include <vector>
+#include<cstdint>
 
 #include "../Card.h"
 #include "CardStack.h"
@@ -95,7 +96,7 @@ class GameBoard {
 
 public:
     void        growBoardIfNeeded();
-    static void placeCard(const Card &card, u_int8_t row, u_int8_t column);
+    static void placeCard(const Card &card, uint8_t row, uint8_t column);
 
     [[nodiscard]] bool checkIsolation() const;
 };

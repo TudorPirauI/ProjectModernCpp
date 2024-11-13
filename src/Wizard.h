@@ -52,7 +52,8 @@ public:
 
     [[nodiscard]] virtual bool       CanUsePower(const std::pair<int, int> &locatie) const;
     virtual void                     UsePower(const std::pair<int, int> &locatie);
-    [[nodiscard]] const std::string &ToString(const EPower &power) const;
+    [[nodiscard]] std::string ToString(const EPower &power) const;
+
 };
 
 class RemoveWizardCard : public Wizard {
