@@ -3,10 +3,14 @@
 //
 
 #include "GameBoard.h"
-
+#include<iostream>
 #include <optional>
 #include <queue>
 #include <unordered_set>
+
+GameBoard::GameBoard(uint8_t rows, uint8_t cols)
+    : m_GameBoard(rows, std::vector<std::optional<CardStack>>(cols)) {
+}
 
 void GameBoard::growBoardIfNeeded() {
     const auto    rows    = m_GameBoard.size();
@@ -123,4 +127,18 @@ bool GameBoard::checkIsolation() const {
 
     // If all card positions are reachable, no isolation; otherwise, there is isolation
     return visited.size() != cardPositions.size();
+}
+
+void GameBoard::showBoard() const {
+    std::cout << "Current Board State:\n";
+    for (const auto &row : m_GameBoard) {
+        for (const auto &cell : row) {
+            if (cell && cell->getTopCard()) {
+                std::cout << cell->getTopCard()->getValue() << " ";
+            } else {
+                std::cout << ". ";
+            }
+        }
+        std::cout << "\n";
+    }
 }

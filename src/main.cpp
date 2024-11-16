@@ -1,11 +1,23 @@
 #include <iostream>
 
+#include "Board/GameBoard.h"
 #include "./Game/Game.h"
 #include "Card.h"
 #include "Player.h"
 
 int main() {
-    std::cout << "Dupa 2 ani a compilat si varu\n";
+    std::cout << "Eter Game - Pasul 1: Configurarea initiala\n";
+
+    uint8_t rows = 1, cols = 1;
+    GameBoard gameBoard(rows, cols);
+
+    Player playerOne;
+    playerOne.setAntrenamentCards();
+    std::cout << "Player One Cards:\n";
+    playerOne.showCards();
+
+    gameBoard.placeCard(playerOne.getCards()[0], 0, 0);
+    gameBoard.showBoard();
 
     return 0;
 }

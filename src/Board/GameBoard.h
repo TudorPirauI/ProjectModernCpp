@@ -95,11 +95,13 @@ class GameBoard {
     bool  m_IsLocked{false};
 
 public:
-    void        growBoardIfNeeded();
-    static void placeCard(const Card &card, uint8_t row, uint8_t column);
+    GameBoard(uint8_t rows = 1, uint8_t cols = 1);
+
+    void growBoardIfNeeded();
+    void placeCard(const Card &card, uint8_t row, uint8_t column);
 
     [[nodiscard]] bool checkIsolation() const;
+    void showBoard() const;
 };
-
 
 #endif // GAMEBOARD_H
