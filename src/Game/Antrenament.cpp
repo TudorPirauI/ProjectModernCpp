@@ -1,4 +1,5 @@
 #include "Antrenament.h"
+#include<iostream>
 
 Antrenament::Antrenament(Player player1, Player player2) {
     this->m_player1 = player1;
@@ -42,6 +43,26 @@ void Antrenament::SetCards() {
     m_player2.addCard(card4);
 }
 
-void Antrenament::DecideWinner() {}
+void Antrenament::DecideWinner() {
+    if (m_pointsPlayer1 >= 3) {
+        std::cout << "Player 1 wins!" << std::endl;
+    } else if (m_pointsPlayer2 >= 3) {
+       std::cout << "Player 2 wins!" << std::endl;
+    }
+}
 
-void Antrenament::NewTurn() {}
+void Antrenament::NewTurn() {
+    DecideTurn();
+
+    if (m_turn == false) {
+        std::cout << "Player 1's turn!" << std::endl;
+    } else {
+        std::cout << "Player 2's turn!" << std::endl;
+    }
+
+    if (m_turn == false) {
+        m_pointsPlayer1++;
+    } else {
+        m_pointsPlayer2++;
+    }
+}

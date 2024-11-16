@@ -90,6 +90,9 @@ void Player::showCards() const {
     }
 }
 
+std::string Player::getName() const {
+    return m_name;
+}
 
 void Player::calculateScore() {
     m_score = 0;
