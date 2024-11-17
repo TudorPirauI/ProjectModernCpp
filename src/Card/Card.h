@@ -6,17 +6,13 @@
 using Position = std::pair<int, int>;
 
 class Card {
-    int m_Value;
-    // std::optional<Position> m_Position;
+    int  m_Value;
     bool m_PlacedBy : 1 {};
     bool m_IsIllusion : 1;
     bool m_IsEter : 1;
-    bool m_isFlipped : 1;
+    bool m_isFlipped : 1 {false};
 
 public:
-    [[nodiscard]] bool GetIsFlipped() const;
-    void  SetIsFlipped(bool isFlipped);
-
     explicit Card(int value);
 
     void              SetValue(int value);
@@ -28,8 +24,8 @@ public:
     void               SetEter(bool isEter);
     [[nodiscard]] bool GetIsEter() const;
 
-    // [[nodiscard]] std::optional<Position> GetPosition() const;
-    // void                                  SetPosition(Position position);
+    [[nodiscard]] bool GetIsFlipped() const;
+    void               SetIsFlipped(bool isFlipped);
 };
 
 

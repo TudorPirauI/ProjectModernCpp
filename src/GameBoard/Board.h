@@ -21,9 +21,10 @@ class Board {
 
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
-    void               UpdateCorners(const Position &pos);
-    void               CheckIsLocked();
-    bool               IsTheBoardFull() const;
+    [[nodiscard]] bool IsTheBoardFull() const;
+
+    void UpdateCorners(const Position &pos);
+    void CheckIsLocked();
 
 public:
     [[nodiscard]] bool InsertCard(const Card &card, const Position &pos);
