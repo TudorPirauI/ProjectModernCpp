@@ -14,18 +14,14 @@ class Player final {
     Hand        m_Hand;
 
 public:
-             Player(std::string name, Hand hand);
-    virtual ~Player();
+     Player(std::string name, Hand hand);
+    ~Player();
 
-    [[nodiscard]] const Hand        &getHand() const;
-    [[nodiscard]] const std::string &getUserName() const;
-    [[nodiscard]] int                getScore() const;
+    [[nodiscard]] const Hand        &GetHand() const;
+    [[nodiscard]] const std::string &GetUserName() const;
+    [[nodiscard]] int                GetScore() const;
 
-    // void playCard(const Card &card);
-    void giveCard(const Card &card);
-
-    // the functions for the AI
-    // virtual void calculateMove(); // todo: this should return a set of moves
+    void GiveCard(const Card &card);
 };
 
 

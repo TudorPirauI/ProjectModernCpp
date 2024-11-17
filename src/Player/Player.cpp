@@ -7,17 +7,10 @@ Player::Player(std::string name, Hand hand) : m_UserName{std::move(name)}, m_Sco
 
 Player::~Player() = default;
 
-const Hand &Player::getHand() const { return m_Hand; }
+const Hand &Player::GetHand() const { return m_Hand; }
 
-const std::string &Player::getUserName() const { return m_UserName; }
+const std::string &Player::GetUserName() const { return m_UserName; }
 
-int Player::getScore() const { return m_Score; }
+int Player::GetScore() const { return m_Score; }
 
-// void Player::playCard(const Card &card) {
-//     const auto it = std::ranges::find(m_Hand, card);
-//     if (it != m_Hand.end()) {
-//         m_Hand.erase(it);
-//     }
-// }
-
-void Player::giveCard(const Card &card) { m_Hand.emplace_back(card); }
+void Player::GiveCard(const Card &card) { m_Hand.emplace_back(card); }

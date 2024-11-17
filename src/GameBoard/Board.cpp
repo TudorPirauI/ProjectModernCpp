@@ -3,8 +3,10 @@
 #include <iostream>
 
 bool Board::IsPositionValid(const Position &pos) const {
-    if(m_Board.at(pos).top().GetIsEter()) {
-        std::cout<<"Can't place on top of Eter card\n";
+    const auto cardOnPosition = std::find(m_Board.begin(), m_Board.end(), pos);
+
+    if (cardOnPosition != m_Board.end() && m_Board.at(pos).top().GetIsEter()) {
+        std::cout << "Can't place on top of Eter card\n";
         return false;
     }
 
@@ -94,12 +96,12 @@ void Board::CheckIsLocked() {
 }
 
 bool Board::IsTheBoardFull() const {
-    if(m_Board.size() != m_MaxBoardSize * m_MaxBoardSize) {
-        std::cout<<"There are still positions open on the board\n";
+    if (m_Board.size() != m_MaxBoardSize * m_MaxBoardSize) {
+        std::cout << "There are still positions open on the board\n";
         return false;
     }
 
-    std::cout<<"Board is full\n";
+    std::cout << "Board is full\n";
 
     return false;
 }

@@ -16,14 +16,14 @@ int main() {
     const std::vector<Position> positions = {{0, 0}, {0, 1}, {-1, 1}, {-2, 1}, {0, -1}};
 
     for (size_t i = 0; i < cards.size(); ++i) {
-        const auto res = board.insertCard(cards[i], positions[i]);
+        const auto res = board.InsertCard(cards[i], positions[i]);
 
         if (!res) {
             std::cout << "Failed to insert card " << i + 1 << std::endl;
         }
     }
 
-    board.printTable();
+    board.PrintTable();
 
     return 0;
 }
