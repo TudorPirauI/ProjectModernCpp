@@ -124,36 +124,58 @@ bool Board::IsTheBoardFull() const {
 void Board::PrintTable() const {
     const auto &[left, up, down, right] = m_Corners;
 
-    // for (const auto &[key, value]: m_Board) {
-    //     std::cout << "Key: " << key.first << ' ' << key.second << '\n';
-    //     std::cout << "Value: " << value.top().GetValue() << '\n';
-    // }
-
-
-    // std::cout << "Printing table\n";
-    // std::cout << "Up.y: " << +up.second << " Down.y: " << +down.second << '\n';
-    // std::cout << "Left.x: " << +left.first << " Right.x: " << +right.first << '\n';
+    std::cout << "┌";
+    for (int i = left.first; i <= right.first; ++i) {
+        std::cout << "───";
+        if (i < right.first) {
+            std::cout << "┬";
+        }
+    }
+    std::cout << "┐\n";
 
     for (int j = up.second; j <= down.second; ++j) {
+        std::cout << "│";
         for (int i = left.first; i <= right.first; ++i) {
-            // std::cout << "Printing " << +i << ' ' << +j << '\n';
             const auto it = m_Board.find({i, j});
 
-            if (it != m_Board.end()) {
-                std::cout << +it->second.top().GetValue() << ' ';
+            if (it == m_Board.end()) {
+                std::cout << " X │";
+                continue;
+            }
+
+            const auto &card = it->second.top();
+            if (card.GetIsEter()) {
+                std::cout << "\033[1;34m " << card.GetValue() << " \033[0m│";
+            } else if (card.GetIsFlipped()) {
+                std::cout << "\033[1;31m H \033[0m│";
             } else {
-                std::cout << "X ";
+                std::cout << "\033[1;32m " << card.GetValue() << " \033[0m│";
             }
         }
 
         std::cout << '\n';
+
+        if (j < down.second) {
+            std::cout << "├";
+            for (int i = left.first; i <= right.first; ++i) {
+                std::cout << "───";
+                if (i < right.first) {
+                    std::cout << "┼";
+                }
+            }
+            std::cout << "┤\n";
+        }
     }
 
+    std::cout << "└";
+    for (int i = left.first; i <= right.first; ++i) {
+        std::cout << "───";
+        if (i < right.first) {
+            std::cout << "┴";
+        }
+    }
 
-    // std::cout << "Left: " << +left.first << ' ' << +left.second << '\n';
-    // std::cout << "Up: " << +up.first << ' ' << +up.second << '\n';
-    // std::cout << "Down: " << +down.first << ' ' << +down.second << '\n';
-    // std::cout << "Right: " << +right.first << ' ' << +right.second << '\n';
+    std::cout << "┘\n";
 }
 
 bool Board::InsertCard(const Card &card, const Position &pos) {
