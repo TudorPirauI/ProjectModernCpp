@@ -23,7 +23,7 @@ class Board {
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
     void               UpdateCorners(const Position &pos);
     void               CheckIsLocked();
-    bool               IsTheBoardFull(const Position &pos) const;
+    bool               IsTheBoardFull() const;
 
 public:
     [[nodiscard]] bool InsertCard(const Card &card, const Position &pos);

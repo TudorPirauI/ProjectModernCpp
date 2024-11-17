@@ -92,6 +92,18 @@ void Board::CheckIsLocked() {
         std::cout << "Board is locked\n";
     }
 }
+
+bool Board::IsTheBoardFull() const {
+    if(m_Board.size() != m_MaxBoardSize * m_MaxBoardSize) {
+        std::cout<<"There are still positions open on the board\n";
+        return false;
+    }
+
+    std::cout<<"Board is full\n";
+
+    return false;
+}
+
 void Board::PrintTable() const {
     const auto &[left, up, down, right] = m_Corners;
 
