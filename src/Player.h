@@ -1,45 +1,32 @@
-// Player.ixx
-#pragma once
+#ifndef PLAYER_H
+#define PLAYER_H
 
-#include <cstdint>
+#include <string>
 #include <vector>
 
-#include "Card.h"
+#include "../Card/Card.h"
+
+using Hand = std::vector<Card>;
 
 class Player {
-public:
-    enum class Difficulty { Easy, Medium, Hard, Impossible };
-
-private:
-    std::string       m_name;
-    uint8_t           m_gameMode = 0;
-    std::vector<Card> m_cards;
-    uint8_t           m_score      = 0;
-    bool              m_isAi       = false;
-    Difficulty        m_difficulty = Difficulty::Easy;
+    std::string m_UserName;
+    int         m_Score;
+    Hand        m_Hand;
 
 public:
-    Player() = default;
-    Player(uint8_t gameMode, const std::vector<Card> &cards);
+             Player(std::string name, Hand hand);
+    virtual ~Player();
 
-    uint8_t getGameMode() const;
-    void    setGameMode(uint8_t gameMode);
+    [[nodiscard]] const Hand        &getHand() const;
+    [[nodiscard]] const std::string &getUserName() const;
+    [[nodiscard]] int                getScore() const;
 
-    std::string getName() const;
+    // void playCard(const Card &card);
+    void giveCard(const Card &card);
 
-    uint8_t getScore() const;
-    void    setScore(uint8_t score);
-
-    void setAntrenamentCards();
-    void setDuelulVrajitorilorCards();
-    void setDuelulElementelorCards();
-    std::vector<Card> getCards() const;
-
-    void showCards() const;
-    void calculateScore();
-    void addCard(const Card &card);
-    void playCard(size_t index);
-    void makeMove();
-
-    ~Player() = default;
+    // the functions for the AI
+    // virtual void calculateMove(); // todo: this should return a set of moves
 };
+
+
+#endif // PLAYER_H
