@@ -19,7 +19,7 @@ class Board {
             Position{0, 0}, Position{0, 0}, Position{0, 0},
             Position{0, 0}}; // abuz de limbaj ca nu sunt sigur ce reprezinta acestea (mersi chat gepele de clarificare)
 
-    [[nodiscard]] bool IsPositionValid(const Position &pos) const;
+    [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
     void               UpdateCorners(const Position &pos);
     void               CheckIsLocked();

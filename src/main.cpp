@@ -13,7 +13,7 @@ int main() {
 
     const std::vector cards = {cardOne, cardTwo, cardThree, cardFour, cardFive};
 
-    const std::vector<Position> positions = {{0, 0}, {0, 1}, {-1, 1}, {-2, 1}, {0, -1}};
+    const std::vector<Position> positions = {{0, 0}, {0, 1}, {-1, 1}, {-2, 1}, {0, 0}};
 
     for (size_t i = 0; i < cards.size(); ++i) {
         const auto res = board.InsertCard(cards[i], positions[i]);

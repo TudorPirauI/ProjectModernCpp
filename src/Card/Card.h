@@ -11,8 +11,12 @@ class Card {
     bool m_PlacedBy : 1 {};
     bool m_IsIllusion : 1;
     bool m_IsEter : 1;
+    bool m_isFlipped : 1;
 
 public:
+    [[nodiscard]] bool GetIsFlipped() const;
+    void  SetIsFlipped(bool isFlipped);
+
     explicit Card(int value);
 
     void              SetValue(int value);

@@ -2,12 +2,27 @@
 
 #include <iostream>
 
-bool Board::IsPositionValid(const Position &pos) const {
-    const auto cardOnPosition = std::find(m_Board.begin(), m_Board.end(), pos);
+bool Board::IsPositionValid(const Position &pos, const Card &card) const {
+    const auto cardOnPosition = m_Board.find(pos);
 
-    if (cardOnPosition != m_Board.end() && m_Board.at(pos).top().GetIsEter()) {
-        std::cout << "Can't place on top of Eter card\n";
-        return false;
+    if (cardOnPosition != m_Board.end()) {
+        const auto cardOnTop = cardOnPosition->second.top();
+        if (cardOnTop.GetValue() >= card.GetValue()) {
+            std::cout << "Can't place card on top of a card with a larger value\n";
+            return false;
+        }
+
+        if (cardOnTop.GetIsEter() == true) {
+            std::cout << "Can't place on top of Eter card\n";
+            return false;
+        }
+
+        if (cardOnTop.GetIsFlipped()) {
+            if (cardOnTop.GetValue() >= card.GetValue()) {
+                std::cout << "Can't place card on top of a card with a larger value\n";
+                return false;
+            }
+        }
     }
 
     if (m_IsLocked) {
@@ -142,7 +157,7 @@ void Board::PrintTable() const {
 }
 
 bool Board::InsertCard(const Card &card, const Position &pos) {
-    if (!IsPositionValid(pos)) {
+    if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
         return false;
     }

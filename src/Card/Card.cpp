@@ -1,5 +1,7 @@
 #include "Card.h"
 
+bool  Card::GetIsFlipped() const { return m_isFlipped; }
+void  Card::SetIsFlipped(bool isFlipped) { m_isFlipped = isFlipped; }
 Card::Card(const int value) : m_Value{value}, m_IsIllusion{false}, m_IsEter{false} {}
 
 void Card::SetValue(const int value) { m_Value = value; }
