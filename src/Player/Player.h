@@ -8,7 +8,7 @@
 
 using Hand = std::vector<Card>;
 
-class Player {
+class Player final {
     std::string m_UserName;
     int         m_Score;
     Hand        m_Hand;

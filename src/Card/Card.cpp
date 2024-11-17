@@ -1,6 +1,6 @@
 #include "Card.h"
 
-Card::Card(const int value) : m_Value{value}, m_IsEter{false}, m_IsIllusion{false} {}
+Card::Card(const int value) : m_Value{value}, m_IsIllusion{false}, m_IsEter{false} {}
 
 void Card::SetValue(const int value) { this->m_Value = value; }
 int  Card::GetValue() const { return this->m_Value; }

@@ -19,14 +19,15 @@ class Board {
             Position{0, 0}, Position{0, 0}, Position{0, 0},
             Position{0, 0}}; // abuz de limbaj ca nu sunt sigur ce reprezinta acestea (mersi chat gepele de clarificare)
 
-    [[nodiscard]] bool isPositionValid(const Position &pos) const;
-    [[nodiscard]] bool checkProximity(const Position &pos) const;
-    void               updateCorners(const Position &pos);
-    void               checkIsLocked();
+    [[nodiscard]] bool IsPositionValid(const Position &pos) const;
+    [[nodiscard]] bool CheckProximity(const Position &pos) const;
+    void               UpdateCorners(const Position &pos);
+    void               CheckIsLocked();
+    bool               IsTheBoardFull(const Position &pos) const;
 
 public:
-    [[nodiscard]] bool insertCard(const Card &card, const Position &pos);
-    void               printTable() const;
+    [[nodiscard]] bool InsertCard(const Card &card, const Position &pos);
+    void               PrintTable() const;
 };
 
 

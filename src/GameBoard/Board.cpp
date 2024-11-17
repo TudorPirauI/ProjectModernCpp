@@ -2,9 +2,14 @@
 
 #include <iostream>
 
-bool Board::isPositionValid(const Position &pos) const {
+bool Board::IsPositionValid(const Position &pos) const {
+    if(m_Board.at(pos).top().GetIsEter()) {
+        std::cout<<"Can't place on top of Eter card\n";
+        return false;
+    }
+
     if (m_IsLocked) {
-        auto &[left, up, down, right] = m_Corners;
+        const auto &[left, up, down, right] = m_Corners;
 
         if (pos.first < left.first || pos.second < up.second || pos.second > down.second || pos.first > right.first) {
             std::cout << "[Locked] Card out of bounds\n";
@@ -14,7 +19,7 @@ bool Board::isPositionValid(const Position &pos) const {
         return true;
     }
 
-    if (!checkProximity(pos)) {
+    if (!CheckProximity(pos)) {
         std::cout << "Card not adjacent to any other card\n";
         return false;
     }
@@ -30,7 +35,7 @@ bool Board::isPositionValid(const Position &pos) const {
     return true;
 }
 
-bool Board::checkProximity(const Position &pos) const {
+bool Board::CheckProximity(const Position &pos) const {
     if (m_Board.empty()) {
         return true;
     }
@@ -50,7 +55,7 @@ bool Board::checkProximity(const Position &pos) const {
     return false;
 }
 
-void Board::updateCorners(const Position &pos) {
+void Board::UpdateCorners(const Position &pos) {
     auto &[left, up, down, right] = m_Corners;
 
     if (pos.first < left.first) {
@@ -74,7 +79,7 @@ void Board::updateCorners(const Position &pos) {
     */
 }
 
-void Board::checkIsLocked() {
+void Board::CheckIsLocked() {
     if (m_IsLocked) {
         return;
     }
@@ -87,7 +92,7 @@ void Board::checkIsLocked() {
         std::cout << "Board is locked\n";
     }
 }
-void Board::printTable() const {
+void Board::PrintTable() const {
     const auto &[left, up, down, right] = m_Corners;
 
     // for (const auto &[key, value]: m_Board) {
@@ -122,17 +127,17 @@ void Board::printTable() const {
     // std::cout << "Right: " << +right.first << ' ' << +right.second << '\n';
 }
 
-bool Board::insertCard(const Card &card, const Position &pos) {
-    if (!isPositionValid(pos)) {
+bool Board::InsertCard(const Card &card, const Position &pos) {
+    if (!IsPositionValid(pos)) {
         std::cout << "Invalid position\n";
         return false;
     }
 
     m_Board[pos].push(card);
 
-    updateCorners(pos);
+    UpdateCorners(pos);
 
-    checkIsLocked();
+    CheckIsLocked();
 
     return true;
 }
