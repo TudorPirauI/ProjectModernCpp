@@ -6,7 +6,16 @@
 
 int main() {
     Board board;
+    /*
+        sa mearga modul antrenament
+            afisare player carti
+            winning conditions
+            gandire mod de actionare
+            turn
+            gandire metoda de input mai buna
+            cum sa incepem jocu : programu sa te intrebe ceva
 
+    */
     const Card cardOne(1);
     const Card cardTwo(2);
     Card       cardThree(3);

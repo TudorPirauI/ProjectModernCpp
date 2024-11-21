@@ -14,12 +14,13 @@ class Player final {
     Hand        m_Hand;
 
 public:
-     Player(std::string name, Hand hand);
+    Player(std::string name, Hand hand);
     ~Player();
 
     [[nodiscard]] const Hand        &GetHand() const;
     [[nodiscard]] const std::string &GetUserName() const;
     [[nodiscard]] int                GetScore() const;
+    void                             ShowCards();
 
     void GiveCard(const Card &card);
 };

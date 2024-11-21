@@ -21,3 +21,15 @@ bool Card::GetIsIllusion() const { return m_IsIllusion; }
 
 void Card::SetEter(const bool isEter) { m_IsEter = isEter; }
 bool Card::GetIsEter() const { return m_IsEter; }
+
+std::ostream &operator<<(std::ostream &os, const Card &card) {
+    os << card.m_Value << ' ';
+
+    if (card.m_IsEter) {
+        os << "Is Eter\n";
+    } else {
+        os << '\n';
+    }
+
+    return os;
+}
