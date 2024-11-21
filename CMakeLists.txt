@@ -8,5 +8,7 @@ add_executable(Eter src/main.cpp
         src/Player/Player.h
         src/Player/Player.cpp
         src/GameBoard/Board.cpp
-        src/Card/Card.cpp)
+        src/Card/Card.cpp
+        src/Game/Antrenament.cpp
+        src/Game/Antrenament.h)
 
