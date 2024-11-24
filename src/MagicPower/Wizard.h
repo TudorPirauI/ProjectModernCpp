@@ -10,15 +10,30 @@
 #include "MagicPower.h"
 
 class Wizard : public MagicPower {
+public:
+    enum class WizardPower {
+        Teleportatie,
+        Invocatie,
+        Metamorfoza,
+        Clarviziune,
+        Blocaj,
+        Manipulare,
+        Iluzionism,
+        Deflagratie,
+        Amnezie,
+        Furt
+    };
+
 private:
-    enum class WIZARD_TYPE { I, II, III, IV, V, VI, VII, VIII };
-    WIZARD_TYPE m_type;
+    WizardPower m_type;
     int         RandomPower();
 
 public:
-    Wizard(std::string name, int id);
-    Wizard(std::string name, int id, WIZARD_TYPE m_type);
+     Wizard(std::string name, int id);
+     Wizard(std::string name, int id, WizardPower m_type);
     ~Wizard();
+
+    std::string getWizardPowerDescription(WizardPower power);
 };
 
 

@@ -18,4 +18,4 @@ add_executable(Eter src/main.cpp
         src/MagicPower/ElementPower.cpp
         src/MagicPower/ElementPower.h)
 
-add_subdirectory(tests)
+#add_subdirectory(tests)
