@@ -12,5 +12,7 @@ add_executable(Eter src/main.cpp
         src/Game/Antrenament.cpp
         src/Game/Antrenament.h
         src/MagicPower/MagicPower.cpp
-        src/MagicPower/MagicPower.h)
+        src/MagicPower/MagicPower.h
+        src/MagicPower/Wizard.cpp
+        src/MagicPower/Wizard.h)
 
