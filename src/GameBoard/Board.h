@@ -21,13 +21,15 @@ class Board {
 
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
-    [[nodiscard]] bool IsTheBoardFull() const;
+    [[nodiscard]] bool IsBoardFull() const;
 
     void UpdateCorners(const Position &pos);
     void CheckIsLocked();
 
+
 public:
     [[nodiscard]] bool InsertCard(const Card &card, const Position &pos);
+    [[nodiscard]] bool IsBoardLocked() const;
     void               PrintTable() const;
 };
 

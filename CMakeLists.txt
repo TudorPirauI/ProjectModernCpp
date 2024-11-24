@@ -4,9 +4,11 @@ project(Eter)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Eter src/main.cpp
-        src/Player/Player.h
+add_executable(Eter
+        src/main.cpp
         src/Player/Player.cpp
         src/GameBoard/Board.cpp
-        src/Card/Card.cpp)
+        src/Card/Card.cpp
+)
 
+add_subdirectory(tests)

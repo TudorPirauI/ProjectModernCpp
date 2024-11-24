@@ -109,8 +109,9 @@ void Board::CheckIsLocked() {
         std::cout << "Board is locked\n";
     }
 }
+bool Board::IsBoardLocked() const { return m_IsLocked; }
 
-bool Board::IsTheBoardFull() const {
+bool Board::IsBoardFull() const {
     if (m_Board.size() != m_MaxBoardSize * m_MaxBoardSize) {
         std::cout << "There are still positions open on the board\n";
         return false;
