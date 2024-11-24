@@ -16,3 +16,4 @@ add_executable(Eter src/main.cpp
         src/MagicPower/Wizard.cpp
         src/MagicPower/Wizard.h)
 
+add_subdirectory(tests)
