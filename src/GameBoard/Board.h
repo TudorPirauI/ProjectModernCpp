@@ -28,6 +28,8 @@ class Board {
 
 public:
     [[nodiscard]] bool InsertCard(const Card &card, const Position &pos);
+    bool               InsertIllusion(Card &card, const Position &pos);
+    bool               CoverIllusion(const Card &cardOpponent, const Position &pos);
     void               PrintTable() const;
 };
 

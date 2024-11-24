@@ -4,7 +4,7 @@
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     const auto cardOnPosition = m_Board.find(pos);
-
+    // todo: Un jucător nu poate să își acopere propria iluzie
     if (cardOnPosition != m_Board.end()) {
         const auto cardOnTop = cardOnPosition->second.top();
         if (cardOnTop.GetValue() >= card.GetValue()) {
@@ -190,5 +190,26 @@ bool Board::InsertCard(const Card &card, const Position &pos) {
 
     CheckIsLocked();
 
+    return true;
+}
+
+bool Board::InsertIllusion(Card &card, const Position &pos) {
+    if (m_Board[pos].empty() == false) {
+        std::cout << "Can't place an illusion on an occupied place\n";
+        return false;
+    }
+    card.SetIllusion(true);
+    return true;
+}
+
+bool Board::CoverIllusion(const Card &cardOpponent, const Position &pos) {
+    m_Board[pos].top().SetIsFlipped(true);
+    if (cardOpponent.GetValue() <= m_Board[pos].top().GetValue()) {
+        std::cout << "The card of the player who has the illusion has a greater value\n";
+        return false;
+    }
+    std::cout << "The card of the player who tried to cover the illusion has a greater value\n";
+    m_Board[pos].pop();
+    m_Board[pos].emplace(cardOpponent);
     return true;
 }
