@@ -7,35 +7,38 @@
 
 #include <string>
 
-enum class ElementPower {
-    I,
-    II,
-    III,
-    IV,
-    V,
-    VI,
-    VII,
-    VIII,
-    IX,
-    X,
-    XI,
-    XII,
-    XIII,
-    XIV,
-    XV,
-    XVI,
-    XVII,
-    XVIII,
-    XIX,
-    XX,
-    XXI,
-    XXII,
-    XXIII,
-    XXIV
+class ElementPower {
+public:
+    enum class ElementIndexPower {
+        I,
+        II,
+        III,
+        IV,
+        V,
+        VI,
+        VII,
+        VIII,
+        IX,
+        X,
+        XI,
+        XII,
+        XIII,
+        XIV,
+        XV,
+        XVI,
+        XVII,
+        XVIII,
+        XIX,
+        XX,
+        XXI,
+        XXII,
+        XXIII,
+        XXIV
+    };
+
+private:
+    ElementIndexPower RandomPower();
+    std::string       getElementPowerDescription(ElementIndexPower power);
 };
-
-std::string getElementPowerDescription(ElementPower power);
-
-ElementPower RandomPower();
 
 #endif // ELEMENTPOWER_H
