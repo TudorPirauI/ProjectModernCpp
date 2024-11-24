@@ -1,11 +1,11 @@
 //
 // Created by Tudor on 11/24/2024.
 //
-#include <string>
 
 #ifndef MAGICPOWER_H
 #define MAGICPOWER_H
 
+#include <string>
 
 class MagicPower {
 private:
