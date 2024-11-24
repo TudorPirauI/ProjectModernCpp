@@ -1,6 +1,7 @@
 #ifndef CARD_H
 #define CARD_H
 
+#include <ostream>
 #include <utility>
 
 using Position = std::pair<int, int>;
@@ -26,7 +27,7 @@ public:
 
     [[nodiscard]] bool GetIsFlipped() const;
     void               SetIsFlipped(bool isFlipped);
+
+    friend std::ostream &operator<<(std::ostream &os, const Card &card);
 };
-
-
 #endif // CARD_H
