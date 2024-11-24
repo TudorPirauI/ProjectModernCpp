@@ -1,11 +1,12 @@
 find_package(Catch2 3 REQUIRED)
 
-set(SOURCE_FILES
+add_executable(Tests
         ../src/Card/Card.cpp
         ../src/GameBoard/Board.cpp
         BoardTests.cpp
+        CardTests.cpp
 )
 
-add_executable(Catch_tests_run ${SOURCE_FILES})
-target_link_libraries(Catch_tests_run PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain)
+
 include(Catch)
