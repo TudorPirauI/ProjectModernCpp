@@ -1,6 +1,12 @@
+#include <ftxui/component/component.hpp>
+#include <ftxui/component/component_base.hpp>
+#include <ftxui/component/screen_interactive.hpp>
+#include "ftxui-grid-container/grid-container.hpp"
+
 #include "Board.h"
 
 #include <iostream>
+#include <ranges>
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     const auto cardOnPosition = m_Board.find(pos);
@@ -109,6 +115,7 @@ void Board::CheckIsLocked() {
         std::cout << "Board is locked\n";
     }
 }
+
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
 bool Board::IsBoardFull() const {
@@ -123,6 +130,7 @@ bool Board::IsBoardFull() const {
 }
 
 void Board::PrintTable() const {
+    using namespace ftxui;
     auto [left, up, down, right] = m_Corners;
 
     if (!IsBoardLocked()) {
@@ -132,79 +140,43 @@ void Board::PrintTable() const {
         --up.second;
     }
 
-    std::cout << "   ";
-    for (int i = left.first; i <= right.first; ++i) {
-        if (i < 0) {
-            std::cout << "\033[1;31m " << i * -1 << " \033[0m";
-        } else {
-            std::cout << " " << i << " ";
-        }
-    }
-    std::cout << "\n";
-
-    std::cout << " ┌";
-    for (int i = left.first; i <= right.first; ++i) {
-        std::cout << "───";
-        if (i < right.first) {
-            std::cout << "┬";
-        }
-    }
-    std::cout << "┐\n";
-
+    std::vector<std::vector<Component>> grid;
     for (int j = up.second; j <= down.second; ++j) {
-        // std::cout << j << "│";
-
-        if (j < 0) {
-            std::cout << "\033[1;31m" << j * -1 << "\033[0m" << "│";
-        } else {
-            std::cout << j << "│";
-        }
+        std::vector<Component> row;
         for (int i = left.first; i <= right.first; ++i) {
-            const auto it = m_Board.find({i, j});
+            const auto  it = m_Board.find({i, j});
+            std::string cell_content;
+            Decorator   cell_decorator = nothing;
 
             if (it == m_Board.end()) {
                 if (IsPositionValid({i, j}, Card(2))) {
-                    std::cout << "\033[1;35m V \033[0m│";
+                    cell_content   = " V ";
+                    cell_decorator = color(Color::Green);
                 } else {
-                    std::cout << " X │";
+                    cell_content   = " X ";
+                    cell_decorator = color(Color::Red);
                 }
-
-                continue;
-            }
-
-            const auto &card = it->second.top();
-            if (card.GetIsEter()) {
-                std::cout << "\033[1;34m " << card.GetValue() << " \033[0m│";
-            } else if (card.GetIsFlipped()) {
-                std::cout << "\033[1;31m H \033[0m│";
             } else {
-                std::cout << "\033[1;32m " << card.GetValue() << " \033[0m│";
-            }
-        }
-
-        std::cout << j << '\n';
-
-        if (j < down.second) {
-            std::cout << " ├";
-            for (int i = left.first; i <= right.first; ++i) {
-                std::cout << "───";
-                if (i < right.first) {
-                    std::cout << "┼";
+                const auto &card = it->second.top();
+                if (card.GetIsFlipped()) {
+                    cell_content   = " H ";
+                    cell_decorator = color(Color::Yellow);
+                } else {
+                    cell_content   = " " + std::to_string(card.GetValue()) + " ";
+                    cell_decorator = color(Color::Blue);
                 }
             }
-            std::cout << "┤\n";
+
+            auto cell = Button(cell_content, [] {}) | cell_decorator;
+            row.push_back(cell);
         }
+        grid.push_back(row);
     }
 
-    std::cout << " └";
-    for (int i = left.first; i <= right.first; ++i) {
-        std::cout << "───";
-        if (i < right.first) {
-            std::cout << "┴";
-        }
-    }
+    auto grid_container = GridContainer(grid);
 
-    std::cout << "┘\n";
+    auto screen = ScreenInteractive::TerminalOutput();
+    screen.Loop(grid_container | center);
 }
 
 bool Board::InsertCard(const Card &card, const Position &pos) {
