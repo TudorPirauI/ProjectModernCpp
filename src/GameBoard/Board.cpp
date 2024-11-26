@@ -8,18 +8,18 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (cardOnPosition != m_Board.end()) {
         const auto cardOnTop = cardOnPosition->second.top();
         if (cardOnTop.GetValue() >= card.GetValue()) {
-            std::cout << "Can't place card on top of a card with a larger value\n";
+            // std::cout << "Can't place card on top of a card with a larger value\n";
             return false;
         }
 
         if (cardOnTop.GetIsEter() == true) {
-            std::cout << "Can't place on top of Eter card\n";
+            // std::cout << "Can't place on top of Eter card\n";
             return false;
         }
 
         if (cardOnTop.GetIsFlipped()) {
             if (cardOnTop.GetValue() >= card.GetValue()) {
-                std::cout << "Can't place card on top of a card with a larger value\n";
+                // std::cout << "Can't place card on top of a card with a larger value\n";
                 return false;
             }
         }
@@ -29,7 +29,7 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
         const auto &[left, up, down, right] = m_Corners;
 
         if (pos.first < left.first || pos.second < up.second || pos.second > down.second || pos.first > right.first) {
-            std::cout << "[Locked] Card out of bounds\n";
+            // std::cout << "[Locked] Card out of bounds\n";
             return false;
         }
 
@@ -37,7 +37,7 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     }
 
     if (!CheckProximity(pos)) {
-        std::cout << "Card not adjacent to any other card\n";
+        // std::cout << "Card not adjacent to any other card\n";
         return false;
     }
 
@@ -45,7 +45,7 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
 
     if (std::abs(left.first - pos.first) >= m_MaxBoardSize || std::abs(right.first - pos.first) >= m_MaxBoardSize ||
         std::abs(up.second - pos.second) >= m_MaxBoardSize || std::abs(down.second - pos.second) >= m_MaxBoardSize) {
-        std::cout << "Card out of bounds\n";
+        // std::cout << "Card out of bounds\n";
         return false;
     }
 
@@ -62,11 +62,11 @@ bool Board::CheckProximity(const Position &pos) const {
         const auto yDiff = std::abs(position.second - pos.second);
 
         if (xDiff <= 1 && yDiff <= 1) {
-            std::cout << "Card is adjacent to another card\n";
+            // std::cout << "Card is adjacent to another card\n";
             return true;
         }
 
-        std::cout << +xDiff << " | " << +yDiff << '\n';
+        // std::cout << +xDiff << " | " << +yDiff << '\n';
     }
 
     return false;
@@ -123,9 +123,26 @@ bool Board::IsBoardFull() const {
 }
 
 void Board::PrintTable() const {
-    const auto &[left, up, down, right] = m_Corners;
+    auto [left, up, down, right] = m_Corners;
 
-    std::cout << "┌";
+    if (!IsBoardLocked()) {
+        ++right.first;
+        ++down.second;
+        --left.first;
+        --up.second;
+    }
+
+    std::cout << "   ";
+    for (int i = left.first; i <= right.first; ++i) {
+        if (i < 0) {
+            std::cout << "\033[1;31m " << i * -1 << " \033[0m";
+        } else {
+            std::cout << " " << i << " ";
+        }
+    }
+    std::cout << "\n";
+
+    std::cout << " ┌";
     for (int i = left.first; i <= right.first; ++i) {
         std::cout << "───";
         if (i < right.first) {
@@ -135,12 +152,23 @@ void Board::PrintTable() const {
     std::cout << "┐\n";
 
     for (int j = up.second; j <= down.second; ++j) {
-        std::cout << "│";
+        // std::cout << j << "│";
+
+        if (j < 0) {
+            std::cout << "\033[1;31m" << j * -1 << "\033[0m" << "│";
+        } else {
+            std::cout << j << "│";
+        }
         for (int i = left.first; i <= right.first; ++i) {
             const auto it = m_Board.find({i, j});
 
             if (it == m_Board.end()) {
-                std::cout << " X │";
+                if (IsPositionValid({i, j}, Card(2))) {
+                    std::cout << "\033[1;35m V \033[0m│";
+                } else {
+                    std::cout << " X │";
+                }
+
                 continue;
             }
 
@@ -154,10 +182,10 @@ void Board::PrintTable() const {
             }
         }
 
-        std::cout << '\n';
+        std::cout << j << '\n';
 
         if (j < down.second) {
-            std::cout << "├";
+            std::cout << " ├";
             for (int i = left.first; i <= right.first; ++i) {
                 std::cout << "───";
                 if (i < right.first) {
@@ -168,7 +196,7 @@ void Board::PrintTable() const {
         }
     }
 
-    std::cout << "└";
+    std::cout << " └";
     for (int i = left.first; i <= right.first; ++i) {
         std::cout << "───";
         if (i < right.first) {
