@@ -40,6 +40,8 @@ add_executable(Eter src/main.cpp
         src/MagicPower/ElementPower.h
         src/utils/Logger.cpp
         src/utils/Logger.h
+        src/Interface/TUI.cpp
+        src/Interface/TUI.h
 )
 
 target_link_libraries(Eter PRIVATE ftxui::screen ftxui::dom ftxui::component ftxui-grid-container)
