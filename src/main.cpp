@@ -106,21 +106,33 @@ int main() {
     cardThree.SetIllusion(true);
     cardThree.SetIsFlipped(true);
 
-    PrintAsciiArt();
+    // PrintAsciiArt();
+    std::system("clear");
 
-    const std::vector cards = {cardOne, cardTwo, cardThree, cardFour, cardFive};
+    std::vector cards = {cardOne, cardTwo, cardThree, cardFour, cardFive};
 
-    const std::vector<Position> positions = {{0, 0}, {0, 1}, {-1, 1}, {-2, 1}, {0, 2}};
+    while (!cards.empty()) {
+        std::system("clear");
+        const auto pos = board.ShowTableWithInput();
 
-    for (size_t i = 0; i < cards.size(); ++i) {
-        const auto res = board.InsertCard(cards[i], positions[i]);
-
-        if (!res) {
-            std::cout << "Failed to insert card " << i + 1 << std::endl;
+        if (board.InsertCard(cards.front(), pos)) {
+            cards.erase(cards.begin());
         }
     }
 
-    board.PrintTable();
+    // const std::vector<Position> positions = {{0, 0}, {0, 1}, {-1, 1}, {-2, 1}, {0, 2}};
+    //
+    // for (size_t i = 0; i < cards.size(); ++i) {
+    //     const auto res = board.InsertCard(cards[i], positions[i]);
+    //
+    //     if (!res) {
+    //         std::cout << "Failed to insert card " << i + 1 << std::endl;
+    //     }
+    // }
+    //
+    // const auto pos = board.ShowTableWithInput();
+    //
+    // std::cout << "Selected position: " << pos.first << ' ' << pos.second << '\n';
 
     return 0;
 }

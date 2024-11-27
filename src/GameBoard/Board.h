@@ -32,7 +32,7 @@ public:
     [[nodiscard]] bool IsBoardLocked() const;
     bool               InsertIllusion(Card &card, const Position &pos);
     bool               CoverIllusion(const Card &cardOpponent, const Position &pos);
-    void               PrintTable() const;
+    Position           ShowTableWithInput() const;
 };
 
 
