@@ -22,20 +22,17 @@
 
 class TUI {
 public:
+    TUI();
+
     void ShowMenu();
-    // show meniu public
-    // game loop
-    // draw game
-    // draw intermediary
-    //
+
 private:
+    int                 m_GameChoice;
     std::string         m_PlayerName1;
     std::string         m_PlayerName2;
-    int                 m_GameChoice;
     std::vector<bool *> m_GameModesSelected;
 
     void StartGameMenu();
 };
-
 
 #endif // TUI_H
