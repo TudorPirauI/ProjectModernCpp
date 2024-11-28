@@ -4,6 +4,9 @@
 
 #ifndef ANTRENAMENT_H
 #define ANTRENAMENT_H
+#include <unordered_map>
+
+
 #include "../GameBoard/Board.h"
 #include "../Player/Player.h"
 
@@ -21,15 +24,11 @@ private:
     GameState  m_GameState{GameState::NotFinished};
     int        m_ScorePlayer1{0};
     int        m_ScorePlayer2{0};
-    int        m_ScoreWinning{3};
+    int        m_ScoreWinning{2};
 
     // Board: addCard to the board
     // Antrenament: Add constructor to initialise players, board and current Player
     void CheckWinningConditions(); // to be rechecked after the implementation
-    bool NoCardLeft();
-    bool WinningOnDiagonal(); // to be implemented
-    bool WinningOnLine(); // to be implemented
-    bool WinningOnVertical(); // to be implemented
     void GameLoop(); // to be implemented
 };
 

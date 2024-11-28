@@ -29,8 +29,9 @@ private:
     int         RandomPower();
 
 public:
-     Wizard(std::string name, int id);
-     Wizard(std::string name, int id, WizardPower m_type);
+    Wizard(std::string name, int id);
+    Wizard(std::string name, int id, WizardPower m_type);
+    Wizard();
     ~Wizard();
 
     std::string getWizardPowerDescription(WizardPower power);

@@ -4,17 +4,16 @@
 
 #include "MagicPower.h"
 
-MagicPower::MagicPower(std::string name, int id) {
-    m_name = name;
-    m_id   = id;
-}
+#include <utility>
 
-void MagicPower::setName(std::string name) { m_name = name; }
-void MagicPower::setId(int id) { m_id = id; }
-void MagicPower::setWasUsed(bool wasUsed) { m_WasUsed = wasUsed; }
+MagicPower::MagicPower(std::string name, const int id) : m_name(std::move(name)), m_id(id) {}
 
-std::string MagicPower::getName() { return m_name; }
-int         MagicPower::getId() { return m_id; }
-bool        MagicPower::getWasUsed() { return m_WasUsed; }
+void MagicPower::setName(const std::string &name) { m_name = name; }
+void MagicPower::setId(const int id) { m_id = id; }
+void MagicPower::setWasUsed(const bool wasUsed) { m_WasUsed = wasUsed; }
 
-MagicPower::~MagicPower() {}
+std::string MagicPower::getName() const { return m_name; }
+int         MagicPower::getId() const { return m_id; }
+bool        MagicPower::getWasUsed() const { return m_WasUsed; }
+
+MagicPower::~MagicPower() = default;

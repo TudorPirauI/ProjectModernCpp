@@ -5,8 +5,11 @@
 
 #include "Board.h"
 
+#include <fstream>
 #include <iostream>
 #include <ranges>
+
+#include "../Player/Player.h"
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     const auto cardOnPosition = m_Board.find(pos);
@@ -63,19 +66,12 @@ bool Board::CheckProximity(const Position &pos) const {
         return true;
     }
 
-    for (const auto &[position, stack]: m_Board) {
+    return std::ranges::any_of(m_Board | std::views::keys, [&](const auto &position) {
         const auto xDiff = std::abs(position.first - pos.first);
         const auto yDiff = std::abs(position.second - pos.second);
 
-        if (xDiff <= 1 && yDiff <= 1) {
-            // std::cout << "Card is adjacent to another card\n";
-            return true;
-        }
-
-        // std::cout << +xDiff << " | " << +yDiff << '\n';
-    }
-
-    return false;
+        return xDiff <= 1 && yDiff <= 1;
+    });
 }
 
 void Board::UpdateCorners(const Position &pos) {
@@ -116,6 +112,13 @@ void Board::CheckIsLocked() {
     }
 }
 
+int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
+
+std::array<Position, 4> Board::GetCorners() const { return m_Corners; }
+GameBoard               Board::GetGameBoard() const { return m_Board; }
+
+Board::Board(const int maxBoardSize) : m_MaxBoardSize(maxBoardSize) {}
+
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
 bool Board::IsBoardFull() const {
@@ -129,7 +132,7 @@ bool Board::IsBoardFull() const {
     return false;
 }
 
-void Board::PrintTable() const {
+Position Board::ShowTableWithInput() const {
     using namespace ftxui;
     auto [left, up, down, right] = m_Corners;
 
@@ -139,6 +142,10 @@ void Board::PrintTable() const {
         --left.first;
         --up.second;
     }
+
+    Position pos;
+
+    auto screen = ScreenInteractive::TerminalOutput();
 
     std::vector<std::vector<Component>> grid;
     for (int j = up.second; j <= down.second; ++j) {
@@ -167,16 +174,24 @@ void Board::PrintTable() const {
                 }
             }
 
-            auto cell = Button(cell_content, [] {}) | cell_decorator;
+            auto cell = Button(cell_content,
+                               [&pos, i, j, &screen] {
+                                   pos = {i, j};
+                                   screen.Exit();
+
+                                   return true;
+                               }) |
+                        cell_decorator;
             row.push_back(cell);
         }
         grid.push_back(row);
     }
 
-    auto grid_container = GridContainer(grid);
+    const auto grid_container = GridContainer(grid);
 
-    auto screen = ScreenInteractive::TerminalOutput();
     screen.Loop(grid_container | center);
+
+    return pos;
 }
 
 bool Board::InsertCard(const Card &card, const Position &pos) {
@@ -184,6 +199,7 @@ bool Board::InsertCard(const Card &card, const Position &pos) {
         std::cout << "Invalid position\n";
         return false;
     }
+
 
     m_Board[pos].push(card);
 

@@ -15,13 +15,14 @@ private:
 
 public:
     MagicPower(std::string name, int id);
-    void        setName(std::string name);
-    void        setId(int id);
-    void        setWasUsed(bool wasUsed);
-    std::string getName();
-    int         getId();
-    bool        getWasUsed();
     ~MagicPower();
+
+    void                      setName(const std::string &name);
+    void                      setId(int id);
+    void                      setWasUsed(bool wasUsed);
+    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] int         getId() const;
+    [[nodiscard]] bool        getWasUsed() const;
 };
 
 

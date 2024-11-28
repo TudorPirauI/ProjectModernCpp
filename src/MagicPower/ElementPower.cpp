@@ -18,7 +18,7 @@ ElementPower::ElementIndexPower ElementPower::RandomPower() {
     return static_cast<ElementIndexPower>(dis(gen));
 }
 
-std::string ElementPower::getElementPowerDescription(ElementIndexPower power) {
+std::string ElementPower::getElementPowerDescription(const ElementIndexPower power) {
     switch (power) {
         case ElementIndexPower::ExplozieControlata:
             return "Tabla explodează!";
