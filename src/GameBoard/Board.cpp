@@ -66,19 +66,12 @@ bool Board::CheckProximity(const Position &pos) const {
         return true;
     }
 
-    for (const auto &[position, stack]: m_Board) {
+    return std::ranges::any_of(m_Board | std::views::keys, [&](const auto &position) {
         const auto xDiff = std::abs(position.first - pos.first);
         const auto yDiff = std::abs(position.second - pos.second);
 
-        if (xDiff <= 1 && yDiff <= 1) {
-            // std::cout << "Card is adjacent to another card\n";
-            return true;
-        }
-
-        // std::cout << +xDiff << " | " << +yDiff << '\n';
-    }
-
-    return false;
+        return xDiff <= 1 && yDiff <= 1;
+    });
 }
 
 void Board::UpdateCorners(const Position &pos) {

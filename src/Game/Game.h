@@ -15,6 +15,7 @@ public:
     enum class GameState { NotFinished, NormalWin, FinishedCards };
 
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
+    PlayerTurn getCurrentPlayer() const;
 
 protected:
     Board                        m_Board;

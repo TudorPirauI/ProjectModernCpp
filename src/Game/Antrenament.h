@@ -29,10 +29,6 @@ private:
     // Board: addCard to the board
     // Antrenament: Add constructor to initialise players, board and current Player
     void CheckWinningConditions(); // to be rechecked after the implementation
-    bool NoCardLeft();
-    bool WinningOnDiagonal(); // to be implemented
-    bool WinningOnLine(); // to be implemented
-    bool WinningOnVertical(); // to be implemented
     void GameLoop(); // to be implemented
 };
 

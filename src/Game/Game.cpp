@@ -4,21 +4,22 @@
 
 #include "Game.h"
 
+#include <ranges>
+
 Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne, const std::string &nameTwo) :
     m_Board(boardSize), m_ScoreToWin(scoreToWin), m_Player1(nameOne, {}), m_Player2(nameTwo, {}) {}
 
+PlayerTurn Game::getCurrentPlayer() const { return m_PlayerTurn; }
 
 bool Game::CheckWinningConditions() {
-    for (const auto &[line, value]: m_Lines) {
-        if (value == abs(m_Board.GetMaxBoardSize())) {
-            return true;
-        }
+    const auto targetValue = std::abs(m_Board.GetMaxBoardSize());
+
+    if (std::ranges::any_of(m_Lines | std::views::values, [&](const auto &value) { return value == targetValue; })) {
+        return true;
     }
 
-    for (const auto &[column, value]: m_Columns) {
-        if (value == abs(m_Board.GetMaxBoardSize())) {
-            return true;
-        }
+    if (std::ranges::any_of(m_Columns | std::views::values, [&](const auto &value) { return value == targetValue; })) {
+        return true;
     }
 
     // todo: revizuit

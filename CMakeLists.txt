@@ -37,26 +37,17 @@ if (NOT catch2_POPULATED)
 endif ()
 
 add_executable(Eter src/main.cpp
-        src/Player/Player.h
         src/Player/Player.cpp
         src/GameBoard/Board.cpp
         src/Card/Card.cpp
         src/Game/Antrenament.cpp
-        src/Game/Antrenament.h
         src/MagicPower/MagicPower.cpp
-        src/MagicPower/MagicPower.h
         src/MagicPower/Wizard.cpp
-        src/MagicPower/Wizard.h
         src/MagicPower/ElementPower.cpp
-        src/MagicPower/ElementPower.h
-        src/utils/Logger.cpp
-        src/utils/Logger.h
         src/Interface/TUI.cpp
-        src/Interface/TUI.h
         src/Game/Game.cpp
-        src/Game/Game.h
 )
 
 target_link_libraries(Eter PRIVATE ftxui::screen ftxui::dom ftxui::component ftxui-grid-container)
 
-add_subdirectory(tests)
+#add_subdirectory(tests) #todo fix this for windows
