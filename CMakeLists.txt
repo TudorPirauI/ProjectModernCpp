@@ -46,6 +46,8 @@ add_executable(Eter src/main.cpp
         src/MagicPower/ElementPower.cpp
         src/Interface/TUI.cpp
         src/Game/Game.cpp
+        src/Game/DuelulVrajitorilor.cpp
+        src/Game/DuelulVrajitorilor.h
 )
 
 target_link_libraries(Eter PRIVATE ftxui::screen ftxui::dom ftxui::component ftxui-grid-container)

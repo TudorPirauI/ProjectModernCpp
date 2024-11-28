@@ -12,10 +12,12 @@
 
 class Game {
 public:
+    virtual ~Game() = default;
     enum class GameState { NotFinished, NormalWin, FinishedCards };
 
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
-    PlayerTurn getCurrentPlayer() const;
+    Game();
+    PlayerTurn getCurrentPlayer();
 
 protected:
     Board                        m_Board;

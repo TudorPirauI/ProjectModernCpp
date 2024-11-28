@@ -24,7 +24,7 @@ private:
     GameState  m_GameState{GameState::NotFinished};
     int        m_ScorePlayer1{0};
     int        m_ScorePlayer2{0};
-    int        m_ScoreWinning{3};
+    int        m_ScoreWinning{2};
 
     // Board: addCard to the board
     // Antrenament: Add constructor to initialise players, board and current Player
