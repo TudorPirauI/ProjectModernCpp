@@ -13,6 +13,9 @@ Card::Card(const int value) : m_IsIllusion{false}, m_IsEter{false} {
 bool Card::GetIsFlipped() const { return m_isFlipped; }
 void Card::SetIsFlipped(const bool isFlipped) { m_isFlipped = isFlipped; }
 
+PlayerTurn Card::GetPlacedBy() const { return m_PlacedBy; }
+void       Card::SetPlacedBy(const PlayerTurn placedBy) { m_PlacedBy = placedBy; }
+
 void Card::SetValue(const int value) { m_Value = value; }
 int  Card::GetValue() const { return m_Value; }
 

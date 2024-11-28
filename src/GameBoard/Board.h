@@ -33,6 +33,7 @@ public:
     [[nodiscard]] bool      IsBoardLocked() const;
     int                     GetMaxBoardSize() const;
     std::array<Position, 4> GetCorners() const;
+    GameBoard               GetGameBoard() const;
     bool                    InsertIllusion(Card &card, const Position &pos);
     bool                    CoverIllusion(const Card &cardOpponent, const Position &pos);
     Position                ShowTableWithInput() const;
