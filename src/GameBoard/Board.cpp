@@ -9,6 +9,8 @@
 #include <iostream>
 #include <ranges>
 
+#include "../Player/Player.h"
+
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     const auto cardOnPosition = m_Board.find(pos);
     // todo: Un jucător nu poate să își acopere propria iluzie
@@ -117,6 +119,12 @@ void Board::CheckIsLocked() {
     }
 }
 
+int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
+
+std::array<Position, 4> Board::GetCorners() const { return m_Corners; }
+
+Board::Board(const int maxBoardSize) : m_MaxBoardSize(maxBoardSize) {}
+
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
 bool Board::IsBoardFull() const {
@@ -197,6 +205,7 @@ bool Board::InsertCard(const Card &card, const Position &pos) {
         std::cout << "Invalid position\n";
         return false;
     }
+
 
     m_Board[pos].push(card);
 

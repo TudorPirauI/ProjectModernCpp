@@ -42,6 +42,8 @@ add_executable(Eter src/main.cpp
         src/utils/Logger.h
         src/Interface/TUI.cpp
         src/Interface/TUI.h
+        src/Game/Game.cpp
+        src/Game/Game.h
 )
 
 target_link_libraries(Eter PRIVATE ftxui::screen ftxui::dom ftxui::component ftxui-grid-container)

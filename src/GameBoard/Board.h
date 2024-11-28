@@ -7,12 +7,13 @@
 #include <stack>
 
 #include "../Card/Card.h"
+#include "../Player/Player.h"
 
 using GameBoard = std::map<Position, std::stack<Card>>;
 
 class Board {
     GameBoard m_Board;
-    int       m_MaxBoardSize{3};
+    int       m_MaxBoardSize;
     bool      m_IsLocked{false};
 
     std::array<Position, 4> m_Corners{
@@ -26,13 +27,15 @@ class Board {
     void UpdateCorners(const Position &pos);
     void CheckIsLocked();
 
-
 public:
-    [[nodiscard]] bool InsertCard(const Card &card, const Position &pos);
-    [[nodiscard]] bool IsBoardLocked() const;
-    bool               InsertIllusion(Card &card, const Position &pos);
-    bool               CoverIllusion(const Card &cardOpponent, const Position &pos);
-    Position           ShowTableWithInput() const;
+    explicit Board(int maxBoardSize);
+    [[nodiscard]] bool      InsertCard(const Card &card, const Position &pos);
+    [[nodiscard]] bool      IsBoardLocked() const;
+    int                     GetMaxBoardSize() const;
+    std::array<Position, 4> GetCorners() const;
+    bool                    InsertIllusion(Card &card, const Position &pos);
+    bool                    CoverIllusion(const Card &cardOpponent, const Position &pos);
+    Position                ShowTableWithInput() const;
 };
 
 
