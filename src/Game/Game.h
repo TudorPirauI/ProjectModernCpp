@@ -9,7 +9,6 @@
 #include "../GameBoard/Board.h"
 #include "../Player/Player.h"
 
-
 class Game {
 public:
     virtual ~Game() = default;
@@ -17,6 +16,8 @@ public:
 
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
     Game();
+
+    PlayerTurn getCurrentPlayer() const;
     PlayerTurn getCurrentPlayer();
 
 protected:
@@ -34,6 +35,5 @@ protected:
     bool         CheckWinningConditions();
     virtual void GameLoop() = 0; // to be implemented
 };
-
 
 #endif // GAME_H
