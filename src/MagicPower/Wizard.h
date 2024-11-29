@@ -25,17 +25,16 @@ public:
     };
 
 private:
-    WizardPower m_type;
+    WizardPower m_Type;
     int         RandomPower();
 
 public:
     Wizard(std::string name, int id);
-    Wizard(std::string name, int id, WizardPower m_type);
+    Wizard(std::string name, int id, WizardPower type);
     Wizard();
     ~Wizard();
 
-    std::string getWizardPowerDescription(WizardPower power);
+    static std::string GetWizardPowerDescription(WizardPower power);
 };
-
 
 #endif // WIZARD_H

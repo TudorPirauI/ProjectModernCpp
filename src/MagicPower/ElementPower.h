@@ -38,7 +38,7 @@ public:
 
 private:
     ElementIndexPower RandomPower();
-    std::string       getElementPowerDescription(ElementIndexPower power);
+    std::string       GetElementPowerDescription(ElementIndexPower power);
 };
 
 #endif // ELEMENTPOWER_H

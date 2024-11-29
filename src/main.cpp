@@ -39,7 +39,7 @@ void PrintAsciiArt() {
  "+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"
     )";
 
-    for (const auto &line: std::views::split(ascii, '\n')) {
+    for (const auto &line : std::views::split(ascii, '\n')) {
         std::cout << std::string(line.begin(), line.end()) << '\n';
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }

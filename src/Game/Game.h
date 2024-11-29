@@ -17,8 +17,7 @@ public:
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
     Game();
 
-    PlayerTurn getCurrentPlayer() const;
-    PlayerTurn getCurrentPlayer();
+    PlayerTurn GetCurrentPlayer() const;
 
 protected:
     Board                        m_Board;

@@ -8,22 +8,20 @@
 #include <string>
 
 class MagicPower {
-private:
-    std::string m_name;
-    int         m_id;
+    std::string m_Name;
+    int         m_Id;
     bool        m_WasUsed{false};
 
 public:
     MagicPower(std::string name, int id);
     ~MagicPower();
 
-    void                      setName(const std::string &name);
-    void                      setId(int id);
-    void                      setWasUsed(bool wasUsed);
-    [[nodiscard]] std::string getName() const;
-    [[nodiscard]] int         getId() const;
-    [[nodiscard]] bool        getWasUsed() const;
+    void                      SetName(const std::string &name);
+    void                      SetId(int id);
+    void                      SetWasUsed(bool wasUsed);
+    [[nodiscard]] std::string GetName() const;
+    [[nodiscard]] int         GetId() const;
+    [[nodiscard]] bool        GetWasUsed() const;
 };
-
 
 #endif // MAGICPOWER_H

@@ -7,7 +7,7 @@
 #include <utility>
 
 int Wizard::RandomPower() {
-    static bool seeded = false;
+    static bool seeded = false; // todo: use the same thing from elemental power
     if (!seeded) {
         srand(time(0));
         seeded = true;
@@ -15,14 +15,15 @@ int Wizard::RandomPower() {
     return rand() % 7 + 1;
 }
 
-Wizard::Wizard(std::string name, int id) :
-    MagicPower(std::move(name), id), m_type(static_cast<WizardPower>(RandomPower())) {}
+Wizard::Wizard(std::string name, const int id) :
+    MagicPower(std::move(name), id), m_Type(static_cast<WizardPower>(RandomPower())) {}
 
-Wizard::Wizard(std::string name, int id, WizardPower type) : MagicPower(std::move(name), id), m_type(type) {}
+Wizard::Wizard(std::string name, const int id, const WizardPower type) :
+    MagicPower(std::move(name), id), m_Type(type) {}
 
-Wizard::~Wizard() {}
+Wizard::~Wizard() = default;
 
-std::string Wizard::getWizardPowerDescription(WizardPower power) {
+std::string Wizard::GetWizardPowerDescription(const WizardPower power) {
     switch (power) {
         case WizardPower::Teleportatie:
             return "Mută o carte proprie vizibilă într-un alt spațiu gol.";

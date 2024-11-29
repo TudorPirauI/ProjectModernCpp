@@ -10,7 +10,7 @@ TUI::TUI() : m_GameChoice{0} {};
 
 using namespace ftxui;
 
-Component Wrap(std::string name, Component component) {
+Component Wrap(const std::string &name, const Component &component) {
     return Renderer(component, [name, component] {
         return hbox({
                        text(name) | size(WIDTH, EQUAL, name.size()),
@@ -24,7 +24,7 @@ Component Wrap(std::string name, Component component) {
 void TUI::ShowMenu() {
     using namespace ftxui;
 
-    auto m_Screen = ScreenInteractive::Fullscreen();
+    auto screen = ScreenInteractive::Fullscreen();
 
     const std::vector<std::string> entries  = {"Start Game", "Options", "Exit"};
     int                            selected = 0;
@@ -40,7 +40,7 @@ void TUI::ShowMenu() {
         });
     });
 
-    const auto close = m_Screen.ExitLoopClosure();
+    const auto close = screen.ExitLoopClosure();
 
     const auto component = CatchEvent(renderer, [&](const Event &event) {
         if (event == Event::Return) {
@@ -55,14 +55,14 @@ void TUI::ShowMenu() {
                 return true;
             }
             if (selected == 2) {
-                m_Screen.ExitLoopClosure()();
+                screen.ExitLoopClosure()();
                 return true;
             }
         }
         return false;
     });
 
-    m_Screen.Loop(component);
+    screen.Loop(component);
 }
 
 void TUI::StartGameMenu() {
@@ -70,28 +70,29 @@ void TUI::StartGameMenu() {
 
     auto m_Screen = ScreenInteractive::Fullscreen();
 
-    const auto input_player1 = Input(&m_PlayerName1, "Player 1 Name");
-    const auto input_player2 = Input(&m_PlayerName2, "Player 2 Name");
+    const auto inputPlayer1 = Input(&m_PlayerName1, "Player 1 Name");
+    const auto inputPlayer2 = Input(&m_PlayerName2, "Player 2 Name");
 
-    const std::vector<std::string> gameModes = {"Antrenament", "Duelul Vrajitorilor", "Duelul Elementelor", "Turneu",
-                                                "Rapid"};
+    const std::vector<std::string> gameModes = {"Antrenament", "Duelul Vrajitorilor",
+                                                "Duelul Elementelor", "Turneu", "Rapid"};
     std::array<bool, 5>            gameModesSelected{false};
 
-    const auto input_container = Container::Vertical({
-            Wrap("Player One: ", input_player1),
-            Wrap("Player Two: ", input_player2),
+    const auto inputContainer = Container::Vertical({
+            Wrap("Player One: ", inputPlayer1),
+            Wrap("Player Two: ", inputPlayer2),
     });
 
-    const auto checkbox_container = Container::Vertical({});
+    const auto checkboxContainer = Container::Vertical({});
     for (size_t i = 0; i < gameModes.size(); ++i) {
-        checkbox_container->Add(Checkbox(gameModes[i], &gameModesSelected[i]));
+        checkboxContainer->Add(Checkbox(gameModes[i], &gameModesSelected[i]));
     }
 
-    const auto finish_button = Button("Start", [&] {
+    const auto finishButton = Button("Start", [&] {
         std::cout << "Player 1: " << m_PlayerName1 << "\n";
         std::cout << "Player 2: " << m_PlayerName2 << "\n";
         for (size_t i = 0; i < gameModes.size(); ++i) {
-            std::cout << gameModes[i] << ": " << (gameModesSelected[i] ? "Selected" : "Not Selected") << "\n";
+            std::cout << gameModes[i] << ": "
+                      << (gameModesSelected[i] ? "Selected" : "Not Selected") << "\n";
         }
         m_Screen.ExitLoopClosure()();
     });
@@ -107,26 +108,29 @@ void TUI::StartGameMenu() {
     });
      */
 
-    const auto main_container = Container::Vertical(
-            {Renderer(input_container,
+    const auto mainContainer = Container::Vertical(
+            {Renderer(inputContainer,
                       [&] {
                           return hbox({
-                                         input_container->Render() | xflex,
+                                         inputContainer->Render() | xflex,
                                  }) |
                                  xflex | border;
                       }),
-             Renderer(checkbox_container,
+             Renderer(checkboxContainer,
                       [&] {
-                          return vbox({text("Mod de joc") | bold, checkbox_container->Render() | xflex}) | xflex |
-                                 border;
+                          return vbox({text("Mod de joc") | bold,
+                                       checkboxContainer->Render() | xflex}) |
+                                 xflex | border;
                       }),
-             Renderer(finish_button,
-                      [&] { return vbox({finish_button->Render() | xflex | size(WIDTH, LESS_THAN, 10)}) | center; })});
+             Renderer(finishButton, [&] {
+                 return vbox({finishButton->Render() | xflex | size(WIDTH, LESS_THAN, 10)}) |
+                        center;
+             })});
 
-    const auto renderer = Renderer(main_container, [&] {
+    const auto renderer = Renderer(mainContainer, [&] {
         return vbox({
                 text("Setup Game") | bold | center,
-                main_container->Render() | vscroll_indicator | frame | size(HEIGHT, LESS_THAN, 20),
+                mainContainer->Render() | vscroll_indicator | frame | size(HEIGHT, LESS_THAN, 20),
         });
     });
 

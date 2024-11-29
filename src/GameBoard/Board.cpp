@@ -17,7 +17,8 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (cardOnPosition != m_Board.end()) {
         const auto cardOnTop = cardOnPosition->second.top();
         if (cardOnTop.GetValue() >= card.GetValue()) {
-            // std::cout << "Can't place card on top of a card with a larger value\n";
+            // std::cout << "Can't place card on top of a card with a larger
+            // value\n";
             return false;
         }
 
@@ -28,7 +29,8 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
 
         if (cardOnTop.GetIsFlipped()) {
             if (cardOnTop.GetValue() >= card.GetValue()) {
-                // std::cout << "Can't place card on top of a card with a larger value\n";
+                // std::cout << "Can't place card on top of a card with a larger
+                // value\n";
                 return false;
             }
         }
@@ -37,7 +39,8 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (m_IsLocked) {
         const auto &[left, up, down, right] = m_Corners;
 
-        if (pos.first < left.first || pos.second < up.second || pos.second > down.second || pos.first > right.first) {
+        if (pos.first < left.first || pos.second < up.second || pos.second > down.second ||
+            pos.first > right.first) {
             // std::cout << "[Locked] Card out of bounds\n";
             return false;
         }
@@ -52,8 +55,10 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
 
     auto &[left, up, down, right] = m_Corners;
 
-    if (std::abs(left.first - pos.first) >= m_MaxBoardSize || std::abs(right.first - pos.first) >= m_MaxBoardSize ||
-        std::abs(up.second - pos.second) >= m_MaxBoardSize || std::abs(down.second - pos.second) >= m_MaxBoardSize) {
+    if (std::abs(left.first - pos.first) >= m_MaxBoardSize ||
+        std::abs(right.first - pos.first) >= m_MaxBoardSize ||
+        std::abs(up.second - pos.second) >= m_MaxBoardSize ||
+        std::abs(down.second - pos.second) >= m_MaxBoardSize) {
         // std::cout << "Card out of bounds\n";
         return false;
     }
@@ -152,44 +157,44 @@ Position Board::ShowTableWithInput() const {
         std::vector<Component> row;
         for (int i = left.first; i <= right.first; ++i) {
             const auto  it = m_Board.find({i, j});
-            std::string cell_content;
-            Decorator   cell_decorator = nothing;
+            std::string cellContent;
+            Decorator   cellDecorator = nothing;
 
             if (it == m_Board.end()) {
                 if (IsPositionValid({i, j}, Card(2))) {
-                    cell_content   = " V ";
-                    cell_decorator = color(Color::Green);
+                    cellContent   = " V ";
+                    cellDecorator = color(Color::Green);
                 } else {
-                    cell_content   = " X ";
-                    cell_decorator = color(Color::Red);
+                    cellContent   = " X ";
+                    cellDecorator = color(Color::Red);
                 }
             } else {
                 const auto &card = it->second.top();
                 if (card.GetIsFlipped()) {
-                    cell_content   = " H ";
-                    cell_decorator = color(Color::Yellow);
+                    cellContent   = " H ";
+                    cellDecorator = color(Color::Yellow);
                 } else {
-                    cell_content   = " " + std::to_string(card.GetValue()) + " ";
-                    cell_decorator = color(Color::Blue);
+                    cellContent   = " " + std::to_string(card.GetValue()) + " ";
+                    cellDecorator = color(Color::Blue);
                 }
             }
 
-            auto cell = Button(cell_content,
+            auto cell = Button(cellContent,
                                [&pos, i, j, &screen] {
                                    pos = {i, j};
                                    screen.Exit();
 
                                    return true;
                                }) |
-                        cell_decorator;
+                        cellDecorator;
             row.push_back(cell);
         }
         grid.push_back(row);
     }
 
-    const auto grid_container = GridContainer(grid);
+    const auto gridContainer = GridContainer(grid);
 
-    screen.Loop(grid_container | center);
+    screen.Loop(gridContainer | center);
 
     return pos;
 }
@@ -199,7 +204,6 @@ bool Board::InsertCard(const Card &card, const Position &pos) {
         std::cout << "Invalid position\n";
         return false;
     }
-
 
     m_Board[pos].push(card);
 
@@ -222,10 +226,12 @@ bool Board::InsertIllusion(Card &card, const Position &pos) {
 bool Board::CoverIllusion(const Card &cardOpponent, const Position &pos) {
     m_Board[pos].top().SetIsFlipped(true);
     if (cardOpponent.GetValue() <= m_Board[pos].top().GetValue()) {
-        std::cout << "The card of the player who has the illusion has a greater value\n";
+        std::cout << "The card of the player who has the illusion has a "
+                     "greater value\n";
         return false;
     }
-    std::cout << "The card of the player who tried to cover the illusion has a greater value\n";
+    std::cout << "The card of the player who tried to cover the illusion has a "
+                 "greater value\n";
     m_Board[pos].pop();
     m_Board[pos].emplace(cardOpponent);
     return true;

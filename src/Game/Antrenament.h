@@ -4,12 +4,11 @@
 
 #ifndef ANTRENAMENT_H
 #define ANTRENAMENT_H
-#include <unordered_map>
 
+#include <unordered_map>
 
 #include "../GameBoard/Board.h"
 #include "../Player/Player.h"
-
 
 class Antrenament {
 public:
@@ -31,6 +30,5 @@ private:
     void CheckWinningConditions(); // to be rechecked after the implementation
     void GameLoop(); // to be implemented
 };
-
 
 #endif // ANTRENAMENT_H
