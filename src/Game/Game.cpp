@@ -9,6 +9,8 @@
 Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne, const std::string &nameTwo) :
     m_Board(boardSize), m_ScoreToWin(scoreToWin), m_Player1(nameOne, {}), m_Player2(nameTwo, {}) {}
 
+Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
+
 PlayerTurn Game::getCurrentPlayer() const { return m_PlayerTurn; }
 
 bool Game::CheckWinningConditions() {

@@ -17,7 +17,7 @@ public:
 
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
     Game();
-    PlayerTurn getCurrentPlayer();
+    PlayerTurn getCurrentPlayer() const;
 
 protected:
     Board                        m_Board;
@@ -29,7 +29,7 @@ protected:
     std::unordered_map<int, int> m_Columns;
     int                          m_ScorePlayer1{0};
     int                          m_ScorePlayer2{0};
-    int                          m_ScoreToWin;
+    int                          m_ScoreToWin{};
 
     bool         CheckWinningConditions();
     virtual void GameLoop() = 0; // to be implemented

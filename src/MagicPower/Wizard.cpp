@@ -20,6 +20,8 @@ Wizard::Wizard(std::string name, int id) :
 
 Wizard::Wizard(std::string name, int id, WizardPower type) : MagicPower(std::move(name), id), m_type(type) {}
 
+Wizard::Wizard() : MagicPower("", 0), m_type(WizardPower::Amnezie) {}
+
 Wizard::~Wizard() {}
 
 std::string Wizard::getWizardPowerDescription(WizardPower power) {

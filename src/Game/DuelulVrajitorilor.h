@@ -13,6 +13,7 @@
 
 
 class DuelulVrajitorilor : public Game {
+public:
     enum class PlayerTurn { Player1, Player2 };
 
 private:
@@ -22,7 +23,7 @@ private:
 
 public:
     DuelulVrajitorilor();
-    ~DuelulVrajitorilor() override;
+    ~DuelulVrajitorilor() override = default;
 };
 
 
