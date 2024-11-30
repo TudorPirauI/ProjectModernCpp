@@ -10,7 +10,10 @@ Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne
            const std::string &nameTwo) :
     m_Board(boardSize), m_Player1(nameOne, {}), m_Player2(nameTwo, {}), m_ScoreToWin(scoreToWin) {}
 
+
 PlayerTurn Game::GetCurrentPlayer() const { return m_PlayerTurn; }
+
+Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
 
 bool Game::CheckWinningConditions() {
     const auto targetValue = std::abs(m_Board.GetMaxBoardSize());
