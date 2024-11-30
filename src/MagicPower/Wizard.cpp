@@ -22,7 +22,8 @@ Wizard::Wizard(std::string name, const int id, const WizardPower type) :
     MagicPower(std::move(name), id), m_Type(type) {}
 
 Wizard::~Wizard() = default;
-Wizard::Wizard() : MagicPower("", 0), m_type(WizardPower::Amnezie) {}
+
+Wizard::Wizard() : MagicPower("", 0), m_Type(WizardPower::Amnezie) {}
 
 std::string Wizard::GetWizardPowerDescription(const WizardPower power) {
     switch (power) {
