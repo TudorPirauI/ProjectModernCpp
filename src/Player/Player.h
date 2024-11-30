@@ -25,5 +25,4 @@ public:
     void GiveCard(const Card &card);
 };
 
-
 #endif // PLAYER_H

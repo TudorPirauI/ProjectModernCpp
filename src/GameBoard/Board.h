@@ -18,7 +18,8 @@ class Board {
 
     std::array<Position, 4> m_Corners{
             Position{0, 0}, Position{0, 0}, Position{0, 0},
-            Position{0, 0}}; // abuz de limbaj ca nu sunt sigur ce reprezinta acestea (mersi chat gepele de clarificare)
+            Position{0, 0}}; // abuz de limbaj ca nu sunt sigur ce reprezinta acestea (mersi chat
+                             // gepele de clarificare)
 
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
@@ -36,8 +37,7 @@ public:
     [[nodiscard]] std::array<Position, 4> GetCorners() const;
     [[nodiscard]] GameBoard               GetGameBoard() const;
     bool                                  InsertIllusion(Card &card, const Position &pos);
-    bool                                  CoverIllusion(const Card &cardOpponent, const Position &pos);
+    bool CoverIllusion(const Card &cardOpponent, const Position &pos);
 };
-
 
 #endif // BOARD_H
