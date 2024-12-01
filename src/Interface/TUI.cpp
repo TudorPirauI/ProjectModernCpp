@@ -154,8 +154,10 @@ void TUI::GameLoopTraining() {
     const auto turn     = game->GetCurrentPlayer();
     auto &currentPlayer = turn == PlayerTurn::Player1 ? game->GetPlayer1() : game->GetPlayer2();
 
-    auto       &playerHand = currentPlayer.GetHand();
-    const auto  playScore  = currentPlayer.GetScore();
+    auto      &playerHand = currentPlayer.GetHand();
+    const auto playScore  = currentPlayer.GetScore();
+    const auto playerScoreTotal =
+            turn == PlayerTurn::Player1 ? game->GetPlayer1Score() : game->GetPlayer2Score();
     const auto &playerName = currentPlayer.GetUserName();
     auto       &board      = game->GetBoard();
 
@@ -236,8 +238,8 @@ void TUI::GameLoopTraining() {
     }
 
     const auto gridContainer = GridContainer(grid);
-    const auto headerText    = text(playerName + "'s Turn." + std::to_string(playScore) + " / " +
-                                    std::to_string(m_Game->GetScoreToWin())) |
+    const auto headerText    = text(playerName + "'s Turn." + std::to_string(playerScoreTotal) +
+                                    " / " + std::to_string(m_Game->GetScoreToWin())) |
                             bold | center;
 
     const auto grindHand   = GridContainer(handComponents);
@@ -288,11 +290,11 @@ void TUI::GameLoopTraining() {
             GameLoopTraining();
         } else {
             game->IncreasePlayerScore(turn);
-            if (m_Game->GetPlayer1Score() != m_Game->GetScoreToWin() or
-                m_Game->GetPlayer2Score() != m_Game->GetScoreToWin()) {
+
+            if (m_Game->GetPlayer1Score() < m_Game->GetScoreToWin() and
+                m_Game->GetPlayer2Score() < m_Game->GetScoreToWin()) {
                 RestartGame();
                 screen.Exit();
-
                 GameLoopTraining();
             } else {
                 std::ofstream outFile("game_status.txt");
@@ -303,6 +305,8 @@ void TUI::GameLoopTraining() {
                     std::cerr << "Unable to open file";
                 }
                 screen.Exit();
+                RestartGame();
+                StartGameMenu();
             }
         }
     }

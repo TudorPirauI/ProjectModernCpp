@@ -26,13 +26,13 @@ bool Game::CheckWinningConditions() {
     const auto targetValue = std::abs(m_Board.GetMaxBoardSize());
 
     if (std::ranges::any_of(m_Lines | std::views::values,
-                            [&](const auto &value) { return value == targetValue; })) {
+                            [&](const auto &value) { return abs(value) == targetValue; })) {
 
         return true;
     }
 
     if (std::ranges::any_of(m_Columns | std::views::values,
-                            [&](const auto &value) { return value == targetValue; })) {
+                            [&](const auto &value) { return abs(value) == targetValue; })) {
 
         return true;
     }
