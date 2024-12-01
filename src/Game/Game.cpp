@@ -20,47 +20,47 @@ bool Game::CheckWinningConditions() {
     const auto &board                   = m_Board.GetGameBoard();
     const auto &[left, up, down, right] = m_Board.GetCorners();
 
-    if (abs(left.first - right.first) == m_ScoreToWin or
-        abs(up.second - down.second) == m_ScoreToWin) {
-        const auto targetValue = std::abs(m_Board.GetMaxBoardSize());
+    const auto firstResult  = abs(left.first - right.first) == m_ScoreToWin;
+    const auto secondResult = abs(up.second - down.second) == m_ScoreToWin;
 
-        if (std::ranges::any_of(m_Lines | std::views::values,
-                                [&](const auto &value) { return value == targetValue; })) {
+    const auto targetValue = std::abs(m_Board.GetMaxBoardSize());
 
-            return true;
+    if (std::ranges::any_of(m_Lines | std::views::values,
+                            [&](const auto &value) { return value == targetValue; })) {
+
+        return true;
+    }
+
+    if (std::ranges::any_of(m_Columns | std::views::values,
+                            [&](const auto &value) { return value == targetValue; })) {
+
+        return true;
+    }
+
+    bool notFound = true;
+
+    for (int i = left.first, j = up.second; i <= right.first && j <= down.second; ++i, ++j) {
+        const auto it = board.find({i, j});
+        if (it == board.end() || it->second.top().GetPlacedBy() != m_PlayerTurn) {
+            notFound = false;
+            break;
         }
+    }
 
-        if (std::ranges::any_of(m_Columns | std::views::values,
-                                [&](const auto &value) { return value == targetValue; })) {
+    if (notFound == true and secondResult) {
+        return true;
+    }
 
-            return true;
+    notFound = true;
+    for (int i = left.first, j = down.second; i <= right.first && j >= up.second; ++i, --j) {
+        const auto it = board.find({i, j});
+        if (it == board.end() || it->second.top().GetPlacedBy() != m_PlayerTurn) {
+            notFound = false;
+            break;
         }
-
-        bool notFound = true;
-
-        for (int i = left.first, j = up.second; i <= right.first && j <= down.second; ++i, ++j) {
-            const auto it = board.find({i, j});
-            if (it == board.end() || it->second.top().GetPlacedBy() != m_PlayerTurn) {
-                notFound = false;
-                break;
-            }
-        }
-
-        if (notFound == true) {
-            return true;
-        }
-
-        notFound = true;
-        for (int i = left.first, j = down.second; i <= right.first && j >= up.second; ++i, --j) {
-            const auto it = board.find({i, j});
-            if (it == board.end() || it->second.top().GetPlacedBy() != m_PlayerTurn) {
-                notFound = false;
-                break;
-            }
-        }
-        if (notFound) {
-            return true;
-        }
+    }
+    if (notFound == true and secondResult) {
+        return true;
     }
 
     return false;

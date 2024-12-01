@@ -263,7 +263,8 @@ void TUI::GameLoopTraining() {
         bool insertCardResult = false;
         selectedCard->SetPlacedBy(turn);
         do {
-            insertCardResult = board.InsertCard(selectedCard.value(), selectedPosition.value());
+            insertCardResult =
+                    board.InsertCard(selectedCard.value(), selectedPosition.value(), turn);
         } while (insertCardResult != false);
 
         // todo: add columns and rows to the check win result
@@ -284,12 +285,25 @@ void TUI::GameLoopTraining() {
         if (game->CheckWinningConditions() == false) {
             game->SetNextPlayerTurn(turn == PlayerTurn::Player1 ? PlayerTurn::Player2
                                                                 : PlayerTurn::Player1);
-
             GameLoopTraining();
         } else {
             game->IncreasePlayerScore(turn);
-            // todo: reset game and recall gameloop training
-            // GameLoopTraining();
+            if (m_Game->GetPlayer1Score() != m_Game->GetScoreToWin() or
+                m_Game->GetPlayer2Score() != m_Game->GetScoreToWin()) {
+                RestartGame();
+                screen.Exit();
+
+                GameLoopTraining();
+            } else {
+                std::ofstream outFile("game_status.txt");
+                if (outFile.is_open()) {
+                    outFile << "The game is finished.\n";
+                    outFile.close();
+                } else {
+                    std::cerr << "Unable to open file";
+                }
+                screen.Exit();
+            }
         }
     }
 }
@@ -300,11 +314,7 @@ void TUI::InitGame(const std::string &gameMode, const std::string &player1,
 
     m_Game = std::make_unique<Antrenament>(player1, player2);
 
-    // todo: make the gameRunning until you reach m_ScoreToWin
-    if (m_Game->GetPlayer1Score() != m_Game->GetScoreToWin() or
-        m_Game->GetPlayer2Score() != m_Game->GetScoreToWin()) {
-        GameLoopTraining();
-    }
+    GameLoopTraining();
 }
 
 void TUI::StartGameMenu() {
@@ -365,4 +375,10 @@ void TUI::StartGameMenu() {
     });
 
     screen.Loop(renderer);
+}
+
+void TUI::RestartGame() {
+    if (auto game = dynamic_cast<Antrenament *>(m_Game.get())) {
+        m_Game->SetNewCards();
+    }
 }

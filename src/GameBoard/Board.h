@@ -29,16 +29,17 @@ class Board {
 
 public:
     explicit Board(int maxBoardSize);
-    [[nodiscard]] bool                    InsertCard(const Card &card, const Position &pos);
-    [[nodiscard]] bool                    IsBoardLocked() const;
-    [[nodiscard]] Position                ShowTableWithInput() const;
-    [[nodiscard]] int                     GetMaxBoardSize() const;
+    [[nodiscard]] bool     InsertCard(const Card &card, const Position &pos, PlayerTurn playerTurn);
+    [[nodiscard]] bool     IsBoardLocked() const;
+    [[nodiscard]] Position ShowTableWithInput() const;
+    [[nodiscard]] int      GetMaxBoardSize() const;
     [[nodiscard]] std::array<Position, 4> GetCorners() const;
     [[nodiscard]] GameBoard               GetGameBoard() const;
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
     bool               InsertIllusion(Card &card, const Position &pos);
 
     bool CoverIllusion(const Card &cardOpponent, const Position &pos);
+    void CleanUpBoard();
 };
 
 #endif // BOARD_H

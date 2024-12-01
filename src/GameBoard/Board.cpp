@@ -117,6 +117,12 @@ void Board::CheckIsLocked() {
     }
 }
 
+void Board::CleanUpBoard() {
+    m_Board.clear();
+    m_Corners[0] = m_Corners[1] = m_Corners[2] = m_Corners[3] = std::make_pair(0, 0);
+    m_IsLocked                                                = false;
+}
+
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 
 std::array<Position, 4> Board::GetCorners() const { return m_Corners; }
@@ -137,13 +143,15 @@ bool Board::IsBoardFull() const {
     return true; // todo: check if cards can be placed on top of other cards.
 }
 
-bool Board::InsertCard(const Card &card, const Position &pos) {
+bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn playerTurn) {
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
         return false;
     }
 
     m_Board[pos].push(card);
+
+    m_Board[pos].top().SetPlacedBy(playerTurn);
 
     UpdateCorners(pos);
 

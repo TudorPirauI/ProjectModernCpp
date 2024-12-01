@@ -9,6 +9,8 @@
 #include "../GameBoard/Board.h"
 #include "../Player/Player.h"
 
+#include <memory>
+
 class Game {
 public:
     enum class GameState { NotFinished, NormalWin, FinishedCards };
@@ -31,6 +33,7 @@ public:
     void                                        SetGameState(GameState gameState);
     void                                        IncreasePlayerScore(PlayerTurn turn);
     void                                        SetNextPlayerTurn(PlayerTurn playerTurn);
+    virtual void                                SetNewCards() = 0;
 
 protected:
     Board                        m_Board;
@@ -43,7 +46,6 @@ protected:
     int                          m_ScorePlayer1{0};
     int                          m_ScorePlayer2{0};
     int                          m_ScoreToWin{};
-    // virtual void GameLoop() = 0; // to be implemented
 };
 
 #endif // GAME_H
