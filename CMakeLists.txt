@@ -6,6 +6,15 @@ project(Eter)
 
 set(CMAKE_CXX_STANDARD 23)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3") # -Wall -Wextra
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+
+include(ProcessorCount)
+ProcessorCount(N)
+if (NOT DEFINED CMAKE_BUILD_PARALLEL_LEVEL)
+    set(CMAKE_BUILD_PARALLEL_LEVEL ${N})
+endif ()
+
 include(FetchContent)
 
 FetchContent_Declare(ftxui
