@@ -238,10 +238,15 @@ void TUI::GameLoopTraining() {
     }
 
     const auto gridContainer = GridContainer(grid);
-    const auto headerText    = text(playerName + "'s Turn (" + std::to_string(playScore) +
-                                    " points) " + std::to_string(playerScoreTotal) + " / " +
-                                    std::to_string(m_Game->GetScoreToWin())) |
-                            bold | center;
+
+    const auto playerNameColor =
+            (turn == PlayerTurn::Player1 ? bgcolor(Color::Red) : bgcolor(Color::Blue));
+    const auto headerText = hbox({text(playerName) | bold | playerNameColor,
+                                  text("'s Turn -- " + std::to_string(playerScoreTotal) + " / " +
+                                       std::to_string(m_Game->GetScoreToWin())) |
+                                          bold | center}) |
+                            center;
+    //  (" + std::to_string(playScore) + " points) "
 
     const auto grindHand   = GridContainer(handComponents);
     const auto playingArea = Container::Vertical({
