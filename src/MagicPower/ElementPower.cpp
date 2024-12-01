@@ -5,7 +5,6 @@
 #include "ElementPower.h"
 
 #include <random>
-#include <utility>
 
 ElementPower::ElementIndexPower ElementPower::RandomPower() {
     constexpr int totalPowers = 24;

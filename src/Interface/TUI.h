@@ -34,7 +34,7 @@ private:
     std::unique_ptr<Game> m_Game;
 
     void StartGameMenu();
-    void RestartGame();
+    void RestartGame() const;
 };
 
 #endif // TUI_H

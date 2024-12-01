@@ -1,14 +1,13 @@
 #include <ftxui/component/component.hpp>
-#include <ftxui/component/component_base.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 
 #include <iostream>
 #include <ranges>
 #include <thread>
-#include <vector>
 
 #include "Card/Card.h"
 #include "GameBoard/Board.h"
+#include "Interface/TUI.h"
 
 void PrintAsciiArt() {
     const std::string ascii = R"(
@@ -47,10 +46,6 @@ void PrintAsciiArt() {
     std::this_thread::sleep_for(std::chrono::milliseconds(2500));
     std::system("clear");
 }
-
-// using namespace ftxui; // blah blah bad practice blah blah
-
-#include "Interface/TUI.h"
 
 int main() {
     TUI tui;

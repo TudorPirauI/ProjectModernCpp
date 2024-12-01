@@ -238,8 +238,9 @@ void TUI::GameLoopTraining() {
     }
 
     const auto gridContainer = GridContainer(grid);
-    const auto headerText    = text(playerName + "'s Turn." + std::to_string(playerScoreTotal) +
-                                    " / " + std::to_string(m_Game->GetScoreToWin())) |
+    const auto headerText    = text(playerName + "'s Turn (" + std::to_string(playScore) +
+                                    " points) " + std::to_string(playerScoreTotal) + " / " +
+                                    std::to_string(m_Game->GetScoreToWin())) |
                             bold | center;
 
     const auto grindHand   = GridContainer(handComponents);
@@ -381,8 +382,8 @@ void TUI::StartGameMenu() {
     screen.Loop(renderer);
 }
 
-void TUI::RestartGame() {
-    if (auto game = dynamic_cast<Antrenament *>(m_Game.get())) {
+void TUI::RestartGame() const {
+    if (dynamic_cast<Antrenament *>(m_Game.get())) {
         m_Game->SetNewCards();
     }
 }

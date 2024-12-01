@@ -27,7 +27,7 @@ void Player::SetHand(const Hand &hand) { m_Hand = hand; }
 void Player::GiveCard(const Card &card) { m_Hand.emplace_back(card); }
 
 void Player::RemoveCard(const Card &card) {
-    auto it = std::find(m_Hand.begin(), m_Hand.end(), card);
+    const auto it = std::ranges::find(m_Hand, card);
     if (it != m_Hand.end()) {
         m_Hand.erase(it);
     }
