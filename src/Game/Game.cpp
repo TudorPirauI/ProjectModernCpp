@@ -68,7 +68,7 @@ bool Game::CheckWinningConditions() {
 
 void Game::SetGameState(GameState gameState) { m_GameState = gameState; }
 
-void Game::AddWinedGames(const PlayerTurn turn) {
+void Game::IncreasePlayerScore(const PlayerTurn turn) {
     if (turn == PlayerTurn::Player1) {
         ++m_ScorePlayer1;
     } else {

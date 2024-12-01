@@ -10,8 +10,8 @@ Card::Card(const int value) : m_IsIllusion{false}, m_IsEter{false} {
     m_Value = value;
 }
 
-bool Card::GetIsFlipped() const { return m_isFlipped; }
-void Card::SetIsFlipped(const bool isFlipped) { m_isFlipped = isFlipped; }
+bool Card::GetIsFlipped() const { return m_IsFlipped; }
+void Card::SetIsFlipped(const bool isFlipped) { m_IsFlipped = isFlipped; }
 
 PlayerTurn Card::GetPlacedBy() const { return m_PlacedBy; }
 void       Card::SetPlacedBy(const PlayerTurn placedBy) { m_PlacedBy = placedBy; }

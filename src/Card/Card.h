@@ -9,10 +9,10 @@ enum class PlayerTurn { Player1, Player2 };
 
 class Card {
     int        m_Value;
-    PlayerTurn m_PlacedBy : 1 {};
+    PlayerTurn m_PlacedBy : 1;
     bool       m_IsIllusion : 1;
     bool       m_IsEter : 1;
-    bool       m_isFlipped : 1 {false};
+    bool       m_IsFlipped : 1 {false};
 
 public:
     explicit Card(int value);

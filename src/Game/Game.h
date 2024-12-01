@@ -29,7 +29,7 @@ public:
     [[nodiscard]] PlayerTurn                    GetCurrentPlayer() const;
     bool                                        CheckWinningConditions();
     void                                        SetGameState(GameState gameState);
-    void                                        AddWinedGames(PlayerTurn turn);
+    void                                        IncreasePlayerScore(PlayerTurn turn);
     void                                        SetNextPlayerTurn(PlayerTurn playerTurn);
 
 protected:

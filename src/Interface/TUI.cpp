@@ -197,8 +197,12 @@ void TUI::GameLoopTraining() {
                     cellContent   = " H ";
                     cellDecorator = color(Color::Yellow);
                 } else {
-                    cellContent   = " " + std::to_string(card.GetValue()) + " ";
-                    cellDecorator = color(Color::Blue);
+                    cellContent = " " + std::to_string(card.GetValue()) + " ";
+                    if (card.GetPlacedBy() == PlayerTurn::Player1) {
+                        cellDecorator = bgcolor(Color::Red);
+                    } else {
+                        cellDecorator = bgcolor(Color::Blue);
+                    }
                 }
             }
 
@@ -224,16 +228,17 @@ void TUI::GameLoopTraining() {
 
     std::vector<std::vector<Component>> handComponents(1);
     for (const auto &card : playerHand) {
-        handComponents.at(0).push_back(Button(" " + std::to_string(card.GetValue()) + " ",
-                                              [&selectedCard, card] {
-                                                  selectedCard = card;
-                                                  return true;
-                                              }) |
-                                       border);
+        handComponents.at(0).push_back(
+                Button(" " + std::to_string(card.GetValue()) + " ", [&selectedCard, card] {
+                    selectedCard = card;
+                    return true;
+                }));
     }
 
     const auto gridContainer = GridContainer(grid);
-    const auto headerText    = text(playerName + "'s Turn.") | bold | center;
+    const auto headerText    = text(playerName + "'s Turn." + std::to_string(playScore) + " / " +
+                                    std::to_string(m_Game->GetScoreToWin())) |
+                            bold | center;
 
     const auto grindHand   = GridContainer(handComponents);
     const auto playingArea = Container::Vertical({
@@ -255,10 +260,11 @@ void TUI::GameLoopTraining() {
     screen.Loop(finalRenderer);
 
     if (selectedCard && selectedPosition) {
-        bool introduceCardResult = false;
+        bool insertCardResult = false;
+        selectedCard->SetPlacedBy(turn);
         do {
-            introduceCardResult = board.InsertCard(selectedCard.value(), selectedPosition.value());
-        } while (introduceCardResult != false);
+            insertCardResult = board.InsertCard(selectedCard.value(), selectedPosition.value());
+        } while (insertCardResult != false);
 
         // todo: add columns and rows to the check win result
 
@@ -267,17 +273,23 @@ void TUI::GameLoopTraining() {
         auto &lines   = game->GetLineAdvantage();
         auto &columns = game->GetColumnAdvantage();
 
-        ++lines[selectedPosition.value().first];
-        ++columns[selectedPosition.value().second];
+        if (turn == PlayerTurn::Player1) {
+            ++lines[selectedPosition.value().first];
+            ++columns[selectedPosition.value().second];
+        } else {
+            --lines[selectedPosition.value().first];
+            --columns[selectedPosition.value().second];
+        }
 
         if (game->CheckWinningConditions() == false) {
-            // todo: switch player, remove card from hand, etc.
             game->SetNextPlayerTurn(turn == PlayerTurn::Player1 ? PlayerTurn::Player2
                                                                 : PlayerTurn::Player1);
 
             GameLoopTraining();
         } else {
-            game->AddWinedGames(turn);
+            game->IncreasePlayerScore(turn);
+            // todo: reset game and recall gameloop training
+            // GameLoopTraining();
         }
     }
 }

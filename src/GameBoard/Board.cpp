@@ -134,7 +134,7 @@ bool Board::IsBoardFull() const {
 
     std::cout << "Board is full\n";
 
-    return false;
+    return true; // todo: check if cards can be placed on top of other cards.
 }
 
 bool Board::InsertCard(const Card &card, const Position &pos) {
