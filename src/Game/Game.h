@@ -12,22 +12,25 @@
 class Game {
 public:
     enum class GameState { NotFinished, NormalWin, FinishedCards };
-    enum class PlayerTurn { Player1, Player2 };
 
     virtual ~Game() = default;
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
     Game();
 
-    [[nodiscard]] Board                       &GetBoard();
-    [[nodiscard]] Player                       GetPlayer1() const;
-    [[nodiscard]] Player                       GetPlayer2() const;
-    [[nodiscard]] GameState                    GetGameState() const;
-    [[nodiscard]] std::unordered_map<int, int> GetLineAdvantage() const;
-    [[nodiscard]] std::unordered_map<int, int> GetColumnAdvantage() const;
-    [[nodiscard]] int                          GetPlayer1Score() const;
-    [[nodiscard]] int                          GetPlayer2Score() const;
-    [[nodiscard]] int                          GetScoreToWin() const;
-    [[nodiscard]] PlayerTurn                   GetCurrentPlayer() const;
+    [[nodiscard]] Board                        &GetBoard();
+    [[nodiscard]] Player                       &GetPlayer1();
+    [[nodiscard]] Player                       &GetPlayer2();
+    [[nodiscard]] GameState                     GetGameState() const;
+    [[nodiscard]] std::unordered_map<int, int> &GetLineAdvantage();
+    [[nodiscard]] std::unordered_map<int, int> &GetColumnAdvantage();
+    [[nodiscard]] int                           GetPlayer1Score() const;
+    [[nodiscard]] int                           GetPlayer2Score() const;
+    [[nodiscard]] int                           GetScoreToWin() const;
+    [[nodiscard]] PlayerTurn                    GetCurrentPlayer() const;
+    bool                                        CheckWinningConditions();
+    void                                        SetGameState(GameState gameState);
+    void                                        AddWinedGames(PlayerTurn turn);
+    void                                        SetNextPlayerTurn(PlayerTurn playerTurn);
 
 protected:
     Board                        m_Board;
@@ -40,8 +43,6 @@ protected:
     int                          m_ScorePlayer1{0};
     int                          m_ScorePlayer2{0};
     int                          m_ScoreToWin{};
-
-    bool CheckWinningConditions();
     // virtual void GameLoop() = 0; // to be implemented
 };
 

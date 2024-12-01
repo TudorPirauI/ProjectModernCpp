@@ -33,5 +33,6 @@ public:
     void                     SetPlacedBy(PlayerTurn placedBy);
 
     friend std::ostream &operator<<(std::ostream &os, const Card &card);
+    bool                 operator==(const Card &other) const;
 };
 #endif // CARD_H

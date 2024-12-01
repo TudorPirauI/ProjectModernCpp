@@ -16,6 +16,11 @@ void Card::SetIsFlipped(const bool isFlipped) { m_isFlipped = isFlipped; }
 PlayerTurn Card::GetPlacedBy() const { return m_PlacedBy; }
 void       Card::SetPlacedBy(const PlayerTurn placedBy) { m_PlacedBy = placedBy; }
 
+bool Card::operator==(const Card &other) const {
+    // Compare relevant members of the Card class
+    return this->m_Value == other.m_Value; // Adjust this comparison as needed
+}
+
 void Card::SetValue(const int value) { m_Value = value; }
 int  Card::GetValue() const { return m_Value; }
 

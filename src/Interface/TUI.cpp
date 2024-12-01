@@ -149,13 +149,12 @@ Components ToLineRenderer(const std::vector<Component> &components) {
 }
 
 void TUI::GameLoopTraining() {
-    const auto game = dynamic_cast<Antrenament *>(m_Game.get());
+    auto game = dynamic_cast<Antrenament *>(m_Game.get());
 
-    const auto turn = game->GetCurrentPlayer();
-    const auto currentPlayer =
-            turn == Game::PlayerTurn::Player1 ? game->GetPlayer1() : game->GetPlayer2();
+    const auto turn     = game->GetCurrentPlayer();
+    auto &currentPlayer = turn == PlayerTurn::Player1 ? game->GetPlayer1() : game->GetPlayer2();
 
-    const auto &playerHand = currentPlayer.GetHand();
+    auto       &playerHand = currentPlayer.GetHand();
     const auto  playScore  = currentPlayer.GetScore();
     const auto &playerName = currentPlayer.GetUserName();
     auto       &board      = game->GetBoard();
@@ -256,12 +255,29 @@ void TUI::GameLoopTraining() {
     screen.Loop(finalRenderer);
 
     if (selectedCard && selectedPosition) {
-        const auto _ = board.InsertCard(selectedCard.value(), selectedPosition.value());
-        // check if winning
-        static int turnCount = 0;
-        if (turnCount++ < 10) {
+        bool introduceCardResult = false;
+        do {
+            introduceCardResult = board.InsertCard(selectedCard.value(), selectedPosition.value());
+        } while (introduceCardResult != false);
+
+        // todo: add columns and rows to the check win result
+
+        currentPlayer.RemoveCard(selectedCard.value());
+
+        auto &lines   = game->GetLineAdvantage();
+        auto &columns = game->GetColumnAdvantage();
+
+        ++lines[selectedPosition.value().first];
+        ++columns[selectedPosition.value().second];
+
+        if (game->CheckWinningConditions() == false) {
             // todo: switch player, remove card from hand, etc.
+            game->SetNextPlayerTurn(turn == PlayerTurn::Player1 ? PlayerTurn::Player2
+                                                                : PlayerTurn::Player1);
+
             GameLoopTraining();
+        } else {
+            game->AddWinedGames(turn);
         }
     }
 }
@@ -272,7 +288,11 @@ void TUI::InitGame(const std::string &gameMode, const std::string &player1,
 
     m_Game = std::make_unique<Antrenament>(player1, player2);
 
-    GameLoopTraining();
+    // todo: make the gameRunning until you reach m_ScoreToWin
+    if (m_Game->GetPlayer1Score() != m_Game->GetScoreToWin() or
+        m_Game->GetPlayer2Score() != m_Game->GetScoreToWin()) {
+        GameLoopTraining();
+    }
 }
 
 void TUI::StartGameMenu() {
