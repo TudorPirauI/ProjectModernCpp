@@ -1,3 +1,4 @@
+
 //
 // Created by edi on 27.11.2024.
 //
@@ -5,8 +6,12 @@
 #include "TUI.h"
 
 #include <fstream>
+#include <ranges>
 
-TUI::TUI() : m_GameChoice{0} {};
+#include "../Game/Antrenament.h"
+#include "ftxui-grid-container/grid-container.hpp"
+
+TUI::TUI() = default;
 
 using namespace ftxui;
 
@@ -65,67 +70,260 @@ void TUI::ShowMenu() {
     screen.Loop(component);
 }
 
+/*
+* Position Board::ShowTableWithInput() const {
+    using namespace ftxui;
+    auto [left, up, down, right] = m_Corners;
+
+    if (!IsBoardLocked()) {
+        ++right.first;
+        ++down.second;
+        --left.first;
+        --up.second;
+    }
+
+    Position pos;
+
+    auto screen = ScreenInteractive::TerminalOutput();
+
+    std::vector<std::vector<Component>> grid;
+    for (int j = up.second; j <= down.second; ++j) {
+        std::vector<Component> row;
+        for (int i = left.first; i <= right.first; ++i) {
+            const auto  it = m_Board.find({i, j});
+            std::string cellContent;
+            Decorator   cellDecorator = nothing;
+
+            if (it == m_Board.end()) {
+                if (IsPositionValid({i, j}, Card(2))) {
+                    cellContent   = " V ";
+                    cellDecorator = color(Color::Green);
+                } else {
+                    cellContent   = " X ";
+                    cellDecorator = color(Color::Red);
+                }
+            } else {
+                const auto &card = it->second.top();
+                if (card.GetIsFlipped()) {
+                    cellContent   = " H ";
+                    cellDecorator = color(Color::Yellow);
+                } else {
+                    cellContent   = " " + std::to_string(card.GetValue()) + " ";
+                    cellDecorator = color(Color::Blue);
+                }
+            }
+
+            auto cell = Button(cellContent,
+                               [&pos, i, j, &screen] {
+                                   pos = {i, j};
+                                   screen.Exit();
+
+                                   return true;
+                               }) |
+                        cellDecorator;
+            row.push_back(cell);
+        }
+        grid.push_back(row);
+    }
+
+    const auto gridContainer = GridContainer(grid);
+
+    screen.Loop(gridContainer | center);
+
+    return pos;
+}
+ */
+
+Element ToElement(const Component &component) { return component->Render(); }
+
+Component WithRenderer(const Component &component, const std::function<Element()> &renderer) {
+    return Renderer(component, renderer);
+}
+
+Components ToLineRenderer(const std::vector<Component> &components) {
+    Components result;
+    for (const auto &component : components) {
+        result.push_back(component | xflex);
+    }
+    return result;
+}
+
+void TUI::GameLoopTraining() {
+    const auto game = dynamic_cast<Antrenament *>(m_Game.get());
+
+    const auto turn = game->GetCurrentPlayer();
+    const auto currentPlayer =
+            turn == Game::PlayerTurn::Player1 ? game->GetPlayer1() : game->GetPlayer2();
+
+    const auto &playerHand = currentPlayer.GetHand();
+    const auto  playScore  = currentPlayer.GetScore();
+    const auto &playerName = currentPlayer.GetUserName();
+    auto       &board      = game->GetBoard();
+
+    auto screen = ScreenInteractive::Fullscreen();
+
+    auto [left, up, down, right] = board.GetCorners();
+
+    if (!board.IsBoardLocked()) {
+        ++right.first;
+        ++down.second;
+        --left.first;
+        --up.second;
+    }
+
+    std::optional<Position> selectedPosition;
+    std::optional<Card>     selectedCard;
+
+    const auto boardElement = board.GetGameBoard();
+
+    std::vector<std::vector<Component>> grid;
+    for (int j = up.second; j <= down.second; ++j) {
+        std::vector<Component> row;
+        for (int i = left.first; i <= right.first; ++i) {
+            const auto  it = boardElement.find({i, j});
+            std::string cellContent;
+            Decorator   cellDecorator = nothing;
+
+            if (it == boardElement.end()) {
+                if (board.IsPositionValid({i, j}, Card(2))) {
+                    cellContent   = " V ";
+                    cellDecorator = color(Color::Green);
+                } else {
+                    cellContent   = " X ";
+                    cellDecorator = color(Color::Red);
+                }
+            } else {
+                const auto &card = it->second.top();
+                if (card.GetIsFlipped()) {
+                    cellContent   = " H ";
+                    cellDecorator = color(Color::Yellow);
+                } else {
+                    cellContent   = " " + std::to_string(card.GetValue()) + " ";
+                    cellDecorator = color(Color::Blue);
+                }
+            }
+
+            auto cell = Button(cellContent,
+                               [&selectedPosition, i, j, &screen, &selectedCard, &board] {
+                                   if (!selectedCard)
+                                       return false;
+
+                                   if (board.IsPositionValid({i, j}, selectedCard.value())) {
+                                       selectedPosition = {i, j};
+                                       screen.Clear();
+                                       screen.ExitLoopClosure()();
+                                       return true;
+                                   }
+
+                                   return false;
+                               }) |
+                        cellDecorator;
+            row.push_back(cell);
+        }
+        grid.push_back(row);
+    }
+
+    std::vector<std::vector<Component>> handComponents(1);
+    for (const auto &card : playerHand) {
+        handComponents.at(0).push_back(Button(" " + std::to_string(card.GetValue()) + " ",
+                                              [&selectedCard, card] {
+                                                  selectedCard = card;
+                                                  return true;
+                                              }) |
+                                       border);
+    }
+
+    const auto gridContainer = GridContainer(grid);
+    const auto headerText    = text(playerName + "'s Turn.") | bold | center;
+
+    const auto grindHand   = GridContainer(handComponents);
+    const auto playingArea = Container::Vertical({
+            WithRenderer(gridContainer, [&] { return gridContainer->Render() | center; }),
+
+            WithRenderer(grindHand, [&] { return grindHand->Render() | center; }),
+    });
+
+    const auto finalRenderer = Renderer(playingArea, [&] {
+        return vbox({
+                headerText,
+                separator(),
+                gridContainer->Render() | center,
+                separator(),
+                grindHand->Render() | center,
+        });
+    });
+
+    screen.Loop(finalRenderer);
+
+    if (selectedCard && selectedPosition) {
+        const auto _ = board.InsertCard(selectedCard.value(), selectedPosition.value());
+        // check if winning
+        static int turnCount = 0;
+        if (turnCount++ < 10) {
+            // todo: switch player, remove card from hand, etc.
+            GameLoopTraining();
+        }
+    }
+}
+
+void TUI::InitGame(const std::string &gameMode, const std::string &player1,
+                   const std::string &player2) {
+    // todo: replace this with the proper call to the virtual Game class
+
+    m_Game = std::make_unique<Antrenament>(player1, player2);
+
+    GameLoopTraining();
+}
+
 void TUI::StartGameMenu() {
     using namespace ftxui;
 
-    auto m_Screen = ScreenInteractive::Fullscreen();
+    int         gameChoice;
+    std::string playerName1;
+    std::string playerName2;
 
-    const auto inputPlayer1 = Input(&m_PlayerName1, "Player 1 Name");
-    const auto inputPlayer2 = Input(&m_PlayerName2, "Player 2 Name");
+    auto screen = ScreenInteractive::Fullscreen();
 
-    const std::vector<std::string> gameModes = {"Antrenament", "Duelul Vrajitorilor",
-                                                "Duelul Elementelor", "Turneu", "Rapid"};
-    std::array<bool, 5>            gameModesSelected{false};
+    const auto inputPlayer1 = Input(&playerName1, "Player 1 Name");
+    const auto inputPlayer2 = Input(&playerName2, "Player 2 Name");
+
+    const std::vector<std::string> gameModes        = {"Antrenament", "Duelul Vrajitorilor",
+                                                       "Duelul Elementelor", "Turneu", "Rapid"};
+    int                            selectedGameMode = 0;
 
     const auto inputContainer = Container::Vertical({
             Wrap("Player One: ", inputPlayer1),
             Wrap("Player Two: ", inputPlayer2),
     });
 
-    const auto checkboxContainer = Container::Vertical({});
-    for (size_t i = 0; i < gameModes.size(); ++i) {
-        checkboxContainer->Add(Checkbox(gameModes[i], &gameModesSelected[i]));
-    }
+    const auto radioboxContainer = Radiobox(&gameModes, &selectedGameMode);
 
     const auto finishButton = Button("Start", [&] {
-        std::cout << "Player 1: " << m_PlayerName1 << "\n";
-        std::cout << "Player 2: " << m_PlayerName2 << "\n";
-        for (size_t i = 0; i < gameModes.size(); ++i) {
-            std::cout << gameModes[i] << ": "
-                      << (gameModesSelected[i] ? "Selected" : "Not Selected") << "\n";
-        }
-        m_Screen.ExitLoopClosure()();
+        screen.ExitLoopClosure()();
+        InitGame(gameModes[selectedGameMode], playerName1, playerName2);
     });
 
-    /*
-    return Renderer(component, [name, component] {
-        return hbox({
-                       text(name) | size(WIDTH, EQUAL, name.size()),
-                       separator(),
-                       component->Render() | xflex,
-               }) |
-               xflex;
+    const auto mainContainer = Container::Vertical({
+            Renderer(inputContainer,
+                     [&] {
+                         return hbox({
+                                        inputContainer->Render() | xflex,
+                                }) |
+                                xflex | border;
+                     }),
+            Renderer(radioboxContainer,
+                     [&] {
+                         return vbox({text("Mod de joc") | bold,
+                                      radioboxContainer->Render() | xflex}) |
+                                xflex | border;
+                     }),
+            Renderer(finishButton,
+                     [&] {
+                         return vbox({finishButton->Render() | xflex |
+                                      size(WIDTH, LESS_THAN, 10)}) |
+                                center;
+                     }),
     });
-     */
-
-    const auto mainContainer = Container::Vertical(
-            {Renderer(inputContainer,
-                      [&] {
-                          return hbox({
-                                         inputContainer->Render() | xflex,
-                                 }) |
-                                 xflex | border;
-                      }),
-             Renderer(checkboxContainer,
-                      [&] {
-                          return vbox({text("Mod de joc") | bold,
-                                       checkboxContainer->Render() | xflex}) |
-                                 xflex | border;
-                      }),
-             Renderer(finishButton, [&] {
-                 return vbox({finishButton->Render() | xflex | size(WIDTH, LESS_THAN, 10)}) |
-                        center;
-             })});
 
     const auto renderer = Renderer(mainContainer, [&] {
         return vbox({
@@ -134,5 +332,5 @@ void TUI::StartGameMenu() {
         });
     });
 
-    m_Screen.Loop(renderer);
+    screen.Loop(renderer);
 }

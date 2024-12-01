@@ -21,7 +21,6 @@ class Board {
             Position{0, 0}}; // abuz de limbaj ca nu sunt sigur ce reprezinta acestea (mersi chat
                              // gepele de clarificare)
 
-    [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
     [[nodiscard]] bool IsBoardFull() const;
 
@@ -36,7 +35,9 @@ public:
     [[nodiscard]] int                     GetMaxBoardSize() const;
     [[nodiscard]] std::array<Position, 4> GetCorners() const;
     [[nodiscard]] GameBoard               GetGameBoard() const;
-    bool                                  InsertIllusion(Card &card, const Position &pos);
+    [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
+    bool               InsertIllusion(Card &card, const Position &pos);
+
     bool CoverIllusion(const Card &cardOpponent, const Position &pos);
 };
 

@@ -137,68 +137,6 @@ bool Board::IsBoardFull() const {
     return false;
 }
 
-Position Board::ShowTableWithInput() const {
-    using namespace ftxui;
-    auto [left, up, down, right] = m_Corners;
-
-    if (!IsBoardLocked()) {
-        ++right.first;
-        ++down.second;
-        --left.first;
-        --up.second;
-    }
-
-    Position pos;
-
-    auto screen = ScreenInteractive::TerminalOutput();
-
-    std::vector<std::vector<Component>> grid;
-    for (int j = up.second; j <= down.second; ++j) {
-        std::vector<Component> row;
-        for (int i = left.first; i <= right.first; ++i) {
-            const auto  it = m_Board.find({i, j});
-            std::string cellContent;
-            Decorator   cellDecorator = nothing;
-
-            if (it == m_Board.end()) {
-                if (IsPositionValid({i, j}, Card(2))) {
-                    cellContent   = " V ";
-                    cellDecorator = color(Color::Green);
-                } else {
-                    cellContent   = " X ";
-                    cellDecorator = color(Color::Red);
-                }
-            } else {
-                const auto &card = it->second.top();
-                if (card.GetIsFlipped()) {
-                    cellContent   = " H ";
-                    cellDecorator = color(Color::Yellow);
-                } else {
-                    cellContent   = " " + std::to_string(card.GetValue()) + " ";
-                    cellDecorator = color(Color::Blue);
-                }
-            }
-
-            auto cell = Button(cellContent,
-                               [&pos, i, j, &screen] {
-                                   pos = {i, j};
-                                   screen.Exit();
-
-                                   return true;
-                               }) |
-                        cellDecorator;
-            row.push_back(cell);
-        }
-        grid.push_back(row);
-    }
-
-    const auto gridContainer = GridContainer(grid);
-
-    screen.Loop(gridContainer | center);
-
-    return pos;
-}
-
 bool Board::InsertCard(const Card &card, const Position &pos) {
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";

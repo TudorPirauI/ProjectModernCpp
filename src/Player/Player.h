@@ -22,6 +22,7 @@ public:
     [[nodiscard]] int                GetScore() const;
     void                             ShowCards();
 
+    void SetHand(const Hand &hand);
     void GiveCard(const Card &card);
 };
 

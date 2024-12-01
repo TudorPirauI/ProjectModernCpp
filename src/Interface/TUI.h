@@ -5,6 +5,8 @@
 #ifndef TUI_H
 #define TUI_H
 
+#include "../Game/Game.h"
+
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
@@ -24,12 +26,13 @@ public:
     TUI();
 
     void ShowMenu();
+    void GameLoopTraining();
+    void InitGame(const std::string &gameMode, const std::string &player1,
+                  const std::string &player2);
 
 private:
-    int                 m_GameChoice;
-    std::string         m_PlayerName1;
-    std::string         m_PlayerName2;
-    std::vector<bool *> m_GameModesSelected;
+    std::unique_ptr<Game> m_Game;
+    // std::vector<bool *>   m_GameModesSelected;
 
     void StartGameMenu();
 };

@@ -22,4 +22,6 @@ void Player::ShowCards() {
     std::cout << '\n';
 }
 
+void Player::SetHand(const Hand &hand) { m_Hand = hand; }
+
 void Player::GiveCard(const Card &card) { m_Hand.emplace_back(card); }
