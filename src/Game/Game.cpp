@@ -47,7 +47,7 @@ bool Game::CheckWinningConditions() {
         }
     }
 
-    if (notFound == true and secondResult) {
+    if (notFound == true and firstResult) {
         return true;
     }
 
