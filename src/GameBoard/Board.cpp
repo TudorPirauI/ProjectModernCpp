@@ -147,6 +147,16 @@ bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn p
         return false;
     }
 
+    if (!m_Board[pos].empty()) {
+        std::ofstream outFile("game_log.txt", std::ios_base::app);
+        if (outFile.is_open()) {
+            outFile << "Placing card on top of another card\n";
+            outFile.close();
+        } else {
+            std::cerr << "Unable to open file";
+        }
+    }
+
     m_Board[pos].push(card);
 
     m_Board[pos].top().SetPlacedBy(playerTurn);

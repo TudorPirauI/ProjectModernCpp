@@ -284,6 +284,9 @@ void TUI::GameLoopTraining() {
     // todo: checkbox for placing a card with Eter / Hidden
 
     if (selectedCard && selectedPosition) {
+        if (board.GetGameBoard().empty()) {
+            selectedPosition = {0, 0};
+        }
         bool insertCardResult = false;
         selectedCard->SetPlacedBy(turn);
         do {
@@ -300,6 +303,7 @@ void TUI::GameLoopTraining() {
             ++lines[selectedPosition.value().first];
             ++columns[selectedPosition.value().second];
         } else {
+
             --lines[selectedPosition.value().first];
             --columns[selectedPosition.value().second];
         }
@@ -406,3 +410,6 @@ void TUI::RestartGame() const {
         m_Game->SetNewCards();
     }
 }
+
+// todo: rule of 0 (5), interfata grafica, organizare fisiere
+// todo: problema la indici la castig (conditie castig sau player)
