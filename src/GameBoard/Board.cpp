@@ -70,10 +70,10 @@ bool Board::CheckProximity(const Position &pos) const {
     }
 
     return std::ranges::any_of(m_Board | std::views::keys, [&](const auto &position) {
-        const auto xDiff = std::abs(position.first - pos.first);
+        const auto xDiff = std::abs(pos.first - position.first);
         const auto yDiff = std::abs(position.second - pos.second);
 
-        return xDiff <= 1 && yDiff <= 1;
+        return xDiff <= 1 and yDiff <= 1;
     });
 }
 

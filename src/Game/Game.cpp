@@ -14,13 +14,11 @@ PlayerTurn Game::GetCurrentPlayer() const { return m_PlayerTurn; }
 
 Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
 
-#include <fstream>
-
 bool Game::CheckWinningConditions() {
     const auto &board                   = m_Board.GetGameBoard();
     const auto &[left, up, down, right] = m_Board.GetCorners();
 
-    const auto firstResult  = abs(left.first - right.first) == m_ScoreToWin;
+    // const auto firstResult  = abs(left.first - right.first) == m_ScoreToWin;
     const auto secondResult = abs(up.second - down.second) == m_ScoreToWin;
 
     const auto targetValue = std::abs(m_Board.GetMaxBoardSize());
@@ -37,6 +35,9 @@ bool Game::CheckWinningConditions() {
         return true;
     }
 
+    if (m_Board.IsBoardLocked() == false)
+        return false;
+
     bool notFound = true;
 
     for (int i = left.first, j = up.second; i <= right.first && j <= down.second; ++i, ++j) {
@@ -47,7 +48,7 @@ bool Game::CheckWinningConditions() {
         }
     }
 
-    if (notFound == true and firstResult) {
+    if (notFound == true) {
         return true;
     }
 
