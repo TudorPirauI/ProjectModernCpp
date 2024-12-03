@@ -15,6 +15,8 @@ class Antrenament : public Game {
 public:
     Antrenament(const std::string &nameOne, const std::string &nameTwo);
 
+    void SetNewCards() override;
+
 private:
     // Board      m_Board;
     // Player     m_Player1;

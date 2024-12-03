@@ -1,14 +1,13 @@
 #include <ftxui/component/component.hpp>
-#include <ftxui/component/component_base.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 
 #include <iostream>
 #include <ranges>
 #include <thread>
-#include <vector>
 
 #include "Card/Card.h"
 #include "GameBoard/Board.h"
+#include "Interface/TUI.h"
 
 void PrintAsciiArt() {
     const std::string ascii = R"(
@@ -48,13 +47,21 @@ void PrintAsciiArt() {
     std::system("clear");
 }
 
-// using namespace ftxui; // blah blah bad practice blah blah
-
-#include "Interface/TUI.h"
-
 int main() {
     TUI tui;
 
     tui.ShowMenu();
     return 0;
 }
+
+// todo: backend -> problema la indici la castig (conditie castig sau player)
+// todo: rule of 0 (5)
+
+/*
+    backend
+    1. sa terminam antrenamentul
+    2. duelul vrajitorilor
+    3. POATE duelul elementelor (doamne ajuta)
+    4. teste ! pentru joc;)
+    5. restructurare game si antrenament :)
+ */

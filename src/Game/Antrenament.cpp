@@ -16,6 +16,14 @@ Antrenament::Antrenament(const std::string &nameOne, const std::string &nameTwo)
     m_Player2.SetHand(CARDS);
 }
 
+void Antrenament::SetNewCards() {
+    m_Player1.SetHand(CARDS);
+    m_Player2.SetHand(CARDS);
+    m_Lines.clear();
+    m_Columns.clear();
+    m_Board.CleanUpBoard();
+}
+
 // void Antrenament::CheckWinningConditions() {}
 
 // void Antrenament::GameLoop() {}

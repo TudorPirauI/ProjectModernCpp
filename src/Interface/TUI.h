@@ -32,9 +32,9 @@ public:
 
 private:
     std::unique_ptr<Game> m_Game;
-    // std::vector<bool *>   m_GameModesSelected;
 
     void StartGameMenu();
+    void RestartGame() const;
 };
 
 #endif // TUI_H

@@ -3,9 +3,6 @@
 
 #include <stdexcept>
 #include <vector>
-#include <ctime>
-#include <iostream>
-#include <random>
 
 class Explosion {
 public:
@@ -17,13 +14,12 @@ private:
 public:
     explicit Explosion(const std::vector<std::vector<Effect>> &effectMap);
 
-    static Explosion generate(int size);
+    static Explosion Generate(int size);
 
 private:
-    static Effect generateRandomEffect();
+    static Effect GenerateRandomEffect();
 
-
-    static int randomInt(int min, int max);
+    static int RandomInt(int min, int max);
 };
 
 #endif // EXPLOSION_H

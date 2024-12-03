@@ -1,7 +1,5 @@
 #include <ftxui/component/component.hpp>
-#include <ftxui/component/component_base.hpp>
 #include <ftxui/component/screen_interactive.hpp>
-#include "ftxui-grid-container/grid-container.hpp"
 
 #include "Board.h"
 
@@ -72,10 +70,10 @@ bool Board::CheckProximity(const Position &pos) const {
     }
 
     return std::ranges::any_of(m_Board | std::views::keys, [&](const auto &position) {
-        const auto xDiff = std::abs(position.first - pos.first);
+        const auto xDiff = std::abs(pos.first - position.first);
         const auto yDiff = std::abs(position.second - pos.second);
 
-        return xDiff <= 1 && yDiff <= 1;
+        return xDiff <= 1 and yDiff <= 1;
     });
 }
 
@@ -117,6 +115,12 @@ void Board::CheckIsLocked() {
     }
 }
 
+void Board::CleanUpBoard() {
+    m_Board.clear();
+    m_Corners[0] = m_Corners[1] = m_Corners[2] = m_Corners[3] = std::make_pair(0, 0);
+    m_IsLocked                                                = false;
+}
+
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 
 std::array<Position, 4> Board::GetCorners() const { return m_Corners; }
@@ -134,16 +138,28 @@ bool Board::IsBoardFull() const {
 
     std::cout << "Board is full\n";
 
-    return false;
+    return true; // todo: check if cards can be placed on top of other cards.
 }
 
-bool Board::InsertCard(const Card &card, const Position &pos) {
+bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn playerTurn) {
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
         return false;
     }
 
+    if (!m_Board[pos].empty()) {
+        std::ofstream outFile("game_log.txt", std::ios_base::app);
+        if (outFile.is_open()) {
+            outFile << "Placing card on top of another card\n";
+            outFile.close();
+        } else {
+            std::cerr << "Unable to open file";
+        }
+    }
+
     m_Board[pos].push(card);
+
+    m_Board[pos].top().SetPlacedBy(playerTurn);
 
     UpdateCorners(pos);
 

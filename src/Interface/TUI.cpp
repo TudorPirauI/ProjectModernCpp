@@ -148,20 +148,11 @@ Components ToLineRenderer(const std::vector<Component> &components) {
     return result;
 }
 
-void TUI::GameLoopTraining() {
-    const auto game = dynamic_cast<Antrenament *>(m_Game.get());
+constexpr std::string INVALID_SPOT = " X ";
+constexpr std::string VALID_SPOT   = " V ";
 
-    const auto turn = game->GetCurrentPlayer();
-    const auto currentPlayer =
-            turn == Game::PlayerTurn::Player1 ? game->GetPlayer1() : game->GetPlayer2();
-
-    const auto &playerHand = currentPlayer.GetHand();
-    const auto  playScore  = currentPlayer.GetScore();
-    const auto &playerName = currentPlayer.GetUserName();
-    auto       &board      = game->GetBoard();
-
-    auto screen = ScreenInteractive::Fullscreen();
-
+std::vector<std::vector<Component>> BuildGrid(const Board                         &board,
+                                              const std::function<bool(int, int)> &callback) {
     auto [left, up, down, right] = board.GetCorners();
 
     if (!board.IsBoardLocked()) {
@@ -171,12 +162,9 @@ void TUI::GameLoopTraining() {
         --up.second;
     }
 
-    std::optional<Position> selectedPosition;
-    std::optional<Card>     selectedCard;
-
-    const auto boardElement = board.GetGameBoard();
-
+    const auto                          boardElement = board.GetGameBoard();
     std::vector<std::vector<Component>> grid;
+
     for (int j = up.second; j <= down.second; ++j) {
         std::vector<Component> row;
         for (int i = left.first; i <= right.first; ++i) {
@@ -186,10 +174,10 @@ void TUI::GameLoopTraining() {
 
             if (it == boardElement.end()) {
                 if (board.IsPositionValid({i, j}, Card(2))) {
-                    cellContent   = " V ";
+                    cellContent   = VALID_SPOT;
                     cellDecorator = color(Color::Green);
                 } else {
-                    cellContent   = " X ";
+                    cellContent   = INVALID_SPOT;
                     cellDecorator = color(Color::Red);
                 }
             } else {
@@ -198,48 +186,86 @@ void TUI::GameLoopTraining() {
                     cellContent   = " H ";
                     cellDecorator = color(Color::Yellow);
                 } else {
-                    cellContent   = " " + std::to_string(card.GetValue()) + " ";
-                    cellDecorator = color(Color::Blue);
+                    cellContent = " " + std::to_string(card.GetValue()) + " ";
+                    if (card.GetPlacedBy() == PlayerTurn::Player1) {
+                        cellDecorator = bgcolor(Color::Red);
+                    } else {
+                        cellDecorator = bgcolor(Color::Blue);
+                    }
                 }
             }
 
-            auto cell = Button(cellContent,
-                               [&selectedPosition, i, j, &screen, &selectedCard, &board] {
-                                   if (!selectedCard)
-                                       return false;
-
-                                   if (board.IsPositionValid({i, j}, selectedCard.value())) {
-                                       selectedPosition = {i, j};
-                                       screen.Clear();
-                                       screen.ExitLoopClosure()();
-                                       return true;
-                                   }
-
-                                   return false;
-                               }) |
+            auto cell = Button(cellContent, [callback, i, j] { return callback(i, j); }) |
                         cellDecorator;
             row.push_back(cell);
         }
         grid.push_back(row);
     }
 
+    return grid;
+}
+
+std::vector<std::vector<Component>>
+BuildCardHand(const std::vector<Card>                 &playerHand,
+              const std::function<bool(const Card &)> &callback) {
     std::vector<std::vector<Component>> handComponents(1);
     for (const auto &card : playerHand) {
         handComponents.at(0).push_back(Button(" " + std::to_string(card.GetValue()) + " ",
-                                              [&selectedCard, card] {
-                                                  selectedCard = card;
-                                                  return true;
-                                              }) |
-                                       border);
+                                              [callback, card] { return callback(card); }));
     }
+    return handComponents;
+}
+
+void TUI::GameLoopTraining() {
+    auto game = dynamic_cast<Antrenament *>(m_Game.get());
+
+    const auto turn     = game->GetCurrentPlayer();
+    auto &currentPlayer = turn == PlayerTurn::Player1 ? game->GetPlayer1() : game->GetPlayer2();
+
+    auto      &playerHand = currentPlayer.GetHand();
+    const auto playScore  = currentPlayer.GetScore();
+    const auto playerScoreTotal =
+            turn == PlayerTurn::Player1 ? game->GetPlayer1Score() : game->GetPlayer2Score();
+    const auto &playerName = currentPlayer.GetUserName();
+    auto       &board      = game->GetBoard();
+
+    auto screen = ScreenInteractive::Fullscreen();
+
+    std::optional<Position> selectedPosition;
+    std::optional<Card>     selectedCard;
+
+    auto grid = BuildGrid(board, [&](int i, int j) {
+        if (!selectedCard)
+            return false;
+
+        if (board.IsPositionValid({i, j}, selectedCard.value())) {
+            selectedPosition = {i, j};
+            screen.Clear();
+            screen.ExitLoopClosure()();
+            return true;
+        }
+
+        return false;
+    });
+
+    auto handComponents = BuildCardHand(playerHand, [&](const Card &card) {
+        selectedCard = card;
+        return true;
+    });
 
     const auto gridContainer = GridContainer(grid);
-    const auto headerText    = text(playerName + "'s Turn.") | bold | center;
+
+    const auto playerNameColor =
+            (turn == PlayerTurn::Player1 ? bgcolor(Color::Red) : bgcolor(Color::Blue));
+    const auto headerText = hbox({text(playerName) | bold | playerNameColor,
+                                  text("'s Turn -- " + std::to_string(playerScoreTotal) + " / " +
+                                       std::to_string(m_Game->GetScoreToWin())) |
+                                          bold | center}) |
+                            center;
 
     const auto grindHand   = GridContainer(handComponents);
     const auto playingArea = Container::Vertical({
             WithRenderer(gridContainer, [&] { return gridContainer->Render() | center; }),
-
             WithRenderer(grindHand, [&] { return grindHand->Render() | center; }),
     });
 
@@ -255,13 +281,57 @@ void TUI::GameLoopTraining() {
 
     screen.Loop(finalRenderer);
 
+    // todo: checkbox for placing a card with Eter / Hidden
+
     if (selectedCard && selectedPosition) {
-        const auto _ = board.InsertCard(selectedCard.value(), selectedPosition.value());
-        // check if winning
-        static int turnCount = 0;
-        if (turnCount++ < 10) {
-            // todo: switch player, remove card from hand, etc.
+        if (board.GetGameBoard().empty()) {
+            selectedPosition = {0, 0};
+        }
+        bool insertCardResult = false;
+        selectedCard->SetPlacedBy(turn);
+        do {
+            insertCardResult =
+                    board.InsertCard(selectedCard.value(), selectedPosition.value(), turn);
+        } while (insertCardResult != false);
+
+        currentPlayer.RemoveCard(selectedCard.value());
+
+        auto &lines   = game->GetLineAdvantage();
+        auto &columns = game->GetColumnAdvantage();
+
+        if (turn == PlayerTurn::Player1) {
+            ++lines[selectedPosition.value().first];
+            ++columns[selectedPosition.value().second];
+        } else {
+
+            --lines[selectedPosition.value().first];
+            --columns[selectedPosition.value().second];
+        }
+
+        if (game->CheckWinningConditions() == false) {
+            game->SetNextPlayerTurn(turn == PlayerTurn::Player1 ? PlayerTurn::Player2
+                                                                : PlayerTurn::Player1);
             GameLoopTraining();
+        } else {
+            game->IncreasePlayerScore(turn);
+
+            if (m_Game->GetPlayer1Score() < m_Game->GetScoreToWin() and
+                m_Game->GetPlayer2Score() < m_Game->GetScoreToWin()) {
+                RestartGame();
+                screen.Exit();
+                GameLoopTraining();
+            } else {
+                std::ofstream outFile("game_status.txt");
+                if (outFile.is_open()) {
+                    outFile << "The game is finished.\n";
+                    outFile.close();
+                } else {
+                    std::cerr << "Unable to open file";
+                }
+                screen.Exit();
+                RestartGame();
+                StartGameMenu();
+            }
         }
     }
 }
@@ -334,3 +404,12 @@ void TUI::StartGameMenu() {
 
     screen.Loop(renderer);
 }
+
+void TUI::RestartGame() const {
+    if (dynamic_cast<Antrenament *>(m_Game.get())) {
+        m_Game->SetNewCards();
+    }
+}
+
+// todo: interfata grafica, organizare fisiere
+// todo:

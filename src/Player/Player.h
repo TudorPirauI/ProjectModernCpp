@@ -24,6 +24,7 @@ public:
 
     void SetHand(const Hand &hand);
     void GiveCard(const Card &card);
+    void RemoveCard(const Card &card);
 };
 
 #endif // PLAYER_H
