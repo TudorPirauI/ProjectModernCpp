@@ -53,3 +53,15 @@ int main() {
     tui.ShowMenu();
     return 0;
 }
+
+// todo: backend -> problema la indici la castig (conditie castig sau player)
+// todo: rule of 0 (5)
+
+/*
+    backend
+    1. sa terminam antrenamentul
+    2. duelul vrajitorilor
+    3. POATE duelul elementelor (doamne ajuta)
+    4. teste ! pentru joc;)
+    5. restructurare game si antrenament :)
+ */

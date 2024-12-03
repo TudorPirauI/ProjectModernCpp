@@ -411,5 +411,5 @@ void TUI::RestartGame() const {
     }
 }
 
-// todo: rule of 0 (5), interfata grafica, organizare fisiere
-// todo: problema la indici la castig (conditie castig sau player)
+// todo: interfata grafica, organizare fisiere
+// todo:
