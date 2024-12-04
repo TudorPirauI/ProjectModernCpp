@@ -21,12 +21,15 @@ public:
         Iluzionism,
         Deflagratie,
         Amnezie,
-        Furt
+        Furt,
+        NoPower
     };
 
 private:
     WizardPower m_Type;
     int         RandomPower();
+    bool m_HasUsedPowerInMatch;
+
 
 public:
     Wizard(std::string name, int id);
@@ -35,6 +38,9 @@ public:
     ~Wizard();
 
     static std::string GetWizardPowerDescription(WizardPower power);
+
+    WizardPower ActivatePower();
+    void ResetPowerForNewMatch();
 };
 
 #endif // WIZARD_H

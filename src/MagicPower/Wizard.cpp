@@ -5,14 +5,15 @@
 #include "Wizard.h"
 
 #include <utility>
+#include <iostream>
 
 int Wizard::RandomPower() {
-    static bool seeded = false; // todo: use the same thing from elemental power
+    static bool seeded = false;
     if (!seeded) {
         srand(time(0));
         seeded = true;
     }
-    return rand() % 7 + 1;
+    return rand() % 10;
 }
 
 Wizard::Wizard(std::string name, const int id) :
@@ -50,4 +51,21 @@ std::string Wizard::GetWizardPowerDescription(const WizardPower power) {
         default:
             return "Putere necunoscută.";
     }
+}
+
+Wizard::WizardPower Wizard::ActivatePower() {
+    if (m_HasUsedPowerInMatch) {
+        std::cout << "Puterea magică a fost deja folosită în acest meci!" << std::endl;
+        return WizardPower::NoPower;
+    }
+
+    m_HasUsedPowerInMatch = true;
+
+    std::cout << "Puterea " << GetWizardPowerDescription(m_Type) << " a fost activată!" << std::endl;
+    return m_Type;
+}
+
+
+void Wizard::ResetPowerForNewMatch() {
+    m_HasUsedPowerInMatch = false;
 }
