@@ -296,19 +296,7 @@ void TUI::GameLoopTraining() {
 
         currentPlayer.RemoveCard(selectedCard.value());
 
-        auto &lines   = game->GetLineAdvantage();
-        auto &columns = game->GetColumnAdvantage();
-
-        if (turn == PlayerTurn::Player1) {
-            ++lines[selectedPosition.value().first];
-            ++columns[selectedPosition.value().second];
-        } else {
-
-            --lines[selectedPosition.value().first];
-            --columns[selectedPosition.value().second];
-        }
-
-        if (game->CheckWinningConditions() == false) {
+        if (game->CheckWinningConditions(turn) == false) {
             game->SetNextPlayerTurn(turn == PlayerTurn::Player1 ? PlayerTurn::Player2
                                                                 : PlayerTurn::Player1);
             GameLoopTraining();

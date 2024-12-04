@@ -115,10 +115,21 @@ void Board::CheckIsLocked() {
     }
 }
 
+bool Board::CheckPlacedCard(const Position &pos, const PlayerTurn playerTurn) {
+    const auto &it = m_Board.find(pos);
+
+    if (it == m_Board.end())
+        return true;
+
+    return m_Board[pos].top().GetPlacedBy() == playerTurn;
+}
+
 void Board::CleanUpBoard() {
     m_Board.clear();
     m_Corners[0] = m_Corners[1] = m_Corners[2] = m_Corners[3] = std::make_pair(0, 0);
     m_IsLocked                                                = false;
+    m_Lines.clear();
+    m_Columns.clear();
 }
 
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
@@ -126,7 +137,7 @@ int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 std::array<Position, 4> Board::GetCorners() const { return m_Corners; }
 GameBoard               Board::GetGameBoard() const { return m_Board; }
 
-Board::Board(const int maxBoardSize) : m_MaxBoardSize(maxBoardSize) {}
+Board::Board(const int maxBoardSize) : m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}) {}
 
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
@@ -141,25 +152,33 @@ bool Board::IsBoardFull() const {
     return true; // todo: check if cards can be placed on top of other cards.
 }
 
-bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn playerTurn) {
+bool Board::InsertCard(Card &card, const Position &pos, const PlayerTurn playerTurn) {
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
         return false;
     }
 
-    if (!m_Board[pos].empty()) {
-        std::ofstream outFile("game_log.txt", std::ios_base::app);
-        if (outFile.is_open()) {
-            outFile << "Placing card on top of another card\n";
-            outFile.close();
+    if (playerTurn == PlayerTurn::Player1) {
+        if (CheckPlacedCard(pos, playerTurn) == false) {
+            m_Lines[pos.first] += 2;
+            m_Columns[pos.second] += 2;
         } else {
-            std::cerr << "Unable to open file";
+            m_Lines[pos.first] += 1;
+            m_Columns[pos.second] += 1;
+        }
+    } else {
+        if (CheckPlacedCard(pos, playerTurn) == false) {
+            m_Lines[pos.first] -= 2;
+            m_Columns[pos.second] -= 2;
+        } else {
+            m_Lines[pos.first] -= 1;
+            m_Columns[pos.second] -= 1;
         }
     }
 
-    m_Board[pos].push(card);
+    card.SetPlacedBy(playerTurn);
 
-    m_Board[pos].top().SetPlacedBy(playerTurn);
+    m_Board[pos].push(card);
 
     UpdateCorners(pos);
 
@@ -176,6 +195,10 @@ bool Board::InsertIllusion(Card &card, const Position &pos) {
     card.SetIllusion(true);
     return true;
 }
+
+std::unordered_map<int, int> &Board::GetLineAdvantage() { return m_Lines; }
+
+std::unordered_map<int, int> &Board::GetColumnAdvantage() { return m_Columns; }
 
 bool Board::CoverIllusion(const Card &cardOpponent, const Position &pos) {
     m_Board[pos].top().SetIsFlipped(true);

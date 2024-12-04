@@ -19,33 +19,29 @@ public:
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
     Game();
 
-    [[nodiscard]] Board                        &GetBoard();
-    [[nodiscard]] Player                       &GetPlayer1();
-    [[nodiscard]] Player                       &GetPlayer2();
-    [[nodiscard]] GameState                     GetGameState() const;
-    [[nodiscard]] std::unordered_map<int, int> &GetLineAdvantage();
-    [[nodiscard]] std::unordered_map<int, int> &GetColumnAdvantage();
-    [[nodiscard]] int                           GetPlayer1Score() const;
-    [[nodiscard]] int                           GetPlayer2Score() const;
-    [[nodiscard]] int                           GetScoreToWin() const;
-    [[nodiscard]] PlayerTurn                    GetCurrentPlayer() const;
-    bool                                        CheckWinningConditions();
-    void                                        SetGameState(GameState gameState);
-    void                                        IncreasePlayerScore(PlayerTurn turn);
-    void                                        SetNextPlayerTurn(PlayerTurn playerTurn);
-    virtual void                                SetNewCards() = 0;
+    [[nodiscard]] Board     &GetBoard();
+    [[nodiscard]] Player    &GetPlayer1();
+    [[nodiscard]] Player    &GetPlayer2();
+    [[nodiscard]] GameState  GetGameState() const;
+    [[nodiscard]] int        GetPlayer1Score() const;
+    [[nodiscard]] int        GetPlayer2Score() const;
+    [[nodiscard]] int        GetScoreToWin() const;
+    [[nodiscard]] PlayerTurn GetCurrentPlayer() const;
+    bool                     CheckWinningConditions(PlayerTurn currentPlayerTurn);
+    void                     SetGameState(GameState gameState);
+    void                     IncreasePlayerScore(PlayerTurn turn);
+    void                     SetNextPlayerTurn(PlayerTurn playerTurn);
+    virtual void             SetNewCards() = 0;
 
 protected:
-    Board                        m_Board;
-    Player                       m_Player1;
-    Player                       m_Player2;
-    PlayerTurn                   m_PlayerTurn{PlayerTurn::Player1};
-    GameState                    m_GameState{GameState::NotFinished};
-    std::unordered_map<int, int> m_Lines;
-    std::unordered_map<int, int> m_Columns;
-    int                          m_ScorePlayer1{0};
-    int                          m_ScorePlayer2{0};
-    int                          m_ScoreToWin{};
+    Board      m_Board;
+    Player     m_Player1;
+    Player     m_Player2;
+    PlayerTurn m_PlayerTurn{PlayerTurn::Player1};
+    GameState  m_GameState{GameState::NotFinished};
+    int        m_ScorePlayer1{0};
+    int        m_ScorePlayer2{0};
+    int        m_ScoreToWin{};
 };
 
 #endif // GAME_H
