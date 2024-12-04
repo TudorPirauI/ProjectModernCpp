@@ -8,15 +8,13 @@ class Explosion {
 public:
     enum class Effect { Nothing, Eliminate, Return, Hole };
 
-private:
-    std::vector<std::vector<Effect>> m_Effects;
-
-public:
     explicit Explosion(const std::vector<std::vector<Effect>> &effectMap);
 
     static Explosion Generate(int size);
 
 private:
+    std::vector<std::vector<Effect>> m_Effects;
+
     static Effect GenerateRandomEffect();
 
     static int RandomInt(int min, int max);
