@@ -12,21 +12,23 @@
 class Wizard : public MagicPower {
 public:
     enum class WizardPower {
-        Teleportatie,
-        Invocatie,
-        Metamorfoza,
-        Clarviziune,
-        Blocaj,
-        Manipulare,
-        Iluzionism,
-        Deflagratie,
-        Amnezie,
-        Furt
+        Teleportation,
+        Summoning,
+        Metamorphosis,
+        Clairvoyance,
+        Blockade,
+        Manipulation,
+        Illusionism,
+        Deflagration,
+        Amnesia,
+        Theft,
+        NoPower
     };
 
 private:
     WizardPower m_Type;
     int         RandomPower();
+    bool        m_HasUsedPowerInMatch;
 
 public:
     Wizard(std::string name, int id);
@@ -35,6 +37,9 @@ public:
     ~Wizard();
 
     static std::string GetWizardPowerDescription(WizardPower power);
+
+    WizardPower ActivatePower();
+    void        ResetPowerForNewMatch();
 };
 
 #endif // WIZARD_H
