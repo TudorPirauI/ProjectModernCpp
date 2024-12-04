@@ -18,77 +18,72 @@ ElementPower::ElementIndexPower ElementPower::RandomPower() {
 
 std::string ElementPower::GetElementPowerDescription(const ElementIndexPower power) {
     switch (power) {
-        case ElementIndexPower::ExplozieControlata:
-            return "Tabla explodează!";
-        case ElementIndexPower::Distrugere:
-            return "Elimină din joc ultima carte jucată de adversar.";
-        case ElementIndexPower::Flacari:
-            return "Întoarce iluzia adversarului cu fața în sus. Apoi joacă o carte pe oricare "
-                   "poziție de pe tablă.";
+        case ElementIndexPower::ControlledExplosion:
+            return "The board explodes!";
+        case ElementIndexPower::Destruction:
+            return "Removes the opponent's last played card from the game.";
+        case ElementIndexPower::Flames:
+            return "Flip the opponent's illusion face up. Then play a card on any position on the "
+                   "board.";
         case ElementIndexPower::Lava:
-            return "Alege un număr cu condiția că cel puțin 2 cărți cu acel număr sunt vizibile pe "
-                   "tablă. Toate "
-                   "cărțile vizibile cu acest număr se întorc în mâinile proprietarilor.";
-        case ElementIndexPower::DinCenusa:
-            return "Alege o carte proprie eliminată din joc și joac-o imediat.";
-        case ElementIndexPower::Scantei:
-            return "Alege orice carte proprie acoperită de adversar și joac-o imediat pe altă "
-                   "poziție.";
-        case ElementIndexPower::Vifor:
-            return "Întoarce o carte vizibilă a oponentului în mâna sa.";
-        case ElementIndexPower::Vijelie:
-            return "Toate cărțile acoperite de alte cărți se întorc în mâinile proprietarilor.";
-        case ElementIndexPower::Uragan:
-            return "Shiftează un rând complet ocupat cu 1 poziție în direcția dorită. Cărțile din "
-                   "teancul care a ieșit "
-                   "din granița tablei se întorc în mâinile proprietarilor.";
-        case ElementIndexPower::Rafala:
-            return "Mută orizontal sau vertical oricare carte vizibilă de pe tablă pe o poziție "
-                   "adiacentă cu o carte "
-                   "cu un număr mai mic.";
-        case ElementIndexPower::Miraj:
-            return "Înlocuiește propria iluzie plasată cu o altă iluzie.";
-        case ElementIndexPower::Furtuna:
-            return "Elimină din joc oricare teanc de cărți ce conține 2 sau mai multe cărți.";
-        case ElementIndexPower::Maree:
-            return "Interschimbă pozițiile a 2 teancuri de cărți.";
-        case ElementIndexPower::Ceata:
-            return "Joacă încă o iluzie.";
-        case ElementIndexPower::Val:
-            return "Mută un teanc pe o poziție adiacentă goală. Joacă o carte pe noua poziție "
-                   "goală.";
-        case ElementIndexPower::VartejDeApa:
-            return "Mută 2 cărți de pe același rând, dar despărțite de un spațiu gol, pe acel "
-                   "spațiu gol. Cartea cu "
-                   "numărul mai mare se pune deasupra, iar în caz de egalitate, jucătorul alege.";
+            return "Choose a number, provided that at least 2 cards with that number are visible "
+                   "on the board. All visible cards with this number return to their owners' "
+                   "hands.";
+        case ElementIndexPower::FromAshes:
+            return "Choose one of your own cards that was removed from the game and play it "
+                   "immediately.";
+        case ElementIndexPower::Sparks:
+            return "Choose any of your own cards covered by the opponent and play it immediately "
+                   "on another position.";
+        case ElementIndexPower::Blizzard:
+            return "Return a visible card of the opponent to their hand.";
+        case ElementIndexPower::Gale:
+            return "All cards covered by other cards return to their owners' hands.";
+        case ElementIndexPower::Hurricane:
+            return "Shift a fully occupied row by 1 position in the desired direction. Cards in "
+                   "the stack that move out of the board boundaries return to their owners' hands.";
+        case ElementIndexPower::Gust:
+            return "Move any visible card on the board horizontally or vertically to an adjacent "
+                   "position with a card of a lower number.";
+        case ElementIndexPower::Mirage:
+            return "Replace your placed illusion with another illusion.";
+        case ElementIndexPower::Storm:
+            return "Remove any stack of cards containing 2 or more cards from the game.";
+        case ElementIndexPower::Tide:
+            return "Swap the positions of 2 stacks of cards.";
+        case ElementIndexPower::Fog:
+            return "Play an additional illusion.";
+        case ElementIndexPower::Wave:
+            return "Move a stack to an adjacent empty position. Play a card on the newly empty "
+                   "position.";
+        case ElementIndexPower::Whirlpool:
+            return "Move 2 cards from the same row, separated by an empty space, into that empty "
+                   "space. The card with the higher number goes on top, and in case of a tie, the "
+                   "player chooses.";
         case ElementIndexPower::Tsunami:
-            return "Alege un rând. În următoarea tură a adversarului, acesta nu poate plasa cărți "
-                   "pe rândul respectiv.";
-        case ElementIndexPower::Cascada:
-            return "Alege un rând cu cel puțin 3 poziții ocupate. Teancurile de pe rândul "
-                   "respectiv 'cad' spre o "
-                   "margine și formează un nou teanc la marginea respectivă.";
-        case ElementIndexPower::Sprijin:
-            return "Valoarea unei cărți proprii 1/2/3 crește cu 1. Dacă acea carte e acoperită sau "
-                   "întoarsă în mână, "
-                   "își pierde bonusul.";
-        case ElementIndexPower::Cutremur:
-            return "Elimină de pe tablă toate cărțile vizibile cu numărul 1.";
-        case ElementIndexPower::Sfaramare:
-            return "Valoarea unei cărți a adversarului 2/3/4 scade cu 1. Dacă acea carte e "
-                   "acoperită sau întoarsă în "
-                   "mână, își pierde penalizarea.";
+            return "Choose a row. During the opponent's next turn, they cannot place cards on that "
+                   "row.";
+        case ElementIndexPower::Waterfall:
+            return "Choose a row with at least 3 occupied positions. The stacks on that row 'fall' "
+                   "towards one edge, forming a new stack at that edge.";
+        case ElementIndexPower::Support:
+            return "The value of one of your cards (1/2/3) increases by 1. If that card is covered "
+                   "or returned to the hand, it loses the bonus.";
+        case ElementIndexPower::Earthquake:
+            return "Remove all visible cards with the number 1 from the board.";
+        case ElementIndexPower::Shattering:
+            return "The value of an opponent's card (2/3/4) decreases by 1. If that card is "
+                   "covered or returned to the hand, it loses the penalty.";
         case ElementIndexPower::Granite:
-            return "Plasează o carte neutră pe tablă astfel încât ea să definească cel puțin o "
-                   "graniță a tablei de "
-                   "joc.";
-        case ElementIndexPower::Avalansa:
-            return "Alege 2 teancuri adiacente pe orizontală/verticală. Shiftează cele 2 teancuri "
-                   "pe rândul pe care se "
-                   "află cu 1 poziție.";
-        case ElementIndexPower::Bolovan:
-            return "Acoperă orice iluzie cu o carte (din mână), fără a întoarce iluzia cu fața în sus.";
+            return "Place a neutral card on the board such that it defines at least one boundary "
+                   "of the game board.";
+        case ElementIndexPower::Avalanche:
+            return "Choose 2 adjacent stacks horizontally/vertically. Shift the two stacks by 1 "
+                   "position in their row.";
+        case ElementIndexPower::Boulder:
+            return "Cover any illusion with a card (from your hand) without flipping the illusion "
+                   "face up.";
         default:
-            return "Putere necunoscută.";
+            return "Unknown power.";
     }
 }
