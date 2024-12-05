@@ -14,12 +14,14 @@ class MainWindow final : public QMainWindow {
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    void AddBackButton(const QWidget *widget);
 
 private slots:
     void OnNewGameClicked();
     void OnResumeGameClicked();
     void OnOptionsClicked();
     void OnExitClicked();
+    void OnBackClicked();
 
 private:
     enum class GameState { MainMenu, NewGame, ResumeGame, Options, Exit };
