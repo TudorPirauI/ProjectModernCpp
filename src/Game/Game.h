@@ -27,7 +27,7 @@ public:
     [[nodiscard]] int        GetPlayer2Score() const;
     [[nodiscard]] int        GetScoreToWin() const;
     [[nodiscard]] PlayerTurn GetCurrentPlayer() const;
-    bool                     CheckWinningConditions(PlayerTurn currentPlayerTurn);
+    bool                     CheckWinningConditions();
     void                     SetGameState(GameState gameState);
     void                     IncreasePlayerScore(PlayerTurn turn);
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
