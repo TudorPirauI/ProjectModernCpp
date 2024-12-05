@@ -5,17 +5,21 @@
 #include <utility>
 
 using Position = std::pair<int, int>;
+
 enum class PlayerTurn { Player1, Player2 };
+
+std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn);
 
 class Card {
     int        m_Value;
     PlayerTurn m_PlacedBy : 1;
-    bool       m_IsIllusion : 1;
-    bool       m_IsEter : 1;
+    bool       m_IsIllusion : 1 {false};
+    bool       m_IsEter : 1 {false};
     bool       m_IsFlipped : 1 {false};
 
 public:
     explicit Card(int value);
+    Card(int value, PlayerTurn playerTurn);
 
     void              SetValue(int value);
     [[nodiscard]] int GetValue() const;

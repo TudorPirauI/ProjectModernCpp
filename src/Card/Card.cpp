@@ -2,13 +2,15 @@
 
 #include <stdexcept>
 
-Card::Card(const int value) : m_IsIllusion{false}, m_IsEter{false} {
+Card::Card(const int value) {
     if (value > 4 || value < 1) {
         throw std::invalid_argument("Invalid card value");
     }
 
     m_Value = value;
 }
+
+Card::Card(int value, PlayerTurn playerTurn) : m_Value(value), m_PlacedBy(playerTurn) {}
 
 bool Card::GetIsFlipped() const { return m_IsFlipped; }
 void Card::SetIsFlipped(const bool isFlipped) { m_IsFlipped = isFlipped; }
@@ -39,5 +41,17 @@ std::ostream &operator<<(std::ostream &os, const Card &card) {
         os << '\n';
     }
 
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn) {
+    switch (playerTurn) {
+        case PlayerTurn::Player1:
+            os << "Player1";
+            break;
+        case PlayerTurn::Player2:
+            os << "Player2";
+            break;
+    }
     return os;
 }
