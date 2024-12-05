@@ -33,6 +33,11 @@ public:
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
     virtual void             SetNewCards() = 0;
 
+    Game(const Game &other)                = default;
+    Game(Game &&other) noexcept            = default;
+    Game &operator=(const Game &other)     = default;
+    Game &operator=(Game &&other) noexcept = default;
+
 protected:
     Board      m_Board;
     Player     m_Player1;

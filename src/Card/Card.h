@@ -11,7 +11,15 @@ enum class PlayerTurn { Player1, Player2 };
 std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn);
 
 class Card {
-    int        m_Value;
+    int m_Value;
+
+public:
+    Card(const Card &other)                = default;
+    Card(Card &&other) noexcept            = default;
+    Card &operator=(const Card &other)     = default;
+    Card &operator=(Card &&other) noexcept = default;
+
+private:
     PlayerTurn m_PlacedBy : 1;
     bool       m_IsIllusion : 1 {false};
     bool       m_IsEter : 1 {false};

@@ -16,7 +16,11 @@ public:
     MagicPower(std::string name, int id);
     ~MagicPower();
 
-    void                      SetName(const std::string &name);
+    void SetName(const std::string &name);
+    MagicPower(const MagicPower &other)                              = default;
+    MagicPower(MagicPower &&other) noexcept                          = default;
+    MagicPower               &operator=(const MagicPower &other)     = default;
+    MagicPower               &operator=(MagicPower &&other) noexcept = default;
     void                      SetId(int id);
     void                      SetWasUsed(bool wasUsed);
     [[nodiscard]] std::string GetName() const;

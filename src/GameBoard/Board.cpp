@@ -182,8 +182,7 @@ void Board::UpdateDiagonals(PlayerTurn playerTurn) {
 
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 
-std::array<Position, 4> Board::GetCorners() const { return m_Corners; }
-GameBoard               Board::GetGameBoard() const { return m_Board; }
+GameBoard Board::GetGameBoard() const { return m_Board; }
 
 Board::Board(const int maxBoardSize) : m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}) {}
 

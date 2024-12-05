@@ -16,21 +16,10 @@ public:
     Antrenament(const std::string &nameOne, const std::string &nameTwo);
 
     void SetNewCards() override;
-
-private:
-    // Board      m_Board;
-    // Player     m_Player1;
-    // Player     m_Player2;
-    // PlayerTurn m_PlayerTurn{PlayerTurn::Player1};
-    // GameState  m_GameState{GameState::NotFinished};
-    // int        m_ScorePlayer1{0};
-    // int        m_ScorePlayer2{0};
-    // int        m_ScoreWinning{2};
-
-    // Board: addCard to the board
-    // Antrenament: Add constructor to initialise players, board and current Player
-    // void CheckWinningConditions(); // to be rechecked after the implementation
-    // void GameLoop(); // to be implemented
+    Antrenament(const Antrenament &other)                = default;
+    Antrenament(Antrenament &&other) noexcept            = default;
+    Antrenament &operator=(const Antrenament &other)     = default;
+    Antrenament &operator=(Antrenament &&other) noexcept = default;
 };
 
 #endif // ANTRENAMENT_H

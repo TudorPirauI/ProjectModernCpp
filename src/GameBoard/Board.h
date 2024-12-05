@@ -36,10 +36,9 @@ public:
     [[nodiscard]] bool InsertCard(const Card &card, const Position &pos, PlayerTurn playerTurn);
     [[nodiscard]] bool IsBoardLocked() const;
     [[nodiscard]] int  GetMaxBoardSize() const;
-    [[nodiscard]] std::array<Position, 4> GetCorners() const;
-    [[nodiscard]] GameBoard               GetGameBoard() const;
-    [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
-    bool               InsertIllusion(Card &card, const Position &pos);
+    [[nodiscard]] GameBoard GetGameBoard() const;
+    [[nodiscard]] bool      IsPositionValid(const Position &pos, const Card &card) const;
+    bool                    InsertIllusion(Card &card, const Position &pos);
     [[nodiscard]] std::unordered_map<int, int> &GetLineAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetColumnAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetPrincipalDiagonalAdvantage();
