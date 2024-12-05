@@ -44,9 +44,17 @@ public:
     [[nodiscard]] std::unordered_map<int, int> &GetPrincipalDiagonalAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetSecondaryDiagonalAdvantage();
 
-    bool CoverIllusion(const Card &cardOpponent, const Position &pos);
-    void CleanUpBoard();
-    void UpdateDiagonals(PlayerTurn playerTurn);
+    bool     CoverIllusion(const Card &cardOpponent, const Position &pos);
+    void     CleanUpBoard();
+    Position GetLeft() const;
+    Position GetRight() const;
+    Position GetUp() const;
+    Position GetDown() const;
+    void     SetLeft(const Position &position);
+    void     SetRight(const Position &position);
+    void     SetUp(const Position &position);
+    void     SetDown(const Position &position);
+    void     UpdateDiagonals(PlayerTurn playerTurn);
 };
 
 #endif // BOARD_H
