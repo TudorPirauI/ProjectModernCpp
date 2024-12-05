@@ -15,6 +15,7 @@
 #include <QRadioButton>
 #include <QSlider>
 #include <QVBoxLayout>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {
     m_StackedWidget = new QStackedWidget(this);
@@ -65,6 +66,16 @@ void MainWindow::DrawMenu() {
 
     m_StackedWidget->addWidget(menuWidget);
     m_StackedWidget->setCurrentWidget(menuWidget);
+
+    std::cout << "Game Resolution: " << m_GameResolution.toStdString() << std::endl;
+    std::cout << "Full Screen: " << m_FullScreen << std::endl;
+    std::cout << "Player 1 Color: " << m_Player1Color.name().toStdString() << std::endl;
+    std::cout << "Player 2 Color: " << m_Player2Color.name().toStdString() << std::endl;
+    std::cout << "Master Volume: " << m_MasterVolume << std::endl;
+    std::cout << "Music Volume: " << m_MusicVolume << std::endl;
+    std::cout << "SFX Volume: " << m_SfxVolume << std::endl;
+
+    std::cout << '\n';
 }
 
 void MainWindow::DrawNewGame() {
@@ -145,25 +156,34 @@ void MainWindow::DrawOptions() {
 
     const auto resolutionComboBox = new QComboBox(this);
     resolutionComboBox->addItems({"1920x1080", "1280x720", "1024x768"});
+    resolutionComboBox->setCurrentText(m_GameResolution.isEmpty() ? "1920x1080" : m_GameResolution);
     layout->addWidget(resolutionComboBox);
+    connect(resolutionComboBox, &QComboBox::currentTextChanged, this,
+            [this](const QString &text) { m_GameResolution = text; });
 
     // Full Screen
     const auto fullScreenCheckBox = new QCheckBox("Full Screen", this);
+    fullScreenCheckBox->setChecked(m_FullScreen);
     layout->addWidget(fullScreenCheckBox);
+    connect(fullScreenCheckBox, &QCheckBox::toggled, this,
+            [this](bool checked) { m_FullScreen = checked; });
 
     // Player Colors
     const auto player1ColorLabel = new QLabel("Player 1 Color:", this);
     layout->addWidget(player1ColorLabel);
 
-    const auto player1ColorPicker = new QPushButton("Choose Color", this);
+    auto       player1ColorPicker = new QPushButton("Choose Color", this);
     const auto player1ColorFrame  = new QFrame(this);
     player1ColorFrame->setFixedSize(20, 20);
     player1ColorFrame->setStyleSheet(
-            "background-color: #AEC6CF; border: 1px solid black;"); // Pastel blue
+            QString("background-color: %1; border: 1px solid black;")
+                    .arg(m_Player1Color.isValid() ? m_Player1Color.name() : "#AEC6CF"));
+    m_Player1Color = m_Player1Color.isValid() ? m_Player1Color : QColor("#AEC6CF");
 
     connect(player1ColorPicker, &QPushButton::clicked, this, [this, player1ColorFrame]() {
-        QColor color = QColorDialog::getColor(Qt::white, this, "Select Player 1 Color");
+        QColor color = QColorDialog::getColor(m_Player1Color, this, "Select Player 1 Color");
         if (color.isValid()) {
+            m_Player1Color = color;
             player1ColorFrame->setStyleSheet(
                     QString("background-color: %1; border: 1px solid black;").arg(color.name()));
         }
@@ -177,15 +197,18 @@ void MainWindow::DrawOptions() {
     const auto player2ColorLabel = new QLabel("Player 2 Color:", this);
     layout->addWidget(player2ColorLabel);
 
-    const auto player2ColorPicker = new QPushButton("Choose Color", this);
-    const auto player2ColorFrame  = new QFrame(this);
+    auto player2ColorPicker = new QPushButton("Choose Color", this);
+    auto player2ColorFrame  = new QFrame(this);
     player2ColorFrame->setFixedSize(20, 20);
     player2ColorFrame->setStyleSheet(
-            "background-color: #FFB3BA; border: 1px solid black;"); // Pastel red
+            QString("background-color: %1; border: 1px solid black;")
+                    .arg(m_Player2Color.isValid() ? m_Player2Color.name() : "#FFB3BA"));
+    m_Player2Color = m_Player2Color.isValid() ? m_Player2Color : QColor("#FFB3BA");
 
     connect(player2ColorPicker, &QPushButton::clicked, this, [this, player2ColorFrame]() {
-        QColor color = QColorDialog::getColor(Qt::white, this, "Select Player 2 Color");
+        QColor color = QColorDialog::getColor(m_Player2Color, this, "Select Player 2 Color");
         if (color.isValid()) {
+            m_Player2Color = color;
             player2ColorFrame->setStyleSheet(
                     QString("background-color: %1; border: 1px solid black;").arg(color.name()));
         }
@@ -202,7 +225,10 @@ void MainWindow::DrawOptions() {
 
     const auto masterVolumeSlider = new QSlider(Qt::Horizontal, this);
     masterVolumeSlider->setRange(0, 100);
+    masterVolumeSlider->setValue(m_MasterVolume);
     layout->addWidget(masterVolumeSlider);
+    connect(masterVolumeSlider, &QSlider::valueChanged, this,
+            [this](int value) { m_MasterVolume = value; });
 
     // Music Volume
     const auto musicVolumeLabel = new QLabel("Music Volume:", this);
@@ -210,7 +236,10 @@ void MainWindow::DrawOptions() {
 
     const auto musicVolumeSlider = new QSlider(Qt::Horizontal, this);
     musicVolumeSlider->setRange(0, 100);
+    musicVolumeSlider->setValue(m_MusicVolume);
     layout->addWidget(musicVolumeSlider);
+    connect(musicVolumeSlider, &QSlider::valueChanged, this,
+            [this](int value) { m_MusicVolume = value; });
 
     // SFX Volume
     const auto sfxVolumeLabel = new QLabel("SFX Volume:", this);
@@ -218,7 +247,10 @@ void MainWindow::DrawOptions() {
 
     const auto sfxVolumeSlider = new QSlider(Qt::Horizontal, this);
     sfxVolumeSlider->setRange(0, 100);
+    sfxVolumeSlider->setValue(m_SfxVolume);
     layout->addWidget(sfxVolumeSlider);
+    connect(sfxVolumeSlider, &QSlider::valueChanged, this,
+            [this](int value) { m_SfxVolume = value; });
 
     // Clear Saved Games Button
     const auto clearSavedGamesButton = new QPushButton("Clear Saved Games", this);
