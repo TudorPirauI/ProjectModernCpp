@@ -19,52 +19,26 @@ bool Game::CheckWinningConditions(const PlayerTurn currentPlayerTurn) {
     const auto &board                   = m_Board.GetGameBoard();
     const auto &[left, up, down, right] = m_Board.GetCorners();
 
-    const auto &lines   = m_Board.GetLineAdvantage();
-    const auto &columns = m_Board.GetColumnAdvantage();
+    const auto &lines             = m_Board.GetLineAdvantage();
+    const auto &columns           = m_Board.GetColumnAdvantage();
+    const auto &principalDiagonal = m_Board.GetPrincipalDiagonalAdvantage();
+    const auto &secondaryDiagonal = m_Board.GetSecondaryDiagonalAdvantage();
 
     const auto targetValue = m_Board.GetMaxBoardSize();
 
-    if (std::ranges::any_of(lines | std::views::values,
-                            [&](const auto &value) { return abs(value) == targetValue; })) {
+    auto hasWinning = [&](const auto &data) {
+        return std::ranges::any_of(data | std::views::values,
+                                   [&](const auto &value) { return abs(value) == targetValue; });
+    };
 
+    if (hasWinning(lines) or hasWinning(columns))
         return true;
-    }
-
-    if (std::ranges::any_of(columns | std::views::values,
-                            [&](const auto &value) { return abs(value) == targetValue; })) {
-        return true;
-    }
 
     if (m_Board.IsBoardLocked() == false) {
         return false;
     }
 
-    bool notFound = true;
-
-    for (int i = up.first, j = left.second; i <= down.first && j <= right.second; ++i, ++j) {
-        const auto it = board.find({i, j});
-        if (it == board.end() || it->second.top().GetPlacedBy() != currentPlayerTurn) {
-            notFound = false;
-            break;
-        }
-    }
-
-    if (notFound == true) {
-        return true;
-    }
-
-    notFound = true;
-
-    for (int i = up.first, j = right.second; i <= down.first && j >= left.second; ++i, --j) {
-        const auto it = board.find({i, j});
-
-        if (it == board.end() || it->second.top().GetPlacedBy() != currentPlayerTurn) {
-            notFound = false;
-            break;
-        }
-    }
-
-    return notFound;
+    return hasWinning(principalDiagonal) or hasWinning(secondaryDiagonal);
 }
 
 void Game::SetGameState(const GameState gameState) { m_GameState = gameState; }
