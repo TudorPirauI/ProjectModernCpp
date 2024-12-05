@@ -16,8 +16,8 @@ PlayerTurn Game::GetCurrentPlayer() const { return m_PlayerTurn; }
 Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
 
 bool Game::CheckWinningConditions(const PlayerTurn currentPlayerTurn) {
-    const auto &board                   = m_Board.GetGameBoard();
-    const auto &[left, up, down, right] = m_Board.GetCorners();
+    // const auto &board                   = m_Board.GetGameBoard();
+    // const auto &[left, up, down, right] = m_Board.GetCorners();
 
     const auto &lines             = m_Board.GetLineAdvantage();
     const auto &columns           = m_Board.GetColumnAdvantage();
@@ -31,11 +31,23 @@ bool Game::CheckWinningConditions(const PlayerTurn currentPlayerTurn) {
                                    [&](const auto &value) { return abs(value) == targetValue; });
     };
 
-    if (hasWinning(lines) or hasWinning(columns))
-        return true;
+    if (hasWinning(lines) or hasWinning(columns)) {
+        std::cout << "Lines or columns\n";
+    }
 
     if (m_Board.IsBoardLocked() == false) {
+        std::cout << "Board not locked\n";
         return false;
+    }
+
+    std::cout << "Principal diagonal\n";
+    for (const auto [fst, snd] : principalDiagonal) {
+        std::cout << fst << " " << snd << '\n';
+    }
+
+    std::cout << "Secondary diagonal\n";
+    for (const auto [fst, snd] : secondaryDiagonal) {
+        std::cout << fst << " " << snd << '\n';
     }
 
     return hasWinning(principalDiagonal) or hasWinning(secondaryDiagonal);

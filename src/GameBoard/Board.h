@@ -5,12 +5,13 @@
 #include <array>
 #include <map>
 #include <stack>
+#include <unordered_map>
 
 #include "../Card/Card.h"
 #include "../Player/Player.h"
 
-using GameBoard                  = std::map<Position, std::stack<Card>>;
-constexpr Position StartPosition = Position{0, 0};
+using GameBoard              = std::map<Position, std::stack<Card>>;
+constexpr auto StartPosition = Position{0, 0};
 
 class Board {
     GameBoard                    m_Board;
@@ -19,7 +20,7 @@ class Board {
     std::unordered_map<int, int> m_Columns;
     std::unordered_map<int, int> m_PrincipalDiagonal;
     std::unordered_map<int, int> m_SecondaryDiagonal;
-    bool                         m_IsLocked{false};
+    bool                         m_IsLocked;
 
     std::array<Position, 4> m_Corners{StartPosition, StartPosition, StartPosition, StartPosition};
 

@@ -1,11 +1,9 @@
-#include <ftxui/component/component.hpp>
-#include <ftxui/component/screen_interactive.hpp>
-
 #include "Board.h"
 
 #include <fstream>
 #include <iostream>
 #include <ranges>
+#include <unordered_map>
 
 #include "../Player/Player.h"
 
@@ -108,8 +106,8 @@ void Board::CheckIsLocked() {
 
     auto &[left, up, down, right] = m_Corners;
 
-    if (std::abs(left.first - right.first) == m_MaxBoardSize - 1 &&
-        std::abs(up.second - down.second) == m_MaxBoardSize - 1) {
+    if (std::abs(left.second - right.second) == m_MaxBoardSize - 1 &&
+        std::abs(up.first - down.first) == m_MaxBoardSize - 1) {
         m_IsLocked = true;
         std::cout << "Board is locked\n";
     }
@@ -136,7 +134,7 @@ void Board::UpdateDiagonals(PlayerTurn playerTurn) {
     m_PrincipalDiagonal.clear();
     m_SecondaryDiagonal.clear();
 
-    const auto &[left, up, right, down] = m_Corners;
+    const auto &[left, up, down, right] = m_Corners;
 
     static int currentPlayer;
     currentPlayer = (playerTurn == PlayerTurn::Player1) ? 1 : -1;
@@ -170,7 +168,8 @@ int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 std::array<Position, 4> Board::GetCorners() const { return m_Corners; }
 GameBoard               Board::GetGameBoard() const { return m_Board; }
 
-Board::Board(const int maxBoardSize) : m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}) {}
+Board::Board(const int maxBoardSize) :
+    m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}), m_IsLocked(false) {}
 
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
@@ -191,12 +190,11 @@ bool Board::InsertCard(Card &card, const Position &pos, const PlayerTurn playerT
         return false;
     }
 
-    static int playerVariation;
+    int playerVariation = 1;
+    int onTopMultiplier = 1;
 
     if (playerTurn != PlayerTurn::Player1) {
         playerVariation = -1;
-    } else {
-        playerVariation = 1;
     }
 
     if (CheckPlacedCard(pos, playerTurn) == false) {
@@ -212,7 +210,9 @@ bool Board::InsertCard(Card &card, const Position &pos, const PlayerTurn playerT
     if (UpdateCorners(pos))
         UpdateDiagonals(playerTurn);
     else {
-        const auto &[left, up, right, down] = m_Corners;
+        const auto &[left, up, down, right] =
+                m_Corners; // todo: this is horrible, took us half an hour to figure out that these
+                           // were switched around
         if (pos.first - pos.second == left.first - up.second) {
             if (CheckPlacedCard(pos, playerTurn) == false) {
                 m_PrincipalDiagonal[pos.first] += (2 * playerVariation);

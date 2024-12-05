@@ -1,6 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+cmake_minimum_required(VERSION 3.30)
 
 project(Eter)
 
@@ -17,16 +15,6 @@ endif ()
 
 include(FetchContent)
 
-FetchContent_Declare(ftxui
-        GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
-        GIT_TAG v5.0.0
-)
-
-FetchContent_Declare(ftxui-grid-container
-        GIT_REPOSITORY https://github.com/mingsheng13/grid-container-ftxui
-        GIT_TAG master
-)
-
 FetchContent_Declare(
         catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
@@ -34,13 +22,6 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(catch2)
-FetchContent_MakeAvailable(ftxui)
-FetchContent_MakeAvailable(ftxui-grid-container)
-
-if (NOT ftxui_POPULATED)
-    FetchContent_Populate(ftxui)
-    add_subdirectory(${ftxui_SOURCE_DIR} ${ftxui_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif ()
 
 if (NOT catch2_POPULATED)
     FetchContent_Populate(catch2)
@@ -59,9 +40,6 @@ add_executable(Eter src/main.cpp
         src/Game/Game.cpp
         src/Game/DuelulVrajitorilor.cpp
         src/MagicPower/Explosion.cpp
-        src/MagicPower/Explosion.h
 )
-
-target_link_libraries(Eter PRIVATE ftxui::screen ftxui::dom ftxui::component ftxui-grid-container)
 
 #add_subdirectory(tests) #todo fix this for windows

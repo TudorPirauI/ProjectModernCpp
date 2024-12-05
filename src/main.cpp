@@ -1,13 +1,9 @@
-#include <ftxui/component/component.hpp>
-#include <ftxui/component/screen_interactive.hpp>
-
 #include <iostream>
 #include <ranges>
 #include <thread>
 
 #include "Card/Card.h"
 #include "GameBoard/Board.h"
-#include "Interface/TUI.h"
 
 void PrintAsciiArt() {
     const std::string ascii = R"(
@@ -48,9 +44,8 @@ void PrintAsciiArt() {
 }
 
 int main() {
-    TUI tui;
 
-    tui.ShowMenu();
+    // todo
     return 0;
 }
 
