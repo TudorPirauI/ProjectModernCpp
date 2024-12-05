@@ -28,6 +28,9 @@ if (NOT catch2_POPULATED)
     add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif ()
 
+# Find and include Qt6
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
 add_executable(Eter src/main.cpp
         src/Player/Player.cpp
         src/GameBoard/Board.cpp
@@ -36,10 +39,14 @@ add_executable(Eter src/main.cpp
         src/MagicPower/MagicPower.cpp
         src/MagicPower/Wizard.cpp
         src/MagicPower/ElementPower.cpp
-        src/Interface/TUI.cpp
         src/Game/Game.cpp
         src/Game/DuelulVrajitorilor.cpp
         src/MagicPower/Explosion.cpp
+        src/Interface/MainWindow.cpp
+        src/Interface/MainWindow.h
 )
 
-#add_subdirectory(tests) #todo fix this for windows
+# Link Qt6 libraries
+target_link_libraries(Eter PRIVATE Qt6::Widgets)
+
+#add_subdirectory(tests) # todo fix this for windows

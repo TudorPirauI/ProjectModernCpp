@@ -5,6 +5,9 @@
 #include "Card/Card.h"
 #include "GameBoard/Board.h"
 
+#include <QApplication>
+#include "Interface/MainWindow.h"
+
 void PrintAsciiArt() {
     const std::string ascii = R"(
 .+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.+"+.
@@ -43,10 +46,11 @@ void PrintAsciiArt() {
     std::system("clear");
 }
 
-int main() {
-
-    // todo
-    return 0;
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    MainWindow   mainWindow;
+    mainWindow.show();
+    return QApplication::exec();
 }
 
 // todo: backend -> problema la indici la castig (conditie castig sau player)
