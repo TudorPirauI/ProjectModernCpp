@@ -6,10 +6,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QStackedWidget>
-#include <memory>
-
 #include <QMediaPlayer>
+#include <QStackedWidget>
 
 class MainWindow final : public QMainWindow {
     Q_OBJECT
@@ -38,6 +36,8 @@ private:
     int     m_MasterVolume{20};
     int     m_MusicVolume{20};
     int     m_SfxVolume{20};
+
+    QMediaPlayer *m_MediaPlayer;
 
     void DrawMenu();
     void DrawNewGame();

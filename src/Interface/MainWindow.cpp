@@ -4,6 +4,7 @@
 
 #include "MainWindow.h"
 #include <QApplication>
+#include <QAudioOutput>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QColorDialog>
@@ -14,6 +15,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSlider>
+#include <QUrl>
 #include <QVBoxLayout>
 #include <iostream>
 
@@ -21,6 +23,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(Ga
     m_StackedWidget = new QStackedWidget(this);
     setCentralWidget(m_StackedWidget);
     DrawMenu();
+
+    m_MediaPlayer = new QMediaPlayer(this);
+    m_MediaPlayer->setSource(QUrl::fromLocalFile("../background.mp3"));
+
+    QAudioOutput *audioOutput = new QAudioOutput(this);
+    m_MediaPlayer->setAudioOutput(audioOutput);
+    audioOutput->setVolume(0.5);
+
+    m_MediaPlayer->play();
 }
 
 void MainWindow::AddBackButton(const QWidget *widget) {
