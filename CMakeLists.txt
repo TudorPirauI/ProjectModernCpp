@@ -31,6 +31,10 @@ endif ()
 # Find and include Qt6
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
 add_executable(Eter src/main.cpp
         src/Player/Player.cpp
         src/GameBoard/Board.cpp
