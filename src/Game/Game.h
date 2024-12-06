@@ -27,11 +27,16 @@ public:
     [[nodiscard]] int        GetPlayer2Score() const;
     [[nodiscard]] int        GetScoreToWin() const;
     [[nodiscard]] PlayerTurn GetCurrentPlayer() const;
-    bool                     CheckWinningConditions(PlayerTurn currentPlayerTurn);
+    bool                     CheckWinningConditions();
     void                     SetGameState(GameState gameState);
     void                     IncreasePlayerScore(PlayerTurn turn);
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
     virtual void             SetNewCards() = 0;
+
+    Game(const Game &other)                = default;
+    Game(Game &&other) noexcept            = default;
+    Game &operator=(const Game &other)     = default;
+    Game &operator=(Game &&other) noexcept = default;
 
 protected:
     Board      m_Board;

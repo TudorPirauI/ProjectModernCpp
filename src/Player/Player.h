@@ -15,6 +15,10 @@ class Player final {
 
 public:
     Player(std::string name, Hand hand);
+    Player(const Player &other)                = default;
+    Player(Player &&other) noexcept            = default;
+    Player &operator=(const Player &other)     = default;
+    Player &operator=(Player &&other) noexcept = default;
     ~Player();
 
     [[nodiscard]] const Hand        &GetHand() const;

@@ -11,6 +11,10 @@
 
 class Wizard : public MagicPower {
 public:
+    Wizard(const Wizard &other)                = default;
+    Wizard(Wizard &&other) noexcept            = default;
+    Wizard &operator=(const Wizard &other)     = default;
+    Wizard &operator=(Wizard &&other) noexcept = default;
     enum class WizardPower {
         Teleportation,
         Summoning,

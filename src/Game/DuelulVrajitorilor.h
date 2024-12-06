@@ -11,7 +11,6 @@
 #include "../Player/Player.h"
 #include "Game.h"
 
-
 class DuelulVrajitorilor : public Game {
 public:
     enum class PlayerTurn { Player1, Player2 };
@@ -22,9 +21,13 @@ private:
     Wizard m_WizardPlayer2;
 
 public:
+    DuelulVrajitorilor(const DuelulVrajitorilor &other)                = default;
+    DuelulVrajitorilor(DuelulVrajitorilor &&other) noexcept            = default;
+    DuelulVrajitorilor &operator=(const DuelulVrajitorilor &other)     = default;
+    DuelulVrajitorilor &operator=(DuelulVrajitorilor &&other) noexcept = default;
+
     DuelulVrajitorilor();
     ~DuelulVrajitorilor() override = default;
 };
-
 
 #endif // DUELULVRAJITORILOR_H

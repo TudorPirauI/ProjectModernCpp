@@ -12,34 +12,32 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (cardOnPosition != m_Board.end()) {
         const auto cardOnTop = cardOnPosition->second.top();
         if (cardOnTop.GetValue() >= card.GetValue()) {
-            // std::cout << "Can't place card on top of a card with a larger
-            // value\n";
+            std::cout << "Can't place card on top of a card with a larger value\n ";
             return false;
         }
 
         if (cardOnTop.GetIsEter() == true) {
-            // std::cout << "Can't place on top of Eter card\n";
+            std::cout << "Can't place on top of Eter card\n";
             return false;
         }
 
         if (cardOnTop.GetIsFlipped()) {
             if (cardOnTop.GetValue() >= card.GetValue()) {
-                // std::cout << "Can't place card on top of a card with a larger
-                // value\n";
+                std::cout << "Can't place card on top of a card with a larger value\n ";
                 return false;
             }
         }
     }
 
     if (m_IsLocked) {
-        const auto &left  = GetLeft();
-        const auto &right = GetRight();
-        const auto &down  = GetDown();
-        const auto &up    = GetUp();
+        const auto &left  = m_Corners[0];
+        const auto &right = m_Corners[1];
+        const auto &down  = m_Corners[2];
+        const auto &up    = m_Corners[3];
 
         if (pos.first < left.first || pos.second < up.second || pos.second > down.second ||
             pos.first > right.first) {
-            // std::cout << "[Locked] Card out of bounds\n";
+            std::cout << "[Locked] Card out of bounds\n";
             return false;
         }
 
@@ -47,14 +45,14 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     }
 
     if (!CheckProximity(pos)) {
-        // std::cout << "Card not adjacent to any other card\n";
+        std::cout << "Card not adjacent to any other card\n";
         return false;
     }
 
-    const auto &left  = GetLeft();
-    const auto &right = GetRight();
-    const auto &down  = GetDown();
-    const auto &up    = GetUp();
+    const auto &left  = m_Corners[0];
+    const auto &right = m_Corners[1];
+    const auto &down  = m_Corners[2];
+    const auto &up    = m_Corners[3];
 
     if (std::abs(left.first - pos.first) >= m_MaxBoardSize ||
         std::abs(right.first - pos.first) >= m_MaxBoardSize ||
@@ -72,36 +70,32 @@ bool Board::CheckProximity(const Position &pos) const {
         return true;
     }
 
-    return std::ranges::any_of(m_Board | std::views::keys, [&](const auto &position) {
-        const auto xDiff = std::abs(pos.first - position.first);
-        const auto yDiff = std::abs(position.second - pos.second);
+    return std::ranges::any_of(m_Board | std::views::keys, [&](const auto &positionFromTable) {
+        const auto xDiff = std::abs(pos.first - positionFromTable.first);
+        const auto yDiff = std::abs(positionFromTable.second - pos.second);
 
         return xDiff <= 1 and yDiff <= 1;
     });
 }
 
 bool Board::UpdateCorners(const Position &pos) {
-    bool        wasUpdated = false;
-    const auto &left       = GetLeft();
-    const auto &right      = GetRight();
-    const auto &down       = GetDown();
-    const auto &up         = GetUp();
+    bool wasUpdated = false;
 
-    if (pos.first < left.first) {
-        SetLeft(pos);
-        wasUpdated = true;
+    if (pos.first < m_Corners[0].first) {
+        m_Corners[0] = pos;
+        wasUpdated   = true;
     }
-    if (pos.second < up.second) {
-        SetUp(pos);
-        wasUpdated = true;
+    if (pos.first > m_Corners[1].first) {
+        m_Corners[1] = pos;
+        wasUpdated   = true;
     }
-    if (pos.second > down.second) {
-        SetDown(pos);
-        wasUpdated = true;
+    if (pos.second < m_Corners[2].second) {
+        m_Corners[2] = pos;
+        wasUpdated   = true;
     }
-    if (pos.first > right.first) {
-        SetRight(pos);
-        wasUpdated = true;
+    if (pos.second > m_Corners[3].second) {
+        m_Corners[3] = pos;
+        wasUpdated   = true;
     }
 
     return wasUpdated;
@@ -140,10 +134,10 @@ void Board::CleanUpBoard() {
     m_Lines.clear();
     m_Columns.clear();
 }
-Position Board::GetLeft() const { return m_Corners[0]; }
-Position Board::GetRight() const { return m_Corners[1]; }
-Position Board::GetUp() const { return m_Corners[2]; }
-Position Board::GetDown() const { return m_Corners[3]; }
+Position Board::GetLeft() { return m_Corners[0]; }
+Position Board::GetRight() { return m_Corners[1]; }
+Position Board::GetUp() { return m_Corners[2]; }
+Position Board::GetDown() { return m_Corners[3]; }
 
 void Board::SetLeft(const Position &position) { m_Corners[0] = position; }
 void Board::SetRight(const Position &position) { m_Corners[1] = position; }
@@ -188,8 +182,7 @@ void Board::UpdateDiagonals(PlayerTurn playerTurn) {
 
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 
-std::array<Position, 4> Board::GetCorners() const { return m_Corners; }
-GameBoard               Board::GetGameBoard() const { return m_Board; }
+GameBoard Board::GetGameBoard() const { return m_Board; }
 
 Board::Board(const int maxBoardSize) : m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}) {}
 
@@ -206,13 +199,13 @@ bool Board::IsBoardFull() const {
     return true; // todo: check if cards can be placed on top of other cards.
 }
 
-bool Board::InsertCard(Card &card, const Position &pos, const PlayerTurn playerTurn) {
+bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn playerTurn) {
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
         return false;
     }
 
-    static int playerVariation;
+    int playerVariation;
 
     if (playerTurn != PlayerTurn::Player1) {
         playerVariation = -1;

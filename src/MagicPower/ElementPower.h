@@ -39,6 +39,23 @@ public:
 private:
     ElementIndexPower RandomPower();
     std::string       GetElementPowerDescription(ElementIndexPower power);
+
+public:
+    explicit ElementPower(ElementIndexPower power);
+
+    ElementPower(const ElementPower &other) = default;
+
+    ElementPower(ElementPower &&other) noexcept = default;
+
+    ElementPower &operator=(const ElementPower &other) = default;
+
+    ElementPower &operator=(ElementPower &&other) noexcept = default;
+
+    ~ElementPower() = default;
+
+    [[nodiscard]] ElementIndexPower GetPower() const;
+
+    void SetPower(ElementIndexPower newPower);
 };
 
 #endif // ELEMENTPOWER_H

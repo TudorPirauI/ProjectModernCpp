@@ -5,6 +5,7 @@
 #include "Game.h"
 
 #include <iostream>
+#include <numeric>
 #include <ranges>
 
 Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne,
@@ -15,10 +16,7 @@ PlayerTurn Game::GetCurrentPlayer() const { return m_PlayerTurn; }
 
 Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
 
-bool Game::CheckWinningConditions(const PlayerTurn currentPlayerTurn) {
-    // const auto &board                   = m_Board.GetGameBoard();
-    // const auto &[left, up, down, right] = m_Board.GetCorners();
-
+bool Game::CheckWinningConditions() {
     const auto &lines             = m_Board.GetLineAdvantage();
     const auto &columns           = m_Board.GetColumnAdvantage();
     const auto &principalDiagonal = m_Board.GetPrincipalDiagonalAdvantage();
@@ -40,17 +38,23 @@ bool Game::CheckWinningConditions(const PlayerTurn currentPlayerTurn) {
         return false;
     }
 
-    std::cout << "Principal diagonal\n";
-    for (const auto [fst, snd] : principalDiagonal) {
-        std::cout << fst << " " << snd << '\n';
-    }
+    // std::cout << "Principal diagonal\n";
+    // for (const auto [fst, snd] : principalDiagonal) {
+    //     std::cout << fst << " " << snd << '\n';
+    // }
+    //
+    // std::cout << "Secondary diagonal\n";
+    // for (const auto [fst, snd] : secondaryDiagonal) {
+    //     std::cout << fst << " " << snd << '\n';
+    // }
 
-    std::cout << "Secondary diagonal\n";
-    for (const auto [fst, snd] : secondaryDiagonal) {
-        std::cout << fst << " " << snd << '\n';
-    }
+    auto sumValues = [&](const auto &data) {
+        auto values = data | std::views::values;
+        return std::accumulate(values.begin(), values.end(), 0,
+                               [](int sum, const auto &value) { return sum + abs(value); });
+    };
 
-    return hasWinning(principalDiagonal) or hasWinning(secondaryDiagonal);
+    return sumValues(principalDiagonal) or sumValues(secondaryDiagonal);
 }
 
 void Game::SetGameState(const GameState gameState) { m_GameState = gameState; }

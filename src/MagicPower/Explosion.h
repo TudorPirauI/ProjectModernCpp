@@ -19,6 +19,14 @@ private:
     std::vector<std::vector<Effect>>              m_Effects;
     std::vector<std::vector<::Explosion::Effect>> effects;
 
+public:
+    Explosion(const Explosion &other)                = default;
+    ~Explosion()                                     = default;
+    Explosion(Explosion &&other) noexcept            = default;
+    Explosion &operator=(const Explosion &other)     = default;
+    Explosion &operator=(Explosion &&other) noexcept = default;
+
+private:
     static Effect GenerateRandomEffect();
 
     static int RandomInt(int min, int max);
