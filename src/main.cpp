@@ -1,11 +1,12 @@
+#include <QApplication>
+#include <QLoggingCategory>
+
 #include <iostream>
 #include <ranges>
 #include <thread>
 
 #include "Card/Card.h"
 #include "GameBoard/Board.h"
-
-#include <QApplication>
 #include "Interface/MainWindow.h"
 
 void PrintAsciiArt() {
@@ -48,7 +49,10 @@ void PrintAsciiArt() {
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    MainWindow   mainWindow;
+
+    QLoggingCategory::setFilterRules("qt.multimedia.ffmpeg.utils=false");
+
+    MainWindow mainWindow;
     mainWindow.show();
     return QApplication::exec();
 }
