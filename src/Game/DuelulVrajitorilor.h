@@ -17,8 +17,8 @@ public:
 
 private:
     int    m_ScoreWinning{2};
-    Wizard m_WizardPlayer1;
-    Wizard m_WizardPlayer2;
+    Wizard m_AbilityPlayer1;
+    Wizard m_AbilityPlayer2;
 
 public:
     DuelulVrajitorilor(const DuelulVrajitorilor &other)                = default;

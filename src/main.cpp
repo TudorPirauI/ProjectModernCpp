@@ -87,21 +87,7 @@ int main(int argc, char *argv[]) {
 }
 
 /*
-1. Destructor (~ClassName())
-2. Copy Constructor (ClassName(const ClassName& other))
-3. Copy Assignment Operator (ClassName& operator=(const ClassName& other))
-4. Move Constructor (ClassName(ClassName&& other) noexcept)
-5. Move Assignment Operator (ClassName& operator=(ClassName&& other) noexcept)
- */
-
-// todo: backend -> problema la indici la castig (conditie castig sau player)
-// todo: rule of 0 (5)
-
-/*
     backend
-    1. sa terminam antrenamentul BIFAT
     2. duelul vrajitorilor
     3. POATE duelul elementelor (doamne ajuta)
-    4. teste ! pentru joc;) SA ZICEM CA BIFAT
-    5. restructurare game si antrenament :) 20-30% FACUT
  */

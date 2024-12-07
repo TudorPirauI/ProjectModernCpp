@@ -3,4 +3,4 @@
 //
 
 #include "DuelulVrajitorilor.h"
-DuelulVrajitorilor::DuelulVrajitorilor() : m_WizardPlayer1(), m_WizardPlayer2() {}
+DuelulVrajitorilor::DuelulVrajitorilor() : m_AbilityPlayer1(), m_AbilityPlayer2() {}

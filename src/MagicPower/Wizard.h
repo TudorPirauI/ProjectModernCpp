@@ -32,7 +32,7 @@ public:
 private:
     WizardPower m_Type;
     int         RandomPower();
-    bool        m_HasUsedPowerInMatch;
+    bool        m_HasUsedPowerInMatch{false};
 
 public:
     Wizard(std::string name, int id);
