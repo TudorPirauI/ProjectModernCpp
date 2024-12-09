@@ -4,6 +4,9 @@
 
 #include "MainWindow.h"
 
+#include "../Game/Antrenament.h"
+#include "../GameBoard/Board.h"
+
 // m_MediaPlayer = new QMediaPlayer(this);
 // m_MediaPlayer->setSource(QUrl::fromLocalFile("../background.mp3"));
 //
@@ -23,7 +26,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(Ga
     layout->addWidget(m_StackedWidget);
 
     setMinimumSize(800, 600);
-    showFullScreen();
+
+    if (m_FullScreen) {
+        showFullScreen();
+    } else {
+        showNormal();
+    }
 
     DrawMenu();
 }
@@ -76,6 +84,175 @@ void MainWindow::DrawMenu() {
     m_StackedWidget->setCurrentWidget(menuWidget);
 }
 
+// todo: probably fix the backend, it's fucking fucked.
+
+QGridLayout *MainWindow::GenerateBoard(const Board                         &board,
+                                       const std::function<void(Position)> &cellClickedCallback) {
+    const auto boardLayout = new QGridLayout();
+    boardLayout->setSpacing(0);
+    boardLayout->setContentsMargins(0, 0, 0, 0);
+
+    auto left  = board.GetLeft();
+    auto right = board.GetRight();
+    auto up    = board.GetUp();
+    auto down  = board.GetDown();
+
+    if (!board.IsBoardLocked()) {
+        ++right.first;
+        ++down.second;
+        --left.first;
+        --up.second;
+    }
+
+    const auto boardElement = board.GetGameBoard();
+
+    for (int j = up.second; j <= down.second; ++j) {
+        for (int i = left.first; i <= right.first; ++i) {
+            const auto it = boardElement.find({i, j});
+            QString    cellContent;
+            QString    cellStyle = "border: 1px solid black;";
+
+            if (it == boardElement.end()) {
+                if (board.IsPositionValid(
+                            {i, j},
+                            Card(2, PlayerTurn::Player1))) { // todo: this may cause problems, it's
+                                                             // here so it compiles lol
+                    cellContent = " V ";
+                    cellStyle += "background-color: green;";
+                } else {
+                    cellContent = " X ";
+                    cellStyle += "background-color: red;";
+                }
+            } else {
+                const auto card = it->second.top();
+
+                std::cout << std::format(
+                        "(x: {}, y: {}) -> Card {} (Illusion: {} | Flipped: {} | Eter: {})\n",
+                        it->first.first, it->first.second, card.GetValue(), card.GetIsIllusion(),
+                        card.GetIsFlipped(), card.GetIsEter());
+
+                if (card.GetIsFlipped()) {
+                    cellContent = " H ";
+                    cellStyle += "background-color: yellow;";
+                } else {
+                    cellContent = QString(" %1 ").arg(card.GetValue());
+                    if (card.GetPlacedBy() == PlayerTurn::Player1) {
+                        cellStyle += QString("background-color: %1;").arg(m_Player1Color.name());
+                    } else {
+                        cellStyle += QString("background-color: %1;").arg(m_Player2Color.name());
+                    }
+                }
+            }
+
+            const auto cellButton = new QPushButton(cellContent);
+            cellButton->setFixedSize(100, 100);
+            cellButton->setStyleSheet(cellStyle);
+
+            connect(cellButton, &QPushButton::clicked,
+                    [cellClickedCallback, i, j] { cellClickedCallback({i, j}); });
+            boardLayout->addWidget(cellButton, j - up.second, i - left.first);
+        }
+    }
+
+    return boardLayout;
+}
+
+QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
+                                      const std::function<void(Card)> &cellClickedCallback) {
+    const auto cardsLayout = new QHBoxLayout();
+
+    for (const auto &card : hand) {
+        QString cardContent = QString::number(card.GetValue());
+        QString cardStyle   = "border: 1px solid black;";
+
+        const auto cardButton = new QPushButton(cardContent);
+        cardButton->setFixedSize(100, 100);
+        cardButton->setStyleSheet(cardStyle);
+
+        connect(cardButton, &QPushButton::clicked, [cellClickedCallback, &card]() {
+            qDebug() << "Card button clicked, value:" << card.GetValue();
+            cellClickedCallback(card);
+        });
+
+        cardsLayout->addWidget(cardButton);
+    }
+
+    return cardsLayout;
+}
+
+void MainWindow::DrawAntrenament() {
+    const auto antrenamentWidget = new QWidget(this);
+    const auto layout            = new QVBoxLayout(antrenamentWidget);
+
+    auto      &currentBoard  = m_CurrentGame.get()->GetBoard();
+    const auto playerTurn    = m_CurrentGame.get()->GetCurrentPlayer();
+    const auto currentPlayer = playerTurn == PlayerTurn::Player1
+                                       ? m_CurrentGame.get()->GetPlayer1()
+                                       : m_CurrentGame.get()->GetPlayer2();
+    const auto currentHand   = currentPlayer.GetHand();
+
+    for (const auto &c : currentHand) {
+        std::cout << c.GetValue() << " ";
+    }
+
+    auto selectedCard = std::optional<Card>();
+
+    // Generate and add the board layout
+    const auto boardLayout = GenerateBoard(
+            currentBoard, [this, &selectedCard, &currentBoard, &playerTurn](const Position &pos) {
+                qDebug() << "Cell clicked at position:" << pos.first << "," << pos.second;
+
+                if (!selectedCard || !selectedCard.has_value()) {
+                    qDebug() << "No card selected!";
+                    return;
+                }
+
+                const auto selected = selectedCard.value();
+
+                qDebug() << "Selected card value:" << selected.GetValue()
+                         << "Flipped:" << selected.GetIsFlipped();
+
+                const auto value = selected.GetValue();
+
+                std::cout << std::format("Selected card: {} at position: ({}, {})\n", value,
+                                         pos.first, pos.second);
+
+                if (currentBoard.InsertCard({value, playerTurn}, pos, playerTurn)) {
+                    qDebug() << "Card placed successfully!";
+
+                    if (m_CurrentGame->CheckWinningConditions(playerTurn)) {
+                        qDebug() << "Player"
+                                 << (playerTurn == PlayerTurn::Player1
+                                             ? m_CurrentGame->GetPlayer1().GetUserName()
+                                             : m_CurrentGame->GetPlayer2().GetUserName())
+                                 << "won!";
+                        return; // todo: draw winning screen
+                    }
+
+                    m_CurrentGame->SetNextPlayerTurn(m_CurrentGame.get()->GetCurrentPlayer() ==
+                                                                     PlayerTurn::Player1
+                                                             ? PlayerTurn::Player2
+                                                             : PlayerTurn::Player1);
+                    DrawAntrenament(); // Redraw the board for the next turn
+                } else {
+                    qDebug() << "Invalid move!";
+                }
+            });
+
+    layout->addLayout(boardLayout);
+
+    // Generate and add the hand layout
+    const auto handLayout = GenerateHand(currentHand, [&selectedCard](const Card &card) mutable {
+        qDebug() << "Card clicked with value:" << card.GetValue();
+        selectedCard = std::make_optional(card);
+        std::cout << "Selected card: " << selectedCard.value() << '\n';
+    });
+    layout->addLayout(handLayout);
+
+    m_StackedWidget->addWidget(antrenamentWidget);
+    m_StackedWidget->setCurrentWidget(antrenamentWidget);
+}
+
 void MainWindow::DrawNewGame() {
     const auto newGameWidget = new QWidget(this);
     const auto layout        = new QVBoxLayout(newGameWidget);
@@ -108,6 +285,31 @@ void MainWindow::DrawNewGame() {
 
     const auto startGameButton = new QPushButton("Start Game", this);
     layout->addWidget(startGameButton);
+
+    connect(startGameButton, &QPushButton::clicked, this,
+            [this, player1Input, player2Input, buttonGroup] {
+                const auto player1Name = player1Input->text();
+                const auto player2Name = player2Input->text();
+
+                if (player1Name.isEmpty() || player2Name.isEmpty()) {
+                    qDebug() << "Player names cannot be empty!\n";
+                    return;
+                }
+
+                if (buttonGroup->checkedButton() == nullptr) {
+                    qDebug() << "Please select a game mode!\n";
+                    return;
+                }
+
+                // const auto gameType = buttonGroup->checkedButton()->text();
+
+                // todo: text -> class type
+
+                m_CurrentState = GameState::InGame;
+                m_CurrentGame  = std::make_unique<Antrenament>(player1Name.toStdString(),
+                                                               player2Name.toStdString());
+                DrawAntrenament();
+            });
 
     layout->setSpacing(5);
 

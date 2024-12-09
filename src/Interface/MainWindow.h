@@ -18,6 +18,7 @@
 #include <QLineEdit>
 #include <QMainWindow>
 #include <QMediaPlayer>
+#include <QObject>
 #include <QPropertyAnimation>
 #include <QPushButton>
 #include <QRadioButton>
@@ -28,6 +29,8 @@
 #include <QVBoxLayout>
 
 #include <iostream>
+
+#include "../Game/Antrenament.h"
 
 class MainWindow final : public QMainWindow {
     Q_OBJECT
@@ -44,15 +47,18 @@ private slots:
     void OnBackClicked();
 
 private:
-    enum class GameState { MainMenu, NewGame, ResumeGame, Options, Exit };
+    enum class GameState { MainMenu, NewGame, InGame, ResumeGame, Options, Exit };
 
     GameState       m_CurrentState;
     QStackedWidget *m_StackedWidget;
 
+    std::unique_ptr<Game> m_CurrentGame;
+    std::optional<Card>   m_SelectedCard;
+
     // TODO: We should load the settings from a file and only fall back to these defaults if the
     // file is missing or corrupted
     QString m_GameResolution{"1920x1080"};
-    bool    m_FullScreen{true};
+    bool    m_FullScreen{false};
     QColor  m_Player1Color{QColor(173, 216, 230)};
     QColor  m_Player2Color{QColor(255, 105, 97)};
     int     m_MasterVolume{20};
@@ -61,6 +67,12 @@ private:
 
     // QMediaPlayer *m_MediaPlayer;
 
+    QGridLayout *GenerateBoard(const Board                         &board,
+                               const std::function<void(Position)> &cellClickedCallback);
+    QHBoxLayout *GenerateHand(const Hand                      &hand,
+                              const std::function<void(Card)> &cellClickedCallback);
+
+    void DrawAntrenament();
     void DrawMenu();
     void DrawNewGame();
     void DrawResumeGame();
