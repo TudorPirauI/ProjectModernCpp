@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ranges>
 
+#include "../MagicPower/Wizard.h"
 #include "../Player/Player.h"
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
@@ -180,11 +181,91 @@ void Board::UpdateDiagonals(PlayerTurn playerTurn) {
     updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal);
 }
 
+bool Board::VerifyWizardPower(const WizardPower power, const Position &position,
+                              const PlayerTurn playerTurn) {
+    switch (power) {
+        case WizardPower::EliminateOpponentCard: {
+            if (auto &stack = m_Board[position]; stack.size() >= 2) {
+                stack.pop();
+                return true;
+            }
+
+            return false;
+        }
+        case WizardPower::RemoveRow: {
+        }
+        // todo: give a opinion about this
+        case WizardPower::CoverOpponentCard: {
+            if (const auto &stack = m_Board[position]; !stack.empty()) {
+                return true;
+            }
+
+            return false;
+        }
+        case WizardPower::CreatePit: {
+            if (auto &stack = m_Board[position]; stack.empty() == true) {
+                stack.emplace(true);
+                return true;
+            }
+
+            return false;
+        }
+        // todo: frontend :)
+        case WizardPower::MoveOwnStack: {
+            return false;
+        }
+        case WizardPower::GainEterCard: {
+            return true;
+        }
+        // todo: frontend :)
+        case WizardPower::MoveOpponentStack: {
+            return false;
+        }
+        case WizardPower::ShiftRowToEdge: {
+            const auto &left  = GetLeft();
+            const auto &right = GetRight();
+            const auto &up    = GetUp();
+            const auto &down  = GetDown();
+
+            if (position.first == up.first) {
+                bool ok = true;
+                for (auto i = left.second; i <= right.second and ok; ++i) {
+                    if (m_Board[{up.first, i}].empty())
+                        ok = false;
+                }
+
+                if (ok == false)
+                    return false;
+
+                return true;
+            }
+            if (position.first == down.first) {
+                bool ok = true;
+                for (auto i = left.second; i <= right.second and ok; ++i) {
+                    if (m_Board[{up.first, i}].empty())
+                        ok = false;
+                }
+
+                if (ok == false)
+                    return false;
+
+                return true;
+            }
+            return false;
+        }
+        default:;
+    }
+
+    return false;
+}
+
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 
 GameBoard Board::GetGameBoard() const { return m_Board; }
 
-Board::Board(const int maxBoardSize) : m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}) {}
+Board::Board(const int maxBoardSize) :
+    m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}), m_PrincipalDiagonal({}),
+    m_SecondaryDiagonal({}) {}
 
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 

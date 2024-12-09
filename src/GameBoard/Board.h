@@ -8,10 +8,11 @@
 #include <unordered_map>
 
 #include "../Card/Card.h"
+#include "../MagicPower/Wizard.h"
 #include "../Player/Player.h"
 
-using GameBoard              = std::map<Position, std::stack<Card>>;
-constexpr auto StartPosition = Position{0, 0};
+using GameBoard               = std::map<Position, std::stack<Card>>;
+constexpr auto START_POSITION = Position{0, 0};
 
 class Board {
     GameBoard                    m_Board;
@@ -22,7 +23,8 @@ class Board {
     std::unordered_map<int, int> m_SecondaryDiagonal;
     bool                         m_IsLocked{false};
 
-    std::array<Position, 4> m_Corners{StartPosition, StartPosition, StartPosition, StartPosition};
+    std::array<Position, 4> m_Corners{START_POSITION, START_POSITION, START_POSITION,
+                                      START_POSITION};
 
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
     [[nodiscard]] bool IsBoardFull() const;
@@ -55,6 +57,8 @@ public:
     void     SetUp(const Position &position);
     void     SetDown(const Position &position);
     void     UpdateDiagonals(PlayerTurn playerTurn);
+
+    bool VerifyWizardPower(WizardPower power, const Position &position, PlayerTurn playerTurn);
 };
 
 #endif // BOARD_H
