@@ -30,10 +30,15 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     }
 
     if (m_IsLocked) {
-        const auto &left  = m_Corners[0];
-        const auto &right = m_Corners[1];
-        const auto &down  = m_Corners[2];
-        const auto &up    = m_Corners[3];
+        // const auto &left  = m_Corners[0];
+        // const auto &right = m_Corners[1];
+        // const auto &down  = m_Corners[2];
+        // const auto &up    = m_Corners[3];
+
+        const auto left  = GetLeft();
+        const auto right = GetRight();
+        const auto down  = GetDown();
+        const auto up    = GetUp();
 
         if (pos.first < left.first || pos.second < up.second || pos.second > down.second ||
             pos.first > right.first) {
@@ -134,10 +139,11 @@ void Board::CleanUpBoard() {
     m_Lines.clear();
     m_Columns.clear();
 }
-Position Board::GetLeft() { return m_Corners[0]; }
-Position Board::GetRight() { return m_Corners[1]; }
-Position Board::GetUp() { return m_Corners[2]; }
-Position Board::GetDown() { return m_Corners[3]; }
+
+Position Board::GetLeft() const { return m_Corners[0]; }
+Position Board::GetRight() const { return m_Corners[1]; }
+Position Board::GetUp() const { return m_Corners[2]; }
+Position Board::GetDown() const { return m_Corners[3]; }
 
 void Board::SetLeft(const Position &position) { m_Corners[0] = position; }
 void Board::SetRight(const Position &position) { m_Corners[1] = position; }
@@ -223,16 +229,18 @@ bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn p
 
     m_Board[pos].push(card);
 
-    if (UpdateCorners(pos))
+    if (UpdateCorners(pos)) {
         UpdateDiagonals(playerTurn);
-    else {
+    } else {
         const auto &left  = GetLeft();
         const auto &right = GetRight();
         const auto &down  = GetDown();
         const auto &up    = GetUp();
+
         if (pos.first - pos.second == left.first - up.second) {
             if (CheckPlacedCard(pos, playerTurn) == false) {
                 m_PrincipalDiagonal[pos.first] += (2 * playerVariation);
+
             } else {
                 m_PrincipalDiagonal[pos.first] += (1 * playerVariation);
             }
@@ -240,6 +248,7 @@ bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn p
         if (pos.first + pos.second == left.first + down.second) {
             if (CheckPlacedCard(pos, playerTurn) == false) {
                 m_SecondaryDiagonal[pos.first] += (2 * playerVariation);
+
             } else {
                 m_SecondaryDiagonal[pos.first] += (1 * playerVariation);
             }

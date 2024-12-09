@@ -46,10 +46,10 @@ public:
 
     bool     CoverIllusion(const Card &cardOpponent, const Position &pos);
     void     CleanUpBoard();
-    Position GetLeft();
-    Position GetRight();
-    Position GetUp();
-    Position GetDown();
+    Position GetLeft() const;
+    Position GetRight() const;
+    Position GetUp() const;
+    Position GetDown() const;
     void     SetLeft(const Position &position);
     void     SetRight(const Position &position);
     void     SetUp(const Position &position);
