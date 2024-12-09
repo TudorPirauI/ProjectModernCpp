@@ -4,23 +4,17 @@
 
 #ifndef DUELULVRAJITORILOR_H
 #define DUELULVRAJITORILOR_H
-#include <unordered_map>
 
-#include "../GameBoard/Board.h"
-#include "../MagicPower/Wizard.h"
-#include "../Player/Player.h"
 #include "Game.h"
 
 class DuelulVrajitorilor : public Game {
-public:
-    enum class PlayerTurn { Player1, Player2 };
-
-private:
     int    m_ScoreWinning{2};
-    Wizard m_WizardPlayer1;
-    Wizard m_WizardPlayer2;
+    Wizard m_AbilityPlayer1;
+    Wizard m_AbilityPlayer2;
 
 public:
+    Wizard GetPlayerAbility1();
+    Wizard GetPlayerAbility2();
     DuelulVrajitorilor(const DuelulVrajitorilor &other)                = default;
     DuelulVrajitorilor(DuelulVrajitorilor &&other) noexcept            = default;
     DuelulVrajitorilor &operator=(const DuelulVrajitorilor &other)     = default;

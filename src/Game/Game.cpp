@@ -77,6 +77,13 @@ Player &Game::GetPlayer1() { return m_Player1; }
 
 Player &Game::GetPlayer2() { return m_Player2; }
 
+void Game::SwitchPlayerTurn() {
+    if (m_PlayerTurn == PlayerTurn::Player1)
+        m_PlayerTurn = PlayerTurn::Player2;
+    else
+        m_PlayerTurn = PlayerTurn::Player1;
+}
+
 int Game::GetPlayer1Score() const { return m_ScorePlayer1; }
 
 int Game::GetPlayer2Score() const { return m_ScorePlayer2; }

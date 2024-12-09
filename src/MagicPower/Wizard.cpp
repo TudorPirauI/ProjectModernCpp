@@ -4,54 +4,48 @@
 #include <iostream>
 #include <utility>
 
+#include <random>
+
 int Wizard::RandomPower() {
-    static bool seeded = false;
-    if (!seeded) {
-        srand(time(0));
-        seeded = true;
-    }
-    return rand() % 10;
+    static std::random_device              rd;
+    static std::mt19937                    gen(rd());
+    static std::uniform_int_distribution<> dis(0, 7);
+
+    return dis(gen);
 }
 
-Wizard::Wizard(std::string name, const int id) :
-    MagicPower(std::move(name), id), m_Type(static_cast<WizardPower>(RandomPower())) {}
-
-Wizard::Wizard(std::string name, const int id, const WizardPower type) :
-    MagicPower(std::move(name), id), m_Type(type) {}
+Wizard::Wizard() : m_Type(static_cast<WizardPower>(RandomPower())) {}
 
 Wizard::~Wizard() = default;
 
-Wizard::Wizard() : MagicPower("", 0), m_Type(WizardPower::Amnesia) {}
-
-std::string Wizard::GetWizardPowerDescription(const WizardPower power) {
-    switch (power) {
-        case WizardPower::Teleportation:
-            return "Move one of your visible cards to another empty space.";
-        case WizardPower::Summoning:
-            return "Play a card directly from your own deck.";
-        case WizardPower::Metamorphosis:
-            return "Swap the positions of two visible cards on the board.";
-        case WizardPower::Clairvoyance:
-            return "Look at any three covered cards on the board.";
-        case WizardPower::Blockade:
-            return "Choose an empty space; your opponent cannot place cards there on their next "
-                   "turn.";
-        case WizardPower::Manipulation:
-            return "Rearrange the order of three cards in your own stack.";
-        case WizardPower::Illusionism:
-            return "Play two illusions simultaneously in different positions.";
-        case WizardPower::Deflagration:
-            return "Remove all visible covered cards from the board.";
-        case WizardPower::Amnesia:
-            return "Your opponent loses their next turn.";
-        case WizardPower::Theft:
-            return "Take a card from your opponent and play it on the board.";
+std::string Wizard::GetWizardPowerDescription() const {
+    switch (m_Type) {
+        case WizardPower::EliminateOpponentCard:
+            return "Remove an opponent's card that covers your own card.";
+        case WizardPower::RemoveRow:
+            return "Eliminate an entire row with at least 3 positions, containing at least one of "
+                   "your visible cards.";
+        case WizardPower::CoverOpponentCard:
+            return "Cover an opponent's card with one of your lower-value cards from your hand.";
+        case WizardPower::CreatePit:
+            return "Transform an empty space on the board into a pit.";
+        case WizardPower::MoveOwnStack:
+            return "Move a stack of cards with your card on top to another empty position on the "
+                   "board.";
+        case WizardPower::GainEterCard:
+            return "Gain an extra Eter card and place it immediately on the board.";
+        case WizardPower::MoveOpponentStack:
+            return "Move a stack of cards with the opponent's card on top to another empty "
+                   "position on the board.";
+        case WizardPower::ShiftRowToEdge:
+            return "Shift a row with at least 3 positions from one edge of the board to another "
+                   "edge.";
         default:
             return "Unknown power.";
     }
 }
 
-Wizard::WizardPower Wizard::ActivatePower() {
+WizardPower Wizard::ActivatePower() {
     if (m_HasUsedPowerInMatch) {
         std::cout << "The magical power has already been used in this match!" << std::endl;
         return WizardPower::NoPower;
@@ -59,8 +53,7 @@ Wizard::WizardPower Wizard::ActivatePower() {
 
     m_HasUsedPowerInMatch = true;
 
-    std::cout << "The power " << GetWizardPowerDescription(m_Type) << " has been activated!"
-              << std::endl;
+    std::cout << "The power " << GetWizardPowerDescription() << " has been activated!" << std::endl;
     return m_Type;
 }
 

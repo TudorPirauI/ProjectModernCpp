@@ -5,7 +5,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <unordered_map>
 #include "../GameBoard/Board.h"
 #include "../Player/Player.h"
 
@@ -22,7 +21,7 @@ public:
     [[nodiscard]] Board     &GetBoard();
     [[nodiscard]] Player    &GetPlayer1();
     [[nodiscard]] Player    &GetPlayer2();
-    [[nodiscard]] GameState  GetGameState() const;
+    void                     SwitchPlayerTurn();
     [[nodiscard]] int        GetPlayer1Score() const;
     [[nodiscard]] int        GetPlayer2Score() const;
     [[nodiscard]] int        GetScoreToWin() const;
