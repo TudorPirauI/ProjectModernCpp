@@ -3,4 +3,8 @@
 //
 
 #include "DuelulVrajitorilor.h"
+Wizard DuelulVrajitorilor::GetPlayerAbility1() { return m_AbilityPlayer1; }
+
+Wizard DuelulVrajitorilor::GetPlayerAbility2() { return m_AbilityPlayer2; }
+
 DuelulVrajitorilor::DuelulVrajitorilor() : m_AbilityPlayer1(), m_AbilityPlayer2() {}

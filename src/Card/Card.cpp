@@ -10,7 +10,8 @@ Card::Card(const int value) {
     m_Value = value;
 }
 
-Card::Card(int value, PlayerTurn playerTurn) : m_Value(value), m_PlacedBy(playerTurn) {}
+Card::Card(const int value, const PlayerTurn playerTurn) : m_Value(value), m_PlacedBy(playerTurn) {}
+Card::Card(const bool pit) : m_Pit(pit) {}
 
 bool Card::GetIsFlipped() const { return m_IsFlipped; }
 void Card::SetIsFlipped(const bool isFlipped) { m_IsFlipped = isFlipped; }

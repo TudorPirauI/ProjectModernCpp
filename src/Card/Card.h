@@ -24,10 +24,12 @@ private:
     bool       m_IsIllusion : 1 {false};
     bool       m_IsEter : 1 {false};
     bool       m_IsFlipped : 1 {false};
+    bool       m_Pit : 1 {false};
 
 public:
     explicit Card(int value);
     Card(int value, PlayerTurn playerTurn);
+    explicit Card(bool pit);
 
     void              SetValue(int value);
     [[nodiscard]] int GetValue() const;
