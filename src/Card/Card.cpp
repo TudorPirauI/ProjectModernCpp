@@ -1,17 +1,19 @@
 #include "Card.h"
 
+#include <iostream>
 #include <stdexcept>
 
-Card::Card(const int value) {
-    if (value > 4 || value < 1) {
-        throw std::invalid_argument("Invalid card value");
-    }
+// Card::Card(const int value) : m_IsIllusion{false}, m_IsEter{false}, m_IsFlipped{false} {
+//     if (value > 4 || value < 1) {
+//         throw std::invalid_argument("Invalid card value");
+//     }
+//
+//     m_Value = value;
+// }
 
-    m_Value = value;
-}
-
-Card::Card(const int value, const PlayerTurn playerTurn) : m_Value(value), m_PlacedBy(playerTurn) {}
-Card::Card(const bool pit) : m_Pit(pit) {}
+Card::Card(const int value, const PlayerTurn playerTurn) :
+    m_Value(value), m_PlacedBy(playerTurn), m_IsIllusion{false}, m_IsEter{false},
+    m_IsFlipped{false} {}
 
 bool Card::GetIsFlipped() const { return m_IsFlipped; }
 void Card::SetIsFlipped(const bool isFlipped) { m_IsFlipped = isFlipped; }
@@ -19,10 +21,7 @@ void Card::SetIsFlipped(const bool isFlipped) { m_IsFlipped = isFlipped; }
 PlayerTurn Card::GetPlacedBy() const { return m_PlacedBy; }
 void       Card::SetPlacedBy(const PlayerTurn placedBy) { m_PlacedBy = placedBy; }
 
-bool Card::operator==(const Card &other) const {
-    // Compare relevant members of the Card class
-    return this->m_Value == other.m_Value; // Adjust this comparison as needed
-}
+bool Card::operator==(const Card &other) const { return this->m_Value == other.m_Value; }
 
 void Card::SetValue(const int value) { m_Value = value; }
 int  Card::GetValue() const { return m_Value; }

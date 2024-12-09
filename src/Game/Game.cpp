@@ -31,6 +31,7 @@ bool Game::CheckWinningConditions() {
 
     if (hasWinning(lines) or hasWinning(columns)) {
         std::cout << "Lines or columns\n";
+        return true;
     }
 
     if (m_Board.IsBoardLocked() == false) {
@@ -48,6 +49,7 @@ bool Game::CheckWinningConditions() {
     //     std::cout << fst << " " << snd << '\n';
     // }
 
+    // todo: this is wrong, it wins with 2 cards on the diagonal from 2 players
     auto sumValues = [&](const auto &data) {
         auto values = data | std::views::values;
         return std::accumulate(values.begin(), values.end(), 0,
