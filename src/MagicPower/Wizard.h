@@ -7,40 +7,35 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <random>
 #include "MagicPower.h"
 
-class Wizard : public MagicPower {
+enum class WizardPower {
+    EliminateOpponentCard,
+    RemoveRow,
+    CoverOpponentCard,
+    CreatePit,
+    MoveOwnStack,
+    GainEterCard,
+    MoveOpponentStack,
+    ShiftRowToEdge,
+    NoPower
+};
+
+class Wizard {
+    WizardPower m_Type;
+    static int  RandomPower();
+    bool        m_HasUsedPowerInMatch{false};
+
 public:
     Wizard(const Wizard &other)                = default;
     Wizard(Wizard &&other) noexcept            = default;
     Wizard &operator=(const Wizard &other)     = default;
     Wizard &operator=(Wizard &&other) noexcept = default;
-    enum class WizardPower {
-        Teleportation,
-        Summoning,
-        Metamorphosis,
-        Clairvoyance,
-        Blockade,
-        Manipulation,
-        Illusionism,
-        Deflagration,
-        Amnesia,
-        Theft,
-        NoPower
-    };
-
-private:
-    WizardPower m_Type;
-    int         RandomPower();
-    bool        m_HasUsedPowerInMatch{false};
-
-public:
-    Wizard(std::string name, int id);
-    Wizard(std::string name, int id, WizardPower type);
     Wizard();
     ~Wizard();
 
-    static std::string GetWizardPowerDescription(WizardPower power);
+    [[nodiscard]] std::string GetWizardPowerDescription() const;
 
     WizardPower ActivatePower();
     void        ResetPowerForNewMatch();
