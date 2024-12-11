@@ -3,7 +3,9 @@
 #include <fstream>
 #include <iostream>
 #include <ranges>
+#include <stack>
 
+#include "../MagicPower/ElementPower.h"
 #include "../MagicPower/Wizard.h"
 #include "../Player/Player.h"
 
@@ -265,6 +267,85 @@ bool Board::VerifyWizardPower(const WizardPower power, const Position &position,
         default:;
     }
 
+    return false;
+}
+bool Board::VerifyElementalPower(const ElementIndexPower &power, const Position &position,
+                                 const PlayerTurn &playerTurn) {
+    switch (power) {
+        case ElementIndexPower::ControlledExplosion: {
+            // To do
+        }
+        case ElementIndexPower::Destruction: {
+            // to do
+        }
+        case ElementIndexPower::Flames: {
+            // to do
+        }
+        case ElementIndexPower::Lava: {
+            // to do
+        }
+        case ElementIndexPower::FromAshes: {
+            // to do
+        }
+        case ElementIndexPower::Sparks: {
+            // to do
+        }
+        case ElementIndexPower::Blizzard: {
+            // to do
+        }
+        case ElementIndexPower::Gale: {
+            // to do
+        }
+        case ElementIndexPower::Hurricane: {
+            // to do
+        }
+        case ElementIndexPower::Gust: {
+            // to do
+        }
+        case ElementIndexPower::Mirage: {
+            // to do
+        }
+        case ElementIndexPower::Storm: {
+            // to do
+        }
+        case ElementIndexPower::Tide: {
+            // to do
+        }
+        case ElementIndexPower::Fog: {
+            // to do
+        }
+        case ElementIndexPower::Wave: {
+            // to do
+        }
+        case ElementIndexPower::Whirlpool: {
+            // to do
+        }
+        case ElementIndexPower::Tsunami: {
+            // to do
+        }
+        case ElementIndexPower::Waterfall: {
+            // to do
+        }
+        case ElementIndexPower::Support: {
+            // to do
+        }
+        case ElementIndexPower::Earthquake: {
+            // to do
+        }
+        case ElementIndexPower::Shattering: {
+            // to do
+        }
+        case ElementIndexPower::Granite: {
+            // to do
+        }
+        case ElementIndexPower::Avalanche: {
+            // to do
+        }
+        case ElementIndexPower::Boulder: {
+            // to do
+        }
+        default:;
+    }
     return false;
 }
 

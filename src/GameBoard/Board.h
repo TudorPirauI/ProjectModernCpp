@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 #include "../Card/Card.h"
+#include "../MagicPower/ElementPower.h"
 #include "../MagicPower/Wizard.h"
 #include "../Player/Player.h"
 
@@ -59,6 +60,8 @@ public:
     void     UpdateDiagonals();
 
     bool VerifyWizardPower(WizardPower power, const Position &position, PlayerTurn playerTurn);
+    bool VerifyElementalPower(const ElementIndexPower &power, const Position &position,
+                              const PlayerTurn &playerTurn);
 };
 
 #endif // BOARD_H
