@@ -91,6 +91,18 @@ void MainWindow::DrawMenu() {
 
     m_StackedWidget->addWidget(menuWidget);
     m_StackedWidget->setCurrentWidget(menuWidget);
+
+    m_ScoreLabel->hide();
+}
+
+QPixmap LoadCardImage(const int cardValue) {
+    // QString imagePath = QString(":/images/card%1.png").arg(cardValue);
+    const QString imagePath = QString("../images/%1.png").arg(cardValue);
+    const QPixmap pixmap(imagePath);
+    if (pixmap.isNull()) {
+        qDebug() << "Failed to load image for card" << cardValue;
+    }
+    return pixmap;
 }
 
 QGridLayout *MainWindow::GenerateBoard(const Board                         &board,
@@ -176,9 +188,17 @@ QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
     auto       selectedButton = std::make_shared<QPushButton *>(nullptr);
 
     for (const auto &card : hand) {
-        const auto button = new QPushButton(QString::number(card.GetValue()));
+        const auto button = new QPushButton();
+        button->setFixedSize(100, 150); // Adjust size as needed
 
-        button->setFixedSize(100, 100);
+        QPixmap cardImage = LoadCardImage(card.GetValue());
+        if (!cardImage.isNull()) {
+            button->setIcon(QIcon(cardImage));
+            button->setIconSize(button->size());
+        } else {
+            button->setText(QString::number(card.GetValue()));
+        }
+
         button->setStyleSheet("border: 1px solid black;");
         connect(button, &QPushButton::clicked,
                 [this, selectedButton, button, card, cellClickedCallback] {
@@ -202,7 +222,6 @@ QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
 
     return cardsLayout;
 }
-
 void MainWindow::ShowWinningMessage(const QString &winnerName) {
     const auto winningWidget = new QWidget(this);
     const auto layout        = new QVBoxLayout(winningWidget);
@@ -272,8 +291,13 @@ void MainWindow::StartNewGame() {
 }
 
 void MainWindow::UpdateScoreLabel() const {
-    m_ScoreLabel->setText(
-            QString("Player 1: %1 - Player 2: %2").arg(m_Player1Score).arg(m_Player2Score));
+    if (m_CurrentState == GameState::InGame) {
+        m_ScoreLabel->setText(
+                QString("Player 1: %1 - Player 2: %2").arg(m_Player1Score).arg(m_Player2Score));
+        m_ScoreLabel->show();
+    } else {
+        m_ScoreLabel->hide();
+    }
 }
 
 void MainWindow::DrawAntrenament() {
