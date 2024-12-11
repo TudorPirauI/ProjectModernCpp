@@ -24,12 +24,12 @@ bool Game::CheckWinningConditions() {
 
     const auto targetValue = m_Board.GetMaxBoardSize();
 
-    auto hasWinning = [&](const auto &data) {
+    const auto hasWinning = [&](const auto &data) {
         return std::ranges::any_of(data | std::views::values,
                                    [&](const auto &value) { return abs(value) == targetValue; });
     };
 
-    if (hasWinning(lines) or hasWinning(columns)) {
+    if (hasWinning(lines) || hasWinning(columns)) {
         std::cout << "Lines or columns\n";
         return true;
     }
@@ -39,24 +39,20 @@ bool Game::CheckWinningConditions() {
         return false;
     }
 
-    // std::cout << "Principal diagonal\n";
-    // for (const auto [fst, snd] : principalDiagonal) {
-    //     std::cout << fst << " " << snd << '\n';
-    // }
-    //
-    // std::cout << "Secondary diagonal\n";
-    // for (const auto [fst, snd] : secondaryDiagonal) {
-    //     std::cout << fst << " " << snd << '\n';
-    // }
-
-    // todo: this is wrong, it wins with 2 cards on the diagonal from 2 players
     auto sumValues = [&](const auto &data) {
         auto values = data | std::views::values;
         return std::accumulate(values.begin(), values.end(), 0,
-                               [](int sum, const auto &value) { return sum + abs(value); });
+                               [](int sum, const auto &value) { return sum + value; });
     };
 
-    return sumValues(principalDiagonal) or sumValues(secondaryDiagonal);
+    const auto size         = m_Board.GetMaxBoardSize();
+    const auto principalSum = sumValues(principalDiagonal);
+    const auto secondarySum = sumValues(secondaryDiagonal);
+
+    std::cout << std::format("Principal sum: {}\n", principalSum);
+    std::cout << std::format("Secondary sum: {}\n", secondarySum);
+
+    return principalSum == size || secondarySum == size;
 }
 
 void Game::SetGameState(const GameState gameState) { m_GameState = gameState; }

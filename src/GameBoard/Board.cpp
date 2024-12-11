@@ -112,25 +112,20 @@ void Board::CheckIsLocked() {
         return;
     }
 
-    const auto &left  = GetLeft();
-    const auto &right = GetRight();
-    const auto &down  = GetDown();
-    const auto &up    = GetUp();
+    const auto &[leftX, leftY]   = GetLeft();
+    const auto &[rightX, rightY] = GetRight();
+    const auto &[downX, downY]   = GetDown();
+    const auto &[upX, upY]       = GetUp();
 
-    if (std::abs(left.first - right.first) == m_MaxBoardSize - 1 &&
-        std::abs(up.second - down.second) == m_MaxBoardSize - 1) {
+    if (std::abs(leftX - rightX) == m_MaxBoardSize - 1 &&
+        std::abs(upY - downY) == m_MaxBoardSize - 1) {
         m_IsLocked = true;
         std::cout << "Board is locked\n";
     }
 }
 
-bool Board::CheckPlacedCard(const Position &pos, const PlayerTurn playerTurn) {
-    const auto &it = m_Board.find(pos);
-
-    if (it == m_Board.end())
-        return true;
-
-    return m_Board[pos].top().GetPlacedBy() == playerTurn;
+bool Board::CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn) {
+    return m_Board[pos].empty() || m_Board[pos].top().GetPlacedBy() == playerTurn;
 }
 
 void Board::CleanUpBoard() {
@@ -141,54 +136,55 @@ void Board::CleanUpBoard() {
     m_Columns.clear();
 }
 
-Position Board::GetLeft() const { return m_Corners[0]; }
-Position Board::GetRight() const { return m_Corners[1]; }
-Position Board::GetUp() const { return m_Corners[2]; }
-Position Board::GetDown() const { return m_Corners[3]; }
+const Position &Board::GetLeft() const { return m_Corners[0]; }
+const Position &Board::GetRight() const { return m_Corners[1]; }
+const Position &Board::GetUp() const { return m_Corners[2]; }
+const Position &Board::GetDown() const { return m_Corners[3]; }
 
 void Board::SetLeft(const Position &position) { m_Corners[0] = position; }
 void Board::SetRight(const Position &position) { m_Corners[1] = position; }
 void Board::SetUp(const Position &position) { m_Corners[2] = position; }
 void Board::SetDown(const Position &position) { m_Corners[3] = position; }
 
-void Board::UpdateDiagonals(PlayerTurn playerTurn) {
+void Board::UpdateDiagonals(const PlayerTurn &playerTurn) {
     m_PrincipalDiagonal.clear();
     m_SecondaryDiagonal.clear();
 
-    const auto &left  = GetLeft();
-    const auto &right = GetRight();
-    const auto &down  = GetDown();
-    const auto &up    = GetUp();
+    const auto &[leftX, leftY] = GetLeft();
+    // const auto &right          = GetRight(); // this is unused, again?
+    const auto &[downX, downY] = GetDown();
+    const auto &[upX, upY]     = GetUp();
 
-    static int currentPlayer;
-    currentPlayer = (playerTurn == PlayerTurn::Player1) ? 1 : -1;
+    // there used to be a static here, that's what caused the weird winning conditions.
+    const auto currentPlayer = (playerTurn == PlayerTurn::Player1) ? 1 : -1;
 
     auto updateDiagonal = [&](auto &diagonal, auto condition) {
         for (const auto &position : m_Board | std::views::keys) {
-            if (condition(position)) {
-                if (CheckPlacedCard(position, playerTurn) == false) {
-                    diagonal[position.first] += (2 * currentPlayer);
-                } else {
-                    diagonal[position.first] += (1 * currentPlayer);
-                }
+            if (!condition(position))
+                continue;
+
+            if (CheckPlacedCard(position, playerTurn) == false) {
+                diagonal[position.first] += (2 * currentPlayer);
+            } else {
+                diagonal[position.first] += (1 * currentPlayer);
             }
         }
     };
 
-    auto isOnPrincipalDiagonal = [&](const Position &pos) {
-        return pos.first - pos.second == left.second - up.first;
+    const auto isOnPrincipalDiagonal = [&](const Position &pos) {
+        return pos.first - pos.second == leftY - upX;
     };
 
-    auto isOnSecondaryDiagonal = [&](const Position &pos) {
-        return pos.first + pos.second == left.second + down.first;
+    const auto isOnSecondaryDiagonal = [&](const Position &pos) {
+        return pos.first + pos.second == leftY + downX;
     };
 
     updateDiagonal(m_PrincipalDiagonal, isOnPrincipalDiagonal);
     updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal);
 }
 
-bool Board::VerifyWizardPower(const WizardPower power, const Position &position,
-                              const PlayerTurn playerTurn) {
+bool Board::VerifyWizardPower(const WizardPower &power, const Position &position,
+                              const PlayerTurn &playerTurn) {
     switch (power) {
         case WizardPower::EliminateOpponentCard: {
             if (auto &stack = m_Board[position]; stack.size() >= 2) {
@@ -275,38 +271,25 @@ Board::Board(const int maxBoardSize) :
 
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
-bool Board::IsBoardFull() const {
-    if (m_Board.size() != m_MaxBoardSize * m_MaxBoardSize) {
-        std::cout << "There are still positions open on the board\n";
-        return false;
-    }
-
-    std::cout << "Board is full\n";
-
-    return true; // todo: check if cards can be placed on top of other cards.
-}
-
-bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn playerTurn) {
+bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn &playerTurn) {
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
         return false;
     }
 
-    int playerVariation;
+    int compensateForPlacingOnTop = 1;
+    int playerVariation           = -1;
 
-    if (playerTurn != PlayerTurn::Player1) {
-        playerVariation = -1;
-    } else {
+    if (playerTurn == PlayerTurn::Player1) {
         playerVariation = 1;
     }
 
     if (CheckPlacedCard(pos, playerTurn) == false) {
-        m_Lines[pos.first] += (2 * playerVariation);
-        m_Columns[pos.second] += (2 * playerVariation);
-    } else {
-        m_Lines[pos.first] += (1 * playerVariation);
-        m_Columns[pos.second] += (1 * playerVariation);
+        compensateForPlacingOnTop = 2;
     }
+
+    m_Lines[pos.first] += compensateForPlacingOnTop * playerVariation;
+    m_Columns[pos.second] += compensateForPlacingOnTop * playerVariation;
 
     m_Board[pos].push(card);
 
@@ -314,25 +297,15 @@ bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn p
         UpdateDiagonals(playerTurn);
     } else {
         const auto &left  = GetLeft();
-        const auto &right = GetRight();
+        const auto &right = GetRight(); // for some reason this is unused?
         const auto &down  = GetDown();
         const auto &up    = GetUp();
 
         if (pos.first - pos.second == left.first - up.second) {
-            if (CheckPlacedCard(pos, playerTurn) == false) {
-                m_PrincipalDiagonal[pos.first] += (2 * playerVariation);
-
-            } else {
-                m_PrincipalDiagonal[pos.first] += (1 * playerVariation);
-            }
+            m_PrincipalDiagonal[pos.first] += compensateForPlacingOnTop * playerVariation;
         }
         if (pos.first + pos.second == left.first + down.second) {
-            if (CheckPlacedCard(pos, playerTurn) == false) {
-                m_SecondaryDiagonal[pos.first] += (2 * playerVariation);
-
-            } else {
-                m_SecondaryDiagonal[pos.first] += (1 * playerVariation);
-            }
+            m_SecondaryDiagonal[pos.first] += compensateForPlacingOnTop * playerVariation;
         }
     }
 
@@ -342,11 +315,15 @@ bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn p
 }
 
 bool Board::InsertIllusion(Card &card, const Position &pos) {
-    if (m_Board[pos].empty() == false) {
+    if (!m_Board[pos].empty()) {
         std::cout << "Can't place an illusion on an occupied place\n";
         return false;
     }
+
     card.SetIllusion(true);
+
+    // todo: this function is useless. just merge it with InsertCard (also with PlaceEter if it
+    // exists)
     return true;
 }
 
@@ -359,6 +336,7 @@ std::unordered_map<int, int> &Board::GetPrincipalDiagonalAdvantage() { return m_
 std::unordered_map<int, int> &Board::GetSecondaryDiagonalAdvantage() { return m_SecondaryDiagonal; }
 
 bool Board::CoverIllusion(const Card &cardOpponent, const Position &pos) {
+    // todo: this should also be merged with InsertCard imo
     m_Board[pos].top().SetIsFlipped(true);
     if (cardOpponent.GetValue() <= m_Board[pos].top().GetValue()) {
         std::cout << "The card of the player who has the illusion has a "

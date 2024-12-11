@@ -31,34 +31,42 @@ class Board {
 
     bool UpdateCorners(const Position &pos);
     void CheckIsLocked();
-    bool CheckPlacedCard(const Position &pos, PlayerTurn playerTurn);
+    bool CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn);
 
 public:
     explicit Board(int maxBoardSize);
-    [[nodiscard]] bool InsertCard(const Card &card, const Position &pos, PlayerTurn playerTurn);
+
+    [[nodiscard]] bool InsertCard(const Card &card, const Position &pos,
+                                  const PlayerTurn &playerTurn);
+    [[nodiscard]] bool CoverIllusion(const Card &cardOpponent, const Position &pos);
+
     [[nodiscard]] bool IsBoardLocked() const;
     [[nodiscard]] int  GetMaxBoardSize() const;
+    [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
+    [[nodiscard]] bool InsertIllusion(Card &card, const Position &pos);
+
     [[nodiscard]] GameBoard GetGameBoard() const;
-    [[nodiscard]] bool      IsPositionValid(const Position &pos, const Card &card) const;
-    bool                    InsertIllusion(Card &card, const Position &pos);
+
     [[nodiscard]] std::unordered_map<int, int> &GetLineAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetColumnAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetPrincipalDiagonalAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetSecondaryDiagonalAdvantage();
 
-    bool     CoverIllusion(const Card &cardOpponent, const Position &pos);
-    void     CleanUpBoard();
-    Position GetLeft() const;
-    Position GetRight() const;
-    Position GetUp() const;
-    Position GetDown() const;
-    void     SetLeft(const Position &position);
-    void     SetRight(const Position &position);
-    void     SetUp(const Position &position);
-    void     SetDown(const Position &position);
-    void     UpdateDiagonals(PlayerTurn playerTurn);
+    [[nodiscard]] const Position &GetLeft() const;
+    [[nodiscard]] const Position &GetRight() const;
+    [[nodiscard]] const Position &GetUp() const;
+    [[nodiscard]] const Position &GetDown() const;
 
-    bool VerifyWizardPower(WizardPower power, const Position &position, PlayerTurn playerTurn);
+    void SetLeft(const Position &position);
+    void SetRight(const Position &position);
+    void SetUp(const Position &position);
+    void SetDown(const Position &position);
+    void UpdateDiagonals(const PlayerTurn &playerTurn);
+
+    void CleanUpBoard();
+
+    bool VerifyWizardPower(const WizardPower &power, const Position &position,
+                           const PlayerTurn &playerTurn);
 };
 
 #endif // BOARD_H
