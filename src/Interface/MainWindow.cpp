@@ -33,6 +33,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(Ga
         showNormal();
     }
 
+    // Initialize the score label
+    m_ScoreLabel = new QLabel(this);
+    m_ScoreLabel->setAlignment(Qt::AlignRight | Qt::AlignTop);
+    QFont scoreFont = m_ScoreLabel->font();
+    scoreFont.setPointSize(12);
+    m_ScoreLabel->setFont(scoreFont);
+    UpdateScoreLabel();
+    m_ScoreLabel->show();
+
     DrawMenu();
 }
 
@@ -194,11 +203,80 @@ QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
     return cardsLayout;
 }
 
-void MainWindow::DrawAntrenament() {
-    // if (m_StackedWidget->currentWidget()) {
-    //     m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
-    // }
+void MainWindow::ShowWinningMessage(const QString &winnerName) {
+    const auto winningWidget = new QWidget(this);
+    const auto layout        = new QVBoxLayout(winningWidget);
 
+    const auto label     = new QLabel(QString("%1 has won the game!").arg(winnerName), this);
+    QFont      labelFont = label->font();
+    labelFont.setPointSize(24);
+    labelFont.setBold(true);
+    label->setFont(labelFont);
+    label->setAlignment(Qt::AlignCenter);
+    layout->addWidget(label);
+
+    const auto okButton = new QPushButton("OK", this);
+    layout->addWidget(okButton);
+    connect(okButton, &QPushButton::clicked, this, [this, winningWidget, winnerName] {
+        m_StackedWidget->removeWidget(winningWidget);
+        if (winnerName == QString::fromStdString(m_CurrentGame->GetPlayer1().GetUserName())) {
+            ++m_Player1Score;
+        } else {
+            ++m_Player2Score;
+        }
+        UpdateScoreLabel();
+        if (++m_GamesPlayed < 3) {
+            StartNewGame();
+        } else {
+            const auto finalScoreWidget = new QWidget(this);
+            const auto finalLayout      = new QVBoxLayout(finalScoreWidget);
+
+            const auto finalScoreLabel = new QLabel(
+                    QString("Final Score:\n%1: %2\n%3: %4")
+                            .arg(QString::fromStdString(m_CurrentGame->GetPlayer1().GetUserName()))
+                            .arg(m_Player1Score)
+                            .arg(QString::fromStdString(m_CurrentGame->GetPlayer2().GetUserName()))
+                            .arg(m_Player2Score),
+                    this);
+            QFont finalScoreFont = finalScoreLabel->font();
+            finalScoreFont.setPointSize(24);
+            finalScoreFont.setBold(true);
+            finalScoreLabel->setFont(finalScoreFont);
+            finalScoreLabel->setAlignment(Qt::AlignCenter);
+            finalLayout->addWidget(finalScoreLabel);
+
+            const auto finalOkButton = new QPushButton("OK", this);
+            finalLayout->addWidget(finalOkButton);
+            connect(finalOkButton, &QPushButton::clicked, this, [this, finalScoreWidget] {
+                m_StackedWidget->removeWidget(finalScoreWidget);
+                DrawMenu();
+            });
+
+            finalLayout->setAlignment(Qt::AlignCenter);
+
+            m_StackedWidget->addWidget(finalScoreWidget);
+            m_StackedWidget->setCurrentWidget(finalScoreWidget);
+        }
+    });
+
+    layout->setAlignment(Qt::AlignCenter);
+
+    m_StackedWidget->addWidget(winningWidget);
+    m_StackedWidget->setCurrentWidget(winningWidget);
+}
+
+void MainWindow::StartNewGame() {
+    m_CurrentGame = std::make_unique<Antrenament>(m_CurrentGame->GetPlayer1().GetUserName(),
+                                                  m_CurrentGame->GetPlayer2().GetUserName());
+    DrawAntrenament();
+}
+
+void MainWindow::UpdateScoreLabel() {
+    m_ScoreLabel->setText(
+            QString("Player 1: %1 - Player 2: %2").arg(m_Player1Score).arg(m_Player2Score));
+}
+
+void MainWindow::DrawAntrenament() {
     const auto antrenamentWidget = new QWidget(this);
     const auto layout            = new QVBoxLayout(antrenamentWidget);
 
@@ -218,33 +296,38 @@ void MainWindow::DrawAntrenament() {
     turnLabel->setFixedHeight(turnLabel->sizeHint().height());
     layout->addWidget(turnLabel);
 
+    // Add the score label to the layout
+    layout->addWidget(m_ScoreLabel);
+
     auto selectedCard = std::make_shared<std::optional<Card>>(std::nullopt);
 
-    const auto boardLayout = GenerateBoard(currentGame->GetBoard(), [this, selectedCard,
-                                                                     currentTurn,
-                                                                     currentGame](const auto &pos) {
-        if (!selectedCard->has_value()) {
-            std::cout << "No card selected!\n";
-            return;
-        }
-        auto &board = currentGame->GetBoard();
+    const auto boardLayout =
+            GenerateBoard(currentGame->GetBoard(), [this, selectedCard, currentTurn, currentGame,
+                                                    currentPlayer](const auto &pos) {
+                if (!selectedCard->has_value()) {
+                    std::cout << "No card selected!\n";
+                    return;
+                }
+                auto &board = currentGame->GetBoard();
 
-        const auto properCard = selectedCard->value();
+                const auto properCard = selectedCard->value();
 
-        if (board.InsertCard(properCard, pos, currentTurn)) {
-            if (currentGame->CheckWinningConditions()) {
-                std::cout << "\n\n\n!!!!!Winning conditions met!!!!!\n\n\n";
-            }
+                if (board.InsertCard(properCard, pos, currentTurn)) {
+                    if (currentGame->CheckWinningConditions()) {
+                        ShowWinningMessage(QString::fromStdString(currentPlayer.GetUserName()));
+                        return;
+                    }
 
-            currentGame->SetNextPlayerTurn(
-                    currentTurn == PlayerTurn::Player1 ? PlayerTurn::Player2 : PlayerTurn::Player1);
-            DrawAntrenament();
-            m_StackedWidget->repaint();
-        } else {
-            std::cout << std::format("Card {} could not be inserted at ({}, {})\n",
-                                     properCard.GetValue(), pos.first, pos.second);
-        }
-    });
+                    currentGame->SetNextPlayerTurn(currentTurn == PlayerTurn::Player1
+                                                           ? PlayerTurn::Player2
+                                                           : PlayerTurn::Player1);
+                    DrawAntrenament();
+                    m_StackedWidget->repaint();
+                } else {
+                    std::cout << std::format("Card {} could not be inserted at ({}, {})\n",
+                                             properCard.GetValue(), pos.first, pos.second);
+                }
+            });
 
     layout->addLayout(boardLayout);
 
@@ -260,7 +343,6 @@ void MainWindow::DrawAntrenament() {
 
     m_StackedWidget->addWidget(antrenamentWidget);
     m_StackedWidget->setCurrentWidget(antrenamentWidget);
-    // m_StackedWidget->repaint();
 }
 
 void MainWindow::DrawNewGame() {

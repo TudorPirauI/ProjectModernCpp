@@ -65,12 +65,20 @@ private:
     int     m_MusicVolume{20};
     int     m_SfxVolume{20};
 
+    int     m_GamesPlayed  = 0;
+    int     m_Player1Score = 0;
+    int     m_Player2Score = 0;
+    QLabel *m_ScoreLabel   = nullptr;
+    void    UpdateScoreLabel();
+    void    StartNewGame();
+
     // QMediaPlayer *m_MediaPlayer;
 
     QGridLayout *GenerateBoard(const Board                         &board,
                                const std::function<void(Position)> &cellClickedCallback);
     QHBoxLayout *GenerateHand(const Hand                      &hand,
                               const std::function<void(Card)> &cellClickedCallback);
+    void         ShowWinningMessage(const QString &winnerName);
 
     void DrawAntrenament();
     void DrawMenu();
