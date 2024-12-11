@@ -6,7 +6,7 @@
 
 #include <random>
 
-ElementPower::ElementIndexPower ElementPower::RandomPower() {
+ElementIndexPower ElementPower::RandomPower() {
     constexpr int totalPowers = 24;
 
     static std::random_device            rd;

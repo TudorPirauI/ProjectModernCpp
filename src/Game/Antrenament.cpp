@@ -7,16 +7,18 @@
 // Modul antrenament: tabla este de 3x3; fiecare jucător are 7 cărți: 1, 1, 2, 2, 3, 3, 4; Format
 // meci: 2/3;
 
-const std::vector CARDS_PLAYER1{Card(1, PlayerTurn::Player1), Card(1, PlayerTurn::Player1),
-                                Card(2, PlayerTurn::Player1), Card(2, PlayerTurn::Player1),
-                                Card(3, PlayerTurn::Player1), Card(3, PlayerTurn::Player1),
-                                Card(4, PlayerTurn::Player1)};
-const std::vector CARDS_PLAYER2{Card(1, PlayerTurn::Player2), Card(1, PlayerTurn::Player2),
-                                Card(2, PlayerTurn::Player2), Card(2, PlayerTurn::Player2),
-                                Card(3, PlayerTurn::Player2), Card(3, PlayerTurn::Player2),
-                                Card(4, PlayerTurn::Player2)};
+// todo: move this to somewhere more permanent
+const auto createCards = [](const std::array<int, 7> &values, const PlayerTurn &player) {
+    std::vector<Card> cards;
+    for (int value : values) {
+        cards.emplace_back(value, player);
+    }
+    return cards;
+};
 
-// todo: no more magic numbers
+constexpr std::array    CARD_VALUES{1, 1, 2, 2, 3, 3, 4};
+const std::vector<Card> CARDS_PLAYER1 = createCards(CARD_VALUES, PlayerTurn::Player1);
+const std::vector<Card> CARDS_PLAYER2 = createCards(CARD_VALUES, PlayerTurn::Player2);
 
 Antrenament::Antrenament(const std::string &nameOne, const std::string &nameTwo) :
     Game(3, 2, nameOne, nameTwo) {
@@ -30,7 +32,3 @@ void Antrenament::SetNewCards() {
 
     m_Board.CleanUpBoard();
 }
-
-// void Antrenament::CheckWinningConditions() {}
-
-// void Antrenament::GameLoop() {}

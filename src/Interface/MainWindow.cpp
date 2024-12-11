@@ -144,10 +144,10 @@ QGridLayout *MainWindow::GenerateBoard(const Board                         &boar
 
                 if (card.GetIsFlipped()) {
                     cellContent = " H ";
-                    cellStyle += "background-color: #FFFF99;"; // toned down yellow
+                    cellStyle += "background-color: #FFFF99;";
                 } else if (card.GetIsEter()) {
                     cellContent = QString(" %1 ").arg(card.GetValue());
-                    cellStyle += "background-color: #00FFFF;"; // different color for eter card
+                    cellStyle += "background-color: #00FFFF;";
                 } else {
                     cellContent = QString(" %1 ").arg(card.GetValue());
                     if (card.GetPlacedBy() == PlayerTurn::Player1) {

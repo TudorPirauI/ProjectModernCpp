@@ -35,10 +35,8 @@ enum class ElementIndexPower {
 };
 
 class ElementPower {
-
-private:
-    ElementIndexPower RandomPower();
-    std::string       GetElementPowerDescription(ElementIndexPower power);
+    static ElementIndexPower RandomPower();
+    std::string              GetElementPowerDescription(ElementIndexPower power);
 
 public:
     explicit ElementPower(ElementIndexPower power);

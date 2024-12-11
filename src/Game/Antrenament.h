@@ -16,6 +16,7 @@ public:
     Antrenament(const std::string &nameOne, const std::string &nameTwo);
 
     void SetNewCards() override;
+
     Antrenament(const Antrenament &other)                = default;
     Antrenament(Antrenament &&other) noexcept            = default;
     Antrenament &operator=(const Antrenament &other)     = default;
