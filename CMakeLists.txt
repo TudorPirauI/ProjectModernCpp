@@ -37,7 +37,7 @@ if (NOT catch2_POPULATED)
     add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif ()
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia)
+find_package(Qt6 REQUIRED COMPONENTS Widgets) # Multimedia
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -58,6 +58,6 @@ add_executable(Eter src/main.cpp
         src/Interface/MainWindow.h
 )
 
-target_link_libraries(Eter PRIVATE Qt6::Widgets Qt6::Multimedia)
+target_link_libraries(Eter PRIVATE Qt6::Widgets) # Qt6::Multimedia
 
 #add_subdirectory(tests) # todo fix this for windows
