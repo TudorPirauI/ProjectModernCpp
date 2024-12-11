@@ -69,7 +69,7 @@ private:
     int     m_Player1Score = 0;
     int     m_Player2Score = 0;
     QLabel *m_ScoreLabel   = nullptr;
-    void    UpdateScoreLabel();
+    void    UpdateScoreLabel() const;
     void    StartNewGame();
 
     // QMediaPlayer *m_MediaPlayer;
@@ -81,6 +81,10 @@ private:
     void         ShowWinningMessage(const QString &winnerName);
 
     void DrawAntrenament();
+    void DrawDuelulVrajitorilor();
+    void DrawDuelulElementelor();
+    void DrawTurneu();
+    void DrawRapid();
     void DrawMenu();
     void DrawNewGame();
     void DrawResumeGame();
@@ -91,6 +95,8 @@ private:
     void         CreateSlider(int &value, QWidget *parent);
     void         CreateColorPicker(const QString &labelText, QColor &color, QWidget *parent);
     QVBoxLayout *CreateLimitedLayout(QWidget *widget);
+
+    std::string m_CurrentGameMode;
 };
 
 #endif // MAINWINDOW_H

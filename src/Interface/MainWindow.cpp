@@ -271,7 +271,7 @@ void MainWindow::StartNewGame() {
     DrawAntrenament();
 }
 
-void MainWindow::UpdateScoreLabel() {
+void MainWindow::UpdateScoreLabel() const {
     m_ScoreLabel->setText(
             QString("Player 1: %1 - Player 2: %2").arg(m_Player1Score).arg(m_Player2Score));
 }
@@ -329,7 +329,12 @@ void MainWindow::DrawAntrenament() {
                 }
             });
 
-    layout->addLayout(boardLayout);
+    const auto centeredBoardLayout = new QHBoxLayout();
+    centeredBoardLayout->addStretch();
+    centeredBoardLayout->addLayout(boardLayout);
+    centeredBoardLayout->addStretch();
+
+    layout->addLayout(centeredBoardLayout);
 
     const auto separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
@@ -343,6 +348,298 @@ void MainWindow::DrawAntrenament() {
 
     m_StackedWidget->addWidget(antrenamentWidget);
     m_StackedWidget->setCurrentWidget(antrenamentWidget);
+}
+
+void MainWindow::DrawDuelulVrajitorilor() {
+    const auto duelulVrajitorilorWidget = new QWidget(this);
+    const auto layout                   = new QVBoxLayout(duelulVrajitorilorWidget);
+
+    const auto  currentGame   = dynamic_cast<Antrenament *>(m_CurrentGame.get());
+    const auto  currentTurn   = currentGame->GetCurrentPlayer();
+    const auto  currentPlayer = currentTurn == PlayerTurn::Player1 ? currentGame->GetPlayer1()
+                                                                   : currentGame->GetPlayer2();
+    const auto &currentHand   = currentPlayer.GetHand();
+
+    const auto turnLabel = new QLabel(this);
+    turnLabel->setText(
+            QString::fromStdString(std::format("Current turn: {}", currentPlayer.GetUserName())));
+    turnLabel->setAlignment(Qt::AlignCenter);
+    QFont turnLabelFont = turnLabel->font();
+    turnLabelFont.setPointSize(12);
+    turnLabel->setFont(turnLabelFont);
+    turnLabel->setFixedHeight(turnLabel->sizeHint().height());
+    layout->addWidget(turnLabel);
+
+    layout->addWidget(m_ScoreLabel);
+
+    auto selectedCard = std::make_shared<std::optional<Card>>(std::nullopt);
+
+    const auto boardLayout =
+            GenerateBoard(currentGame->GetBoard(), [this, selectedCard, currentTurn, currentGame,
+                                                    currentPlayer](const auto &pos) {
+                if (!selectedCard->has_value()) {
+                    std::cout << "No card selected!\n";
+                    return;
+                }
+                auto &board = currentGame->GetBoard();
+
+                const auto properCard = selectedCard->value();
+
+                if (board.InsertCard(properCard, pos, currentTurn)) {
+                    if (currentGame->CheckWinningConditions()) {
+                        ShowWinningMessage(QString::fromStdString(currentPlayer.GetUserName()));
+                        return;
+                    }
+
+                    currentGame->SetNextPlayerTurn(currentTurn == PlayerTurn::Player1
+                                                           ? PlayerTurn::Player2
+                                                           : PlayerTurn::Player1);
+                    DrawDuelulVrajitorilor();
+                    m_StackedWidget->repaint();
+                } else {
+                    std::cout << std::format("Card {} could not be inserted at ({}, {})\n",
+                                             properCard.GetValue(), pos.first, pos.second);
+                }
+            });
+
+    const auto centeredBoardLayout = new QHBoxLayout();
+    centeredBoardLayout->addStretch();
+    centeredBoardLayout->addLayout(boardLayout);
+    centeredBoardLayout->addStretch();
+
+    layout->addLayout(centeredBoardLayout);
+
+    const auto separator = new QFrame(this);
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameShadow(QFrame::Sunken);
+    layout->addWidget(separator);
+
+    const auto handLayout = GenerateHand(
+            currentHand, [this, selectedCard](const Card &card) { *selectedCard = card; });
+
+    layout->addLayout(handLayout);
+
+    m_StackedWidget->addWidget(duelulVrajitorilorWidget);
+    m_StackedWidget->setCurrentWidget(duelulVrajitorilorWidget);
+}
+
+void MainWindow::DrawDuelulElementelor() {
+    const auto duelulElementelorWidget = new QWidget(this);
+    const auto layout                  = new QVBoxLayout(duelulElementelorWidget);
+
+    const auto  currentGame   = dynamic_cast<Antrenament *>(m_CurrentGame.get());
+    const auto  currentTurn   = currentGame->GetCurrentPlayer();
+    const auto  currentPlayer = currentTurn == PlayerTurn::Player1 ? currentGame->GetPlayer1()
+                                                                   : currentGame->GetPlayer2();
+    const auto &currentHand   = currentPlayer.GetHand();
+
+    const auto turnLabel = new QLabel(this);
+    turnLabel->setText(
+            QString::fromStdString(std::format("Current turn: {}", currentPlayer.GetUserName())));
+    turnLabel->setAlignment(Qt::AlignCenter);
+    QFont turnLabelFont = turnLabel->font();
+    turnLabelFont.setPointSize(12);
+    turnLabel->setFont(turnLabelFont);
+    turnLabel->setFixedHeight(turnLabel->sizeHint().height());
+    layout->addWidget(turnLabel);
+
+    layout->addWidget(m_ScoreLabel);
+
+    auto selectedCard = std::make_shared<std::optional<Card>>(std::nullopt);
+
+    const auto boardLayout =
+            GenerateBoard(currentGame->GetBoard(), [this, selectedCard, currentTurn, currentGame,
+                                                    currentPlayer](const auto &pos) {
+                if (!selectedCard->has_value()) {
+                    std::cout << "No card selected!\n";
+                    return;
+                }
+                auto &board = currentGame->GetBoard();
+
+                const auto properCard = selectedCard->value();
+
+                if (board.InsertCard(properCard, pos, currentTurn)) {
+                    if (currentGame->CheckWinningConditions()) {
+                        ShowWinningMessage(QString::fromStdString(currentPlayer.GetUserName()));
+                        return;
+                    }
+
+                    currentGame->SetNextPlayerTurn(currentTurn == PlayerTurn::Player1
+                                                           ? PlayerTurn::Player2
+                                                           : PlayerTurn::Player1);
+                    DrawDuelulElementelor();
+                    m_StackedWidget->repaint();
+                } else {
+                    std::cout << std::format("Card {} could not be inserted at ({}, {})\n",
+                                             properCard.GetValue(), pos.first, pos.second);
+                }
+            });
+
+    const auto centeredBoardLayout = new QHBoxLayout();
+    centeredBoardLayout->addStretch();
+    centeredBoardLayout->addLayout(boardLayout);
+    centeredBoardLayout->addStretch();
+
+    layout->addLayout(centeredBoardLayout);
+
+    const auto separator = new QFrame(this);
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameShadow(QFrame::Sunken);
+    layout->addWidget(separator);
+
+    const auto handLayout = GenerateHand(
+            currentHand, [this, selectedCard](const Card &card) { *selectedCard = card; });
+
+    layout->addLayout(handLayout);
+
+    m_StackedWidget->addWidget(duelulElementelorWidget);
+    m_StackedWidget->setCurrentWidget(duelulElementelorWidget);
+}
+
+void MainWindow::DrawTurneu() {
+    const auto turneuWidget = new QWidget(this);
+    const auto layout       = new QVBoxLayout(turneuWidget);
+
+    const auto  currentGame   = dynamic_cast<Antrenament *>(m_CurrentGame.get());
+    const auto  currentTurn   = currentGame->GetCurrentPlayer();
+    const auto  currentPlayer = currentTurn == PlayerTurn::Player1 ? currentGame->GetPlayer1()
+                                                                   : currentGame->GetPlayer2();
+    const auto &currentHand   = currentPlayer.GetHand();
+
+    const auto turnLabel = new QLabel(this);
+    turnLabel->setText(
+            QString::fromStdString(std::format("Current turn: {}", currentPlayer.GetUserName())));
+    turnLabel->setAlignment(Qt::AlignCenter);
+    QFont turnLabelFont = turnLabel->font();
+    turnLabelFont.setPointSize(12);
+    turnLabel->setFont(turnLabelFont);
+    turnLabel->setFixedHeight(turnLabel->sizeHint().height());
+    layout->addWidget(turnLabel);
+
+    layout->addWidget(m_ScoreLabel);
+
+    auto selectedCard = std::make_shared<std::optional<Card>>(std::nullopt);
+
+    const auto boardLayout =
+            GenerateBoard(currentGame->GetBoard(), [this, selectedCard, currentTurn, currentGame,
+                                                    currentPlayer](const auto &pos) {
+                if (!selectedCard->has_value()) {
+                    std::cout << "No card selected!\n";
+                    return;
+                }
+                auto &board = currentGame->GetBoard();
+
+                const auto properCard = selectedCard->value();
+
+                if (board.InsertCard(properCard, pos, currentTurn)) {
+                    if (currentGame->CheckWinningConditions()) {
+                        ShowWinningMessage(QString::fromStdString(currentPlayer.GetUserName()));
+                        return;
+                    }
+
+                    currentGame->SetNextPlayerTurn(currentTurn == PlayerTurn::Player1
+                                                           ? PlayerTurn::Player2
+                                                           : PlayerTurn::Player1);
+                    DrawTurneu();
+                    m_StackedWidget->repaint();
+                } else {
+                    std::cout << std::format("Card {} could not be inserted at ({}, {})\n",
+                                             properCard.GetValue(), pos.first, pos.second);
+                }
+            });
+
+    const auto centeredBoardLayout = new QHBoxLayout();
+    centeredBoardLayout->addStretch();
+    centeredBoardLayout->addLayout(boardLayout);
+    centeredBoardLayout->addStretch();
+
+    layout->addLayout(centeredBoardLayout);
+
+    const auto separator = new QFrame(this);
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameShadow(QFrame::Sunken);
+    layout->addWidget(separator);
+
+    const auto handLayout = GenerateHand(
+            currentHand, [this, selectedCard](const Card &card) { *selectedCard = card; });
+
+    layout->addLayout(handLayout);
+
+    m_StackedWidget->addWidget(turneuWidget);
+    m_StackedWidget->setCurrentWidget(turneuWidget);
+}
+
+void MainWindow::DrawRapid() {
+    const auto rapidWidget = new QWidget(this);
+    const auto layout      = new QVBoxLayout(rapidWidget);
+
+    const auto  currentGame   = dynamic_cast<Antrenament *>(m_CurrentGame.get());
+    const auto  currentTurn   = currentGame->GetCurrentPlayer();
+    const auto  currentPlayer = currentTurn == PlayerTurn::Player1 ? currentGame->GetPlayer1()
+                                                                   : currentGame->GetPlayer2();
+    const auto &currentHand   = currentPlayer.GetHand();
+
+    const auto turnLabel = new QLabel(this);
+    turnLabel->setText(
+            QString::fromStdString(std::format("Current turn: {}", currentPlayer.GetUserName())));
+    turnLabel->setAlignment(Qt::AlignCenter);
+    QFont turnLabelFont = turnLabel->font();
+    turnLabelFont.setPointSize(12);
+    turnLabel->setFont(turnLabelFont);
+    turnLabel->setFixedHeight(turnLabel->sizeHint().height());
+    layout->addWidget(turnLabel);
+
+    layout->addWidget(m_ScoreLabel);
+
+    auto selectedCard = std::make_shared<std::optional<Card>>(std::nullopt);
+
+    const auto boardLayout =
+            GenerateBoard(currentGame->GetBoard(), [this, selectedCard, currentTurn, currentGame,
+                                                    currentPlayer](const auto &pos) {
+                if (!selectedCard->has_value()) {
+                    std::cout << "No card selected!\n";
+                    return;
+                }
+                auto &board = currentGame->GetBoard();
+
+                const auto properCard = selectedCard->value();
+
+                if (board.InsertCard(properCard, pos, currentTurn)) {
+                    if (currentGame->CheckWinningConditions()) {
+                        ShowWinningMessage(QString::fromStdString(currentPlayer.GetUserName()));
+                        return;
+                    }
+
+                    currentGame->SetNextPlayerTurn(currentTurn == PlayerTurn::Player1
+                                                           ? PlayerTurn::Player2
+                                                           : PlayerTurn::Player1);
+                    DrawRapid();
+                    m_StackedWidget->repaint();
+                } else {
+                    std::cout << std::format("Card {} could not be inserted at ({}, {})\n",
+                                             properCard.GetValue(), pos.first, pos.second);
+                }
+            });
+
+    const auto centeredBoardLayout = new QHBoxLayout();
+    centeredBoardLayout->addStretch();
+    centeredBoardLayout->addLayout(boardLayout);
+    centeredBoardLayout->addStretch();
+
+    layout->addLayout(centeredBoardLayout);
+
+    const auto separator = new QFrame(this);
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameShadow(QFrame::Sunken);
+    layout->addWidget(separator);
+
+    const auto handLayout = GenerateHand(
+            currentHand, [this, selectedCard](const Card &card) { *selectedCard = card; });
+
+    layout->addLayout(handLayout);
+
+    m_StackedWidget->addWidget(rapidWidget);
+    m_StackedWidget->setCurrentWidget(rapidWidget);
 }
 
 void MainWindow::DrawNewGame() {
@@ -393,14 +690,47 @@ void MainWindow::DrawNewGame() {
                     return;
                 }
 
-                // const auto gameType = buttonGroup->checkedButton()->text();
+                m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
+                std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
+                std::map<std::string, std::function<void()>> gameModeMap = {
+                        {"&Antrenament",
+                         [this, player1Name, player2Name] {
+                             m_CurrentGame = std::make_unique<Antrenament>(
+                                     player1Name.toStdString(), player2Name.toStdString());
+                             DrawAntrenament();
+                         }},
+                        {"&Duelul Vrajitorilor",
+                         [this, player1Name, player2Name] {
+                             m_CurrentGame = std::make_unique<Antrenament>(
+                                     player1Name.toStdString(), player2Name.toStdString());
+                             DrawDuelulVrajitorilor();
+                         }},
+                        {"&Duelul Elementelor",
+                         [this, player1Name, player2Name] {
+                             m_CurrentGame = std::make_unique<Antrenament>(
+                                     player1Name.toStdString(), player2Name.toStdString());
+                             DrawDuelulElementelor();
+                         }},
+                        {"&Turneu",
+                         [this, player1Name, player2Name] {
+                             m_CurrentGame = std::make_unique<Antrenament>(
+                                     player1Name.toStdString(), player2Name.toStdString());
+                             DrawTurneu();
+                         }},
+                        {"&Rapid",
+                         [this, player1Name, player2Name] {
+                             m_CurrentGame = std::make_unique<Antrenament>(
+                                     player1Name.toStdString(), player2Name.toStdString());
+                             DrawRapid();
+                         }},
+                };
 
-                // todo: text -> class type
-
-                m_CurrentState = GameState::InGame;
-                m_CurrentGame  = std::make_unique<Antrenament>(player1Name.toStdString(),
-                                                               player2Name.toStdString());
-                DrawAntrenament();
+                if (gameModeMap.contains(m_CurrentGameMode)) {
+                    m_CurrentState = GameState::InGame;
+                    gameModeMap[m_CurrentGameMode]();
+                } else {
+                    qDebug() << "Selected game mode is not implemented!\n";
+                }
             });
 
     layout->setSpacing(5);
