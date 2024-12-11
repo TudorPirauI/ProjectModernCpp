@@ -39,24 +39,49 @@ bool Game::CheckWinningConditions() {
         return false;
     }
 
-    // std::cout << "Principal diagonal\n";
-    // for (const auto [fst, snd] : principalDiagonal) {
-    //     std::cout << fst << " " << snd << '\n';
-    // }
-    //
-    // std::cout << "Secondary diagonal\n";
-    // for (const auto [fst, snd] : secondaryDiagonal) {
-    //     std::cout << fst << " " << snd << '\n';
-    // }
-
     // todo: this is wrong, it wins with 2 cards on the diagonal from 2 players
-    auto sumValues = [&](const auto &data) {
-        auto values = data | std::views::values;
-        return std::accumulate(values.begin(), values.end(), 0,
-                               [](int sum, const auto &value) { return sum + abs(value); });
+    const auto &left  = m_Board.GetLeft();
+    const auto &up    = m_Board.GetUp();
+    const auto &down  = m_Board.GetDown();
+    const auto &board = m_Board.GetGameBoard();
+
+    auto isOnPrincipalDiagonal = [&](const Position &pos) {
+        return pos.first - pos.second == left.second - up.first;
     };
 
-    return sumValues(principalDiagonal) or sumValues(secondaryDiagonal);
+    auto isOnSecondaryDiagonal = [&](const Position &pos) {
+        return pos.first + pos.second == left.second + down.first;
+    };
+
+    auto updateDiagonal = [&](auto condition, const PlayerTurn turn) {
+        for (const auto &[position, stack] : board) {
+            if (condition(position)) {
+                if (stack.empty()) {
+                    return false;
+                }
+
+                if (stack.top().GetPlacedBy() != turn) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    };
+
+    if (updateDiagonal(isOnPrincipalDiagonal, PlayerTurn::Player1) or
+        updateDiagonal(isOnPrincipalDiagonal, PlayerTurn::Player2)) {
+        std::cout << "Diagonala principala\n";
+        return true;
+    }
+
+    if (updateDiagonal(isOnSecondaryDiagonal, PlayerTurn::Player1) or
+        updateDiagonal(isOnSecondaryDiagonal, PlayerTurn::Player2)) {
+        std::cout << "Diagonala secundara\n";
+        return true;
+    }
+
+    return false;
 }
 
 void Game::SetGameState(const GameState gameState) { m_GameState = gameState; }

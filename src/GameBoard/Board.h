@@ -19,8 +19,8 @@ class Board {
     int                          m_MaxBoardSize;
     std::unordered_map<int, int> m_Lines;
     std::unordered_map<int, int> m_Columns;
-    std::unordered_map<int, int> m_PrincipalDiagonal;
-    std::unordered_map<int, int> m_SecondaryDiagonal;
+    int                          m_PrincipalDiagonal;
+    int                          m_SecondaryDiagonal;
     bool                         m_IsLocked{false};
 
     std::array<Position, 4> m_Corners{START_POSITION, START_POSITION, START_POSITION,
@@ -43,8 +43,8 @@ public:
     bool                    InsertIllusion(Card &card, const Position &pos);
     [[nodiscard]] std::unordered_map<int, int> &GetLineAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetColumnAdvantage();
-    [[nodiscard]] std::unordered_map<int, int> &GetPrincipalDiagonalAdvantage();
-    [[nodiscard]] std::unordered_map<int, int> &GetSecondaryDiagonalAdvantage();
+    [[nodiscard]] int                          &GetPrincipalDiagonalAdvantage();
+    [[nodiscard]] int                          &GetSecondaryDiagonalAdvantage();
 
     bool     CoverIllusion(const Card &cardOpponent, const Position &pos);
     void     CleanUpBoard();
@@ -56,7 +56,7 @@ public:
     void     SetRight(const Position &position);
     void     SetUp(const Position &position);
     void     SetDown(const Position &position);
-    void     UpdateDiagonals(PlayerTurn playerTurn);
+    void     UpdateDiagonals();
 
     bool VerifyWizardPower(WizardPower power, const Position &position, PlayerTurn playerTurn);
 };

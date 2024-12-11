@@ -57,7 +57,6 @@ int main(int argc, char *argv[]) {
     mainWindow.show();
     return QApplication::exec();
 
-    // todo
     // auto  game         = Antrenament("Player1", "Player2");
     // auto &board        = game.GetBoard();
     // auto  turn         = PlayerTurn::Player1;

@@ -139,6 +139,8 @@ void Board::CleanUpBoard() {
     m_IsLocked                                                = false;
     m_Lines.clear();
     m_Columns.clear();
+    m_PrincipalDiagonal = 0;
+    m_SecondaryDiagonal = 0;
 }
 
 Position Board::GetLeft() const { return m_Corners[0]; }
@@ -151,29 +153,13 @@ void Board::SetRight(const Position &position) { m_Corners[1] = position; }
 void Board::SetUp(const Position &position) { m_Corners[2] = position; }
 void Board::SetDown(const Position &position) { m_Corners[3] = position; }
 
-void Board::UpdateDiagonals(PlayerTurn playerTurn) {
-    m_PrincipalDiagonal.clear();
-    m_SecondaryDiagonal.clear();
+void Board::UpdateDiagonals() {
+    m_PrincipalDiagonal = m_SecondaryDiagonal = 0;
 
     const auto &left  = GetLeft();
     const auto &right = GetRight();
     const auto &down  = GetDown();
     const auto &up    = GetUp();
-
-    static int currentPlayer;
-    currentPlayer = (playerTurn == PlayerTurn::Player1) ? 1 : -1;
-
-    auto updateDiagonal = [&](auto &diagonal, auto condition) {
-        for (const auto &position : m_Board | std::views::keys) {
-            if (condition(position)) {
-                if (CheckPlacedCard(position, playerTurn) == false) {
-                    diagonal[position.first] += (2 * currentPlayer);
-                } else {
-                    diagonal[position.first] += (1 * currentPlayer);
-                }
-            }
-        }
-    };
 
     auto isOnPrincipalDiagonal = [&](const Position &pos) {
         return pos.first - pos.second == left.second - up.first;
@@ -183,8 +169,25 @@ void Board::UpdateDiagonals(PlayerTurn playerTurn) {
         return pos.first + pos.second == left.second + down.first;
     };
 
-    updateDiagonal(m_PrincipalDiagonal, isOnPrincipalDiagonal);
-    updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal);
+    auto updateDiagonal = [&](auto &diagonal, auto condition, const PlayerTurn turn) {
+        for (const auto &position : m_Board | std::views::keys) {
+            if (condition(position)) {
+                if (CheckPlacedCard(position, PlayerTurn::Player1) == false) {
+                    diagonal += (2);
+                } else {
+                    diagonal += (1);
+                }
+                if (CheckPlacedCard(position, PlayerTurn::Player2) == false) {
+                    diagonal -= (2);
+                } else {
+                    diagonal -= (1);
+                }
+            }
+        }
+    };
+
+    updateDiagonal(m_PrincipalDiagonal, isOnPrincipalDiagonal, PlayerTurn::Player1);
+    updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal, PlayerTurn::Player2);
 }
 
 bool Board::VerifyWizardPower(const WizardPower power, const Position &position,
@@ -310,30 +313,30 @@ bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn p
 
     m_Board[pos].push(card);
 
-    if (UpdateCorners(pos)) {
-        UpdateDiagonals(playerTurn);
-    } else {
-        const auto &left  = GetLeft();
-        const auto &right = GetRight();
-        const auto &down  = GetDown();
-        const auto &up    = GetUp();
+    if (UpdateCorners(pos) == false) {
+        UpdateDiagonals();
 
-        if (pos.first - pos.second == left.first - up.second) {
-            if (CheckPlacedCard(pos, playerTurn) == false) {
-                m_PrincipalDiagonal[pos.first] += (2 * playerVariation);
+        // const auto &left  = GetLeft();
+        // const auto &right = GetRight();
+        // const auto &down  = GetDown();
+        // const auto &up    = GetUp();
 
-            } else {
-                m_PrincipalDiagonal[pos.first] += (1 * playerVariation);
-            }
-        }
-        if (pos.first + pos.second == left.first + down.second) {
-            if (CheckPlacedCard(pos, playerTurn) == false) {
-                m_SecondaryDiagonal[pos.first] += (2 * playerVariation);
-
-            } else {
-                m_SecondaryDiagonal[pos.first] += (1 * playerVariation);
-            }
-        }
+        // if (pos.first - pos.second == left.first - up.second) {
+        //     if (CheckPlacedCard(pos, playerTurn) == false) {
+        //         m_PrincipalDiagonal += (2 * playerVariation);
+        //
+        //     } else {
+        //         m_PrincipalDiagonal += (1 * playerVariation);
+        //     }
+        // }
+        // if (pos.first + pos.second == left.first + down.second) {
+        //     if (CheckPlacedCard(pos, playerTurn) == false) {
+        //         m_SecondaryDiagonal += (2 * playerVariation);
+        //
+        //     } else {
+        //         m_SecondaryDiagonal += (1 * playerVariation);
+        //     }
+        // }
     }
 
     CheckIsLocked();
@@ -354,9 +357,9 @@ std::unordered_map<int, int> &Board::GetLineAdvantage() { return m_Lines; }
 
 std::unordered_map<int, int> &Board::GetColumnAdvantage() { return m_Columns; }
 
-std::unordered_map<int, int> &Board::GetPrincipalDiagonalAdvantage() { return m_PrincipalDiagonal; }
+int &Board::GetPrincipalDiagonalAdvantage() { return m_PrincipalDiagonal; }
 
-std::unordered_map<int, int> &Board::GetSecondaryDiagonalAdvantage() { return m_SecondaryDiagonal; }
+int &Board::GetSecondaryDiagonalAdvantage() { return m_SecondaryDiagonal; }
 
 bool Board::CoverIllusion(const Card &cardOpponent, const Position &pos) {
     m_Board[pos].top().SetIsFlipped(true);
