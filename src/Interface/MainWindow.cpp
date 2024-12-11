@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(Ga
     QFont scoreFont = m_ScoreLabel->font();
     scoreFont.setPointSize(12);
     m_ScoreLabel->setFont(scoreFont);
-    UpdateScoreLabel();
+    UpdateScoreLabel("", "");
     m_ScoreLabel->show();
 
     DrawMenu();
@@ -108,8 +108,8 @@ QPixmap LoadCardImage(const int cardValue) {
 QGridLayout *MainWindow::GenerateBoard(const Board                         &board,
                                        const std::function<void(Position)> &cellClickedCallback) {
     const auto boardLayout = new QGridLayout();
-    boardLayout->setSpacing(0);
-    boardLayout->setContentsMargins(0, 0, 0, 0);
+    // boardLayout->setSpacing(0);
+    // boardLayout->setContentsMargins(0, 0, 0, 0);
 
     auto left  = board.GetLeft();
     auto right = board.GetRight();
@@ -243,7 +243,8 @@ void MainWindow::ShowWinningMessage(const QString &winnerName) {
         } else {
             ++m_Player2Score;
         }
-        UpdateScoreLabel();
+        UpdateScoreLabel(m_CurrentGame->GetPlayer1().GetUserName(),
+                         m_CurrentGame->GetPlayer2().GetUserName());
         if (++m_GamesPlayed < 3) {
             StartNewGame();
         } else {
@@ -290,10 +291,13 @@ void MainWindow::StartNewGame() {
     DrawAntrenament();
 }
 
-void MainWindow::UpdateScoreLabel() const {
+void MainWindow::UpdateScoreLabel(const std::string &nameOne, const std::string &nameTwo) const {
     if (m_CurrentState == GameState::InGame) {
-        m_ScoreLabel->setText(
-                QString("Player 1: %1 - Player 2: %2").arg(m_Player1Score).arg(m_Player2Score));
+        m_ScoreLabel->setText(QString("%1: %2 - %3: %4")
+                                      .arg(QString::fromStdString(nameOne))
+                                      .arg(m_Player1Score)
+                                      .arg(QString::fromStdString(nameTwo))
+                                      .arg(m_Player2Score));
         m_ScoreLabel->show();
     } else {
         m_ScoreLabel->hide();

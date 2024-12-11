@@ -6,7 +6,7 @@
 #define MAINWINDOW_H
 
 #include <QApplication>
-#include <QAudioOutput>
+// #include <QAudioOutput>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QColorDialog>
@@ -17,7 +17,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
-#include <QMediaPlayer>
+// #include <QMediaPlayer>
 #include <QObject>
 #include <QPropertyAnimation>
 #include <QPushButton>
@@ -69,7 +69,7 @@ private:
     int     m_Player1Score = 0;
     int     m_Player2Score = 0;
     QLabel *m_ScoreLabel   = nullptr;
-    void    UpdateScoreLabel() const;
+    void    UpdateScoreLabel(const std::string &nameOne, const std::string &nameTwo) const;
     void    StartNewGame();
 
     // QMediaPlayer *m_MediaPlayer;
