@@ -9,15 +9,10 @@ public:
     enum class Effect { Nothing, Eliminate, Return, Hole };
 
     explicit Explosion(const std::vector<std::vector<Effect>> &effectMap);
-    Effect    generateRandomEffect();
-    int       randomInt(int min, int max);
-    Explosion generate(int size);
-
-    static Explosion Generate(int size);
+    Explosion Generate(int size);
 
 private:
-    std::vector<std::vector<Effect>>              m_Effects;
-    std::vector<std::vector<::Explosion::Effect>> effects;
+    std::vector<std::vector<Effect>> m_Effects;
 
 public:
     Explosion(const Explosion &other)                = default;

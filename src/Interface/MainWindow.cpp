@@ -207,7 +207,7 @@ QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
                     }
                     *selectedButton = button;
 
-                    QColor highlightColor =
+                    const QColor highlightColor =
                             (m_CurrentGame->GetCurrentPlayer() == PlayerTurn::Player1)
                                     ? m_Player1Color
                                     : m_Player2Color;

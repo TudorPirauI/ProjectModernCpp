@@ -7,9 +7,9 @@
 #include <random>
 
 int Wizard::RandomPower() {
-    static std::random_device              rd;
-    static std::mt19937                    gen(rd());
-    static std::uniform_int_distribution<> dis(0, 7);
+    static std::random_device            rd;
+    static std::mt19937                  gen(rd());
+    static std::uniform_int_distribution dis(0, 7);
 
     return dis(gen);
 }

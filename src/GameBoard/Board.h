@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 #include "../Card/Card.h"
+#include "../MagicPower/ElementPower.h"
 #include "../MagicPower/Wizard.h"
 #include "../Player/Player.h"
 
@@ -39,7 +40,6 @@ public:
     [[nodiscard]] bool InsertCard(const Card &card, const Position &pos,
                                   const PlayerTurn &playerTurn);
     [[nodiscard]] bool CoverIllusion(const Card &cardOpponent, const Position &pos);
-
     [[nodiscard]] bool IsBoardLocked() const;
     [[nodiscard]] int  GetMaxBoardSize() const;
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
