@@ -4,46 +4,36 @@
 #include <iostream>
 #include <ranges>
 
-#include "../MagicPower/Wizard.h"
-#include "../Player/Player.h"
+// TODO: inca nu se foloseste [posX, posY] peste tot, sunt niste locuri unde nu cred ca isi au
+// rostul.
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
-    const auto cardOnPosition = m_Board.find(pos);
-    // todo: Un jucător nu poate să își acopere propria iluzie
-    if (cardOnPosition != m_Board.end()) {
+    if (const auto cardOnPosition = m_Board.find(pos); cardOnPosition != m_Board.end()) {
         const auto cardOnTop = cardOnPosition->second.top();
         if (cardOnTop.GetValue() >= card.GetValue()) {
-            std::cout << "Can't place card on top of a card with a larger value\n ";
             return false;
         }
 
         if (cardOnTop.GetIsEter() == true) {
-            std::cout << "Can't place on top of Eter card\n";
             return false;
         }
 
         if (cardOnTop.GetIsFlipped()) {
             if (cardOnTop.GetValue() >= card.GetValue()) {
-                std::cout << "Can't place card on top of a card with a larger value\n ";
                 return false;
             }
         }
     }
 
+    const auto [posX, posY] = pos;
+
+    const auto [leftX, leftY]   = GetLeft();
+    const auto [rightX, rightY] = GetRight();
+    const auto [downX, downY]   = GetDown();
+    const auto [upX, upY]       = GetUp();
+
     if (m_IsLocked) {
-        // const auto &left  = m_Corners[0];
-        // const auto &right = m_Corners[1];
-        // const auto &down  = m_Corners[2];
-        // const auto &up    = m_Corners[3];
-
-        const auto left  = GetLeft();
-        const auto right = GetRight();
-        const auto down  = GetDown();
-        const auto up    = GetUp();
-
-        if (pos.first < left.first || pos.second < up.second || pos.second > down.second ||
-            pos.first > right.first) {
-            std::cout << "[Locked] Card out of bounds\n";
+        if (posX < leftX || posY < upY || posY > downY || posX > rightX) {
             return false;
         }
 
@@ -51,20 +41,11 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     }
 
     if (!CheckProximity(pos)) {
-        std::cout << "Card not adjacent to any other card\n";
         return false;
     }
 
-    const auto &left  = m_Corners[0];
-    const auto &right = m_Corners[1];
-    const auto &down  = m_Corners[2];
-    const auto &up    = m_Corners[3];
-
-    if (std::abs(left.first - pos.first) >= m_MaxBoardSize ||
-        std::abs(right.first - pos.first) >= m_MaxBoardSize ||
-        std::abs(up.second - pos.second) >= m_MaxBoardSize ||
-        std::abs(down.second - pos.second) >= m_MaxBoardSize) {
-        // std::cout << "Card out of bounds\n";
+    if (std::abs(leftX - posX) >= m_MaxBoardSize || std::abs(rightX - posX) >= m_MaxBoardSize ||
+        std::abs(upY - posY) >= m_MaxBoardSize || std::abs(downY - posY) >= m_MaxBoardSize) {
         return false;
     }
 
@@ -80,7 +61,7 @@ bool Board::CheckProximity(const Position &pos) const {
         const auto xDiff = std::abs(pos.first - positionFromTable.first);
         const auto yDiff = std::abs(positionFromTable.second - pos.second);
 
-        return xDiff <= 1 and yDiff <= 1;
+        return xDiff <= 1 && yDiff <= 1;
     });
 }
 
@@ -224,41 +205,40 @@ bool Board::VerifyWizardPower(const WizardPower &power, const Position &position
             return false;
         }
         case WizardPower::ShiftRowToEdge: {
-            const auto &left  = GetLeft();
-            const auto &right = GetRight();
-            const auto &up    = GetUp();
-            const auto &down  = GetDown();
+            const auto &[leftX, leftY]   = GetLeft();
+            const auto &[rightX, rightY] = GetRight();
+            const auto &[upX, upY]       = GetUp();
+            const auto &[downX, downY]   = GetDown();
 
-            if (position.first == up.first) {
+            if (position.first == upX) {
                 bool ok = true;
-                for (auto i = left.second; i <= right.second and ok; ++i) {
-                    if (m_Board[{up.first, i}].empty())
+                for (auto i = leftY; i <= rightY; ++i) {
+                    if (m_Board[{upX, i}].empty()) {
                         ok = false;
+                        break;
+                    }
                 }
 
-                if (ok == false)
-                    return false;
-
-                return true;
+                return ok;
             }
-            if (position.first == down.first) {
+
+            if (position.first == downX) {
                 bool ok = true;
-                for (auto i = left.second; i <= right.second and ok; ++i) {
-                    if (m_Board[{up.first, i}].empty())
+                for (auto i = leftY; i <= rightY; ++i) {
+                    if (m_Board[{upX, i}].empty()) {
                         ok = false;
+                        break;
+                    }
                 }
 
-                if (ok == false)
-                    return false;
-
-                return true;
+                return ok;
             }
             return false;
         }
-        default:;
+        default: {
+            return false;
+        }
     }
-
-    return false;
 }
 
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
