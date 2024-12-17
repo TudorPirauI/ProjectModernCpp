@@ -52,7 +52,7 @@ bool Game::CheckWinningConditions() {
     std::cout << std::format("Principal sum: {}\n", principalSum);
     std::cout << std::format("Secondary sum: {}\n", secondarySum);
 
-    return principalSum == size || secondarySum == size;
+    return principalSum == abs(size) || secondarySum == abs(size);
 }
 
 void Game::SetGameState(const GameState gameState) { m_GameState = gameState; }

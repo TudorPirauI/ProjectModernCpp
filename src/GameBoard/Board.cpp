@@ -127,40 +127,42 @@ void Board::SetRight(const Position &position) { m_Corners[1] = position; }
 void Board::SetUp(const Position &position) { m_Corners[2] = position; }
 void Board::SetDown(const Position &position) { m_Corners[3] = position; }
 
-void Board::UpdateDiagonals(const PlayerTurn &playerTurn) {
+void Board::UpdateDiagonals() {
     m_PrincipalDiagonal.clear();
     m_SecondaryDiagonal.clear();
 
     const auto &[leftX, leftY] = GetLeft();
-    // const auto &right          = GetRight(); // this is unused, again?
+    // const auto &[rightX, rightY] = GetRight(); // this is unused, again?
     const auto &[downX, downY] = GetDown();
     const auto &[upX, upY]     = GetUp();
-
-    // there used to be a static here, that's what caused the weird winning conditions.
-    const auto currentPlayer = (playerTurn == PlayerTurn::Player1) ? 1 : -1;
 
     auto updateDiagonal = [&](auto &diagonal, auto condition) {
         for (const auto &position : m_Board | std::views::keys) {
             if (!condition(position))
                 continue;
-
-            if (CheckPlacedCard(position, playerTurn) == false) {
-                diagonal[position.first] += (2 * currentPlayer);
-            } else {
-                diagonal[position.first] += (1 * currentPlayer);
+            std::cout << '\n';
+            std::cout << position.first << ' ' << position.second << ' ';
+            std::cout << (m_Board[position].top().GetPlacedBy() == PlayerTurn::Player1 ? 1 : -1);
+            std::cout << '\n';
+            if (m_Board[position].top().GetPlacedBy() == PlayerTurn::Player1) {
+                diagonal[position.first] = 1;
+            } else if (m_Board[position].top().GetPlacedBy() == PlayerTurn::Player2) {
+                diagonal[position.first] = -1;
             }
         }
     };
 
     const auto isOnPrincipalDiagonal = [&](const Position &pos) {
-        return pos.first - pos.second == leftY - upX;
+        return pos.first - pos.second == leftX - upY;
     };
 
     const auto isOnSecondaryDiagonal = [&](const Position &pos) {
-        return pos.first + pos.second == leftY + downX;
+        return pos.first + pos.second == leftX + downY;
     };
 
+    std::cout << "Diagonala Principala:\n";
     updateDiagonal(m_PrincipalDiagonal, isOnPrincipalDiagonal);
+    std::cout << "Diagonala Secundara:\n";
     updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal);
 }
 
@@ -273,23 +275,9 @@ bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn &
 
     m_Board[pos].push(card);
 
-    if (UpdateCorners(pos)) {
-        UpdateDiagonals(playerTurn);
-    } else {
-        const auto &left  = GetLeft();
-        const auto &right = GetRight(); // for some reason this is unused?
-        const auto &down  = GetDown();
-        const auto &up    = GetUp();
-
-        if (pos.first - pos.second == left.first - up.second) {
-            m_PrincipalDiagonal[pos.first] += compensateForPlacingOnTop * playerVariation;
-        }
-        if (pos.first + pos.second == left.first + down.second) {
-            m_SecondaryDiagonal[pos.first] += compensateForPlacingOnTop * playerVariation;
-        }
-    }
-
+    UpdateCorners(pos);
     CheckIsLocked();
+    UpdateDiagonals();
 
     return true;
 }

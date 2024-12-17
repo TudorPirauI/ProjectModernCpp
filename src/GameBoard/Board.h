@@ -61,7 +61,7 @@ public:
     void SetRight(const Position &position);
     void SetUp(const Position &position);
     void SetDown(const Position &position);
-    void UpdateDiagonals(const PlayerTurn &playerTurn);
+    void UpdateDiagonals();
 
     void CleanUpBoard();
 
