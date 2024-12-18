@@ -253,10 +253,20 @@ Board::Board(const int maxBoardSize) :
 
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
-bool Board::InsertCard(const Card &card, const Position &pos, const PlayerTurn &playerTurn) {
+bool Board::InsertCard(Card &card, const Position &pos, const PlayerTurn &playerTurn,
+                       CardType cardType) {
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
         return false;
+    }
+
+    if (cardType == CardType::Ilusion) {
+        if (!InsertIllusion(card, pos))
+            return false;
+    }
+    if (cardType == CardType::Eter) {
+        if (!InsertEter(card, pos))
+            return false;
     }
 
     int compensateForPlacingOnTop = 1;
@@ -290,8 +300,18 @@ bool Board::InsertIllusion(Card &card, const Position &pos) {
 
     card.SetIllusion(true);
 
-    // todo: this function is useless. just merge it with InsertCard (also with PlaceEter if it
-    // exists)
+    return true;
+}
+
+bool Board::InsertEter(Card &card, const Position &pos) {
+    if (!m_Board[pos].empty()) {
+        std::cout << "Can't place an eter card on an occupied place\n";
+        return false;
+    }
+
+    card.SetValue(1);
+    card.SetEter(true);
+
     return true;
 }
 

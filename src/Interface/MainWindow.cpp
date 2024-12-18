@@ -339,7 +339,8 @@ void MainWindow::DrawAntrenament() {
                 auto &board = currentGame->GetBoard();
 
                 const auto properCard = selectedCard->value();
-
+                // todo: fix this method to make it work for introducing the card
+                // todo: check in Board the enum :)
                 if (board.InsertCard(properCard, pos, currentTurn)) {
                     if (currentGame->CheckWinningConditions()) {
                         ShowWinningMessage(QString::fromStdString(currentPlayer.GetUserName()));

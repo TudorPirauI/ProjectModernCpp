@@ -15,6 +15,8 @@
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};
 
+enum class CardType { Normal, Eter, Ilusion };
+
 class Board {
     GameBoard                    m_Board;
     int                          m_MaxBoardSize;
@@ -37,13 +39,15 @@ class Board {
 public:
     explicit Board(int maxBoardSize);
 
-    [[nodiscard]] bool InsertCard(const Card &card, const Position &pos,
-                                  const PlayerTurn &playerTurn);
+    [[nodiscard]] bool InsertCard(Card &card, const Position &pos, const PlayerTurn &playerTurn,
+                                  CardType cardType);
+    [[nodiscard]] bool InsertIllusion(Card &card, const Position &pos);
+    [[nodiscard]] bool InsertEter(Card &card, const Position &pos);
+
     [[nodiscard]] bool CoverIllusion(const Card &cardOpponent, const Position &pos);
     [[nodiscard]] bool IsBoardLocked() const;
     [[nodiscard]] int  GetMaxBoardSize() const;
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
-    [[nodiscard]] bool InsertIllusion(Card &card, const Position &pos);
 
     [[nodiscard]] GameBoard GetGameBoard() const;
 
