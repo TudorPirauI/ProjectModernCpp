@@ -95,15 +95,15 @@ void MainWindow::DrawMenu() {
     m_ScoreLabel->hide();
 }
 
-QPixmap LoadCardImage(const int cardValue) {
-    // QString imagePath = QString(":/images/card%1.png").arg(cardValue);
-    const QString imagePath = QString("../images/%1.png").arg(cardValue);
-    const QPixmap pixmap(imagePath);
-    if (pixmap.isNull()) {
-        qDebug() << "Failed to load image for card" << cardValue;
-    }
-    return pixmap;
-}
+//QPixmap LoadCardImage(const int cardValue) {
+//    // QString imagePath = QString(":/images/card%1.png").arg(cardValue);
+//    const QString imagePath = QString("../images/%1.png").arg(cardValue);
+//    const QPixmap pixmap(imagePath);
+//    if (pixmap.isNull()) {
+//        qDebug() << "Failed to load image for card" << cardValue;
+//    }
+//    return pixmap;
+//}
 
 QGridLayout *MainWindow::GenerateBoard(const Board                         &board,
                                        const std::function<void(Position)> &cellClickedCallback) {
@@ -182,46 +182,46 @@ QGridLayout *MainWindow::GenerateBoard(const Board                         &boar
     return boardLayout;
 }
 
-QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
-                                      const std::function<void(Card)> &cellClickedCallback) {
-    const auto cardsLayout    = new QHBoxLayout();
-    auto       selectedButton = std::make_shared<QPushButton *>(nullptr);
-
-    for (const auto &card : hand) {
-        const auto button = new QPushButton();
-        button->setFixedSize(100, 150); // Adjust size as needed
-
-        QPixmap cardImage = LoadCardImage(card.GetValue());
-        if (!cardImage.isNull()) {
-            button->setIcon(QIcon(cardImage));
-            button->setIconSize(button->size());
-        } else {
-            button->setText(QString::number(card.GetValue()));
-        }
-
-        button->setStyleSheet("border: 1px solid black;");
-        connect(button, &QPushButton::clicked,
-                [this, selectedButton, button, card, cellClickedCallback] {
-                    if (*selectedButton) {
-                        (*selectedButton)->setStyleSheet("border: 1px solid black;");
-                    }
-                    *selectedButton = button;
-
-                    const QColor highlightColor =
-                            (m_CurrentGame->GetCurrentPlayer() == PlayerTurn::Player1)
-                                    ? m_Player1Color
-                                    : m_Player2Color;
-                    button->setStyleSheet(
-                            QString("border: 2px solid %1;").arg(highlightColor.name()));
-
-                    cellClickedCallback(card);
-                });
-
-        cardsLayout->addWidget(button);
-    }
-
-    return cardsLayout;
-}
+//QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
+//                                      const std::function<void(Card)> &cellClickedCallback) {
+//    const auto cardsLayout    = new QHBoxLayout();
+//    auto       selectedButton = std::make_shared<QPushButton *>(nullptr);
+//
+//    for (const auto &card : hand) {
+//        const auto button = new QPushButton();
+//        button->setFixedSize(100, 150); // Adjust size as needed
+//
+//        QPixmap cardImage = LoadCardImage(card.GetValue());
+//        if (!cardImage.isNull()) {
+//            button->setIcon(QIcon(cardImage));
+//            button->setIconSize(button->size());
+//        } else {
+//            button->setText(QString::number(card.GetValue()));
+//        }
+//
+//        button->setStyleSheet("border: 1px solid black;");
+//        connect(button, &QPushButton::clicked,
+//                [this, selectedButton, button, card, cellClickedCallback] {
+//                    if (*selectedButton) {
+//                        (*selectedButton)->setStyleSheet("border: 1px solid black;");
+//                    }
+//                    *selectedButton = button;
+//
+//                    const QColor highlightColor =
+//                            (m_CurrentGame->GetCurrentPlayer() == PlayerTurn::Player1)
+//                                    ? m_Player1Color
+//                                    : m_Player2Color;
+//                    button->setStyleSheet(
+//                            QString("border: 2px solid %1;").arg(highlightColor.name()));
+//
+//                    cellClickedCallback(card);
+//                });
+//
+//        cardsLayout->addWidget(button);
+//    }
+//
+//    return cardsLayout;
+//}
 void MainWindow::ShowWinningMessage(const QString &winnerName) {
     const auto winningWidget = new QWidget(this);
     const auto layout        = new QVBoxLayout(winningWidget);
