@@ -8,29 +8,52 @@
 // rostul.
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
-    if (const auto cardOnPosition = m_Board.find(pos); cardOnPosition != m_Board.end()) {
-        const auto cardOnTop = cardOnPosition->second.top();
-        if (cardOnTop.GetValue() >= card.GetValue()) {
-            return false;
-        }
+    printf("\nma-ta\n");
+    printf("Pos: %d %d\n", pos.first, pos.second);
 
-        if (cardOnTop.GetIsEter() == true) {
-            return false;
-        }
+    const auto &[leftX, leftY]   = GetLeft();
+    const auto &[rightX, rightY] = GetRight();
+    const auto &[downX, downY]   = GetDown();
+    const auto &[upX, upY]       = GetUp();
 
-        if (cardOnTop.GetIsFlipped()) {
-            if (cardOnTop.GetValue() >= card.GetValue()) {
-                return false;
-            }
-        }
-    }
+    printf("Max Board Size: %d\n", m_MaxBoardSize);
+    printf("Is Locked: %d\n ", m_IsLocked);
+
+    // print out everything
+    printf("Left: %d %d\n", leftX, leftY);
+    printf("Right: %d %d\n", rightX, rightY);
+    printf("Down: %d %d\n", downX, downY);
+    printf("Up: %d %d\n", upX, upY);
+
+    // for (const auto &[pos, cards] : m_Board) {
+    //     printf("%d %d\n", pos.first, pos.second);
+    //     // printf("%d\n", cards.top().GetValue());
+    // }
+    //
+    // if (const auto cardOnPosition = m_Board.find(pos); cardOnPosition != m_Board.end()) {
+    //     printf("ma-ta2\n");
+    //     const auto cardOnTop = cardOnPosition->second.top();
+    //     if (cardOnTop.GetValue() >= card.GetValue()) {
+    //         return false;
+    //     }
+    //
+    //     if (cardOnTop.GetIsEter() == true) {
+    //         return false;
+    //     }
+    //
+    //     if (cardOnTop.GetIsFlipped()) {
+    //         if (cardOnTop.GetValue() >= card.GetValue()) {
+    //             return false;
+    //         }
+    //     }
+    // }
 
     const auto [posX, posY] = pos;
 
-    const auto [leftX, leftY]   = GetLeft();
-    const auto [rightX, rightY] = GetRight();
-    const auto [downX, downY]   = GetDown();
-    const auto [upX, upY]       = GetUp();
+    // const auto [leftX, leftY]   = GetLeft();
+    // const auto [rightX, rightY] = GetRight();
+    // const auto [downX, downY]   = GetDown();
+    // const auto [upX, upY]       = GetUp();
 
     if (m_IsLocked) {
         if (posX < leftX || posY < upY || posY > downY || posX > rightX) {

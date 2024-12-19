@@ -8,16 +8,16 @@ project(Eter)
 
 set(CMAKE_CXX_STANDARD 23)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3") # -Wall -Wextra
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3") # -Wall -Wextra
 
-check_ipo_supported(RESULT ipo_supported OUTPUT ipo_output)
-
-if (ipo_supported)
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
-else ()
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
-    message(WARNING "Interprocedural Optimization (IPO) is NOT supported: ${ipo_output}")
-endif ()
+#check_ipo_supported(RESULT ipo_supported OUTPUT ipo_output)
+#
+#if (ipo_supported)
+#    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+#else ()
+#    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
+#    message(WARNING "Interprocedural Optimization (IPO) is NOT supported: ${ipo_output}")
+#endif ()
 
 ProcessorCount(N)
 if (NOT DEFINED CMAKE_BUILD_PARALLEL_LEVEL)
@@ -56,6 +56,8 @@ add_executable(Eter src/main.cpp
         src/MagicPower/Explosion.cpp
         src/Interface/MainWindow.cpp
         src/Interface/MainWindow.h
+        src/Interface/AntrenamentWidget.h
+        src/Interface/AntrenamentWidget.cpp
 )
 
 target_link_libraries(Eter PRIVATE Qt6::Widgets) # Qt6::Multimedia

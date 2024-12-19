@@ -52,8 +52,8 @@ private:
     GameState       m_CurrentState;
     QStackedWidget *m_StackedWidget;
 
-    std::unique_ptr<Game> m_CurrentGame;
-    std::optional<Card>   m_SelectedCard;
+    // std::unique_ptr<Game> m_CurrentGame;
+    // std::optional<Card>   m_SelectedCard;
 
     // TODO: We should load the settings from a file and only fall back to these defaults if the
     // file is missing or corrupted
@@ -65,26 +65,26 @@ private:
     int     m_MusicVolume{20};
     int     m_SfxVolume{20};
 
-    int     m_GamesPlayed  = 0;
-    int     m_Player1Score = 0;
-    int     m_Player2Score = 0;
-    QLabel *m_ScoreLabel   = nullptr;
-    void    UpdateScoreLabel(const std::string &nameOne, const std::string &nameTwo) const;
-    void    StartNewGame();
+    // int     m_GamesPlayed  = 0;
+    // int     m_Player1Score = 0;
+    // int     m_Player2Score = 0;
+    // QLabel *m_ScoreLabel   = nullptr;
+    // void    UpdateScoreLabel(const std::string &nameOne, const std::string &nameTwo) const;
+    // void StartNewGame();
 
     // QMediaPlayer *m_MediaPlayer;
 
-    QGridLayout *GenerateBoard(const Board                         &board,
-                               const std::function<void(Position)> &cellClickedCallback);
-    QHBoxLayout *GenerateHand(const Hand                      &hand,
-                              const std::function<void(Card)> &cellClickedCallback);
-    void         ShowWinningMessage(const QString &winnerName);
+    // QGridLayout *GenerateBoard(const Board                         &board,
+    //                            const std::function<void(Position)> &cellClickedCallback);
+    // QHBoxLayout *GenerateHand(const Hand                      &hand,
+    //                           const std::function<void(Card)> &cellClickedCallback);
+    // void         ShowWinningMessage(const QString &winnerName);
 
-    void DrawAntrenament();
-    void DrawDuelulVrajitorilor();
-    void DrawDuelulElementelor();
-    void DrawTurneu();
-    void DrawRapid();
+    // void DrawAntrenament();
+    // void DrawDuelulVrajitorilor();
+    // void DrawDuelulElementelor();
+    // void DrawTurneu();
+    // void DrawRapid();
     void DrawMenu();
     void DrawNewGame();
     void DrawResumeGame();

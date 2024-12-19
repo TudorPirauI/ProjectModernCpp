@@ -3,13 +3,15 @@
 #include <iostream>
 #include <stdexcept>
 
-// Card::Card(const int value) : m_IsIllusion{false}, m_IsEter{false}, m_IsFlipped{false} {
-//     if (value > 4 || value < 1) {
-//         throw std::invalid_argument("Invalid card value");
-//     }
-//
-//     m_Value = value;
-// }
+Card::Card(const int value) {
+    if (value > 4 || value < 1) {
+        throw std::invalid_argument("Invalid card value");
+    }
+
+    std::cout << "I was called\n";
+
+    m_Value = value;
+}
 
 Card::Card(const int value, const PlayerTurn playerTurn) : m_Value(value), m_PlacedBy(playerTurn) {}
 
