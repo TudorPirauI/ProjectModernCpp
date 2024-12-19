@@ -95,15 +95,18 @@ void MainWindow::DrawMenu() {
     m_ScoreLabel->hide();
 }
 
-//QPixmap LoadCardImage(const int cardValue) {
-//    // QString imagePath = QString(":/images/card%1.png").arg(cardValue);
-//    const QString imagePath = QString("../images/%1.png").arg(cardValue);
-//    const QPixmap pixmap(imagePath);
-//    if (pixmap.isNull()) {
-//        qDebug() << "Failed to load image for card" << cardValue;
-//    }
-//    return pixmap;
-//}
+QPixmap LoadCardImage(const int cardValue, const PlayerTurn &turn) {
+    int turnNumber = 1;
+    if (turn != PlayerTurn::Player1) {
+        turnNumber = 2;
+    }
+    const QString imagePath = QString("../images/%1_%2.jpg").arg(cardValue).arg(turnNumber);
+    const QPixmap pixmap(imagePath);
+    if (pixmap.isNull()) {
+        qDebug() << "Failed to load image for card" << cardValue;
+    }
+    return pixmap;
+}
 
 QGridLayout *MainWindow::GenerateBoard(const Board                         &board,
                                        const std::function<void(Position)> &cellClickedCallback) {
@@ -131,17 +134,19 @@ QGridLayout *MainWindow::GenerateBoard(const Board                         &boar
             QString    cellContent;
             QString    cellStyle = "border: 1px solid black;";
 
+            QPixmap cardImage;
+
             if (it == boardElement.end()) {
                 if (board.IsPositionValid({i, j}, Card(2, PlayerTurn::Player1))) {
-                    cellContent = " V ";
+                    // cellContent = " V ";
                     cellStyle += "background-color: green;";
                 } else {
-                    cellContent = " X ";
+                    // cellContent = " X ";
                     cellStyle += "background-color: red;";
                 }
             } else {
                 const auto card = it->second.top();
-
+                cardImage       = LoadCardImage(card.GetValue(), card.GetPlacedBy());
                 if (card.GetIsFlipped()) {
                     cellContent = " H ";
                     cellStyle += "background-color: #FFFF99;";
@@ -166,9 +171,16 @@ QGridLayout *MainWindow::GenerateBoard(const Board                         &boar
                 }
             }
 
-            const auto cellButton = new QPushButton(cellContent, this);
+            const auto cellButton = new QPushButton(this);
             cellButton->setFixedSize(100, 100);
-            cellButton->setStyleSheet(cellStyle);
+
+            if (!cardImage.isNull()) {
+                cellButton->setIcon(QIcon(cardImage));
+                cellButton->setIconSize(cellButton->size());
+            } else {
+                cellButton->setStyleSheet(cellStyle);
+                cellButton->setText(cellContent);
+            }
 
             connect(cellButton, &QPushButton::clicked,
                     [cellClickedCallback, i, j] { cellClickedCallback({i, j}); });
@@ -182,46 +194,47 @@ QGridLayout *MainWindow::GenerateBoard(const Board                         &boar
     return boardLayout;
 }
 
-//QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
-//                                      const std::function<void(Card)> &cellClickedCallback) {
-//    const auto cardsLayout    = new QHBoxLayout();
-//    auto       selectedButton = std::make_shared<QPushButton *>(nullptr);
-//
-//    for (const auto &card : hand) {
-//        const auto button = new QPushButton();
-//        button->setFixedSize(100, 150); // Adjust size as needed
-//
-//        QPixmap cardImage = LoadCardImage(card.GetValue());
-//        if (!cardImage.isNull()) {
-//            button->setIcon(QIcon(cardImage));
-//            button->setIconSize(button->size());
-//        } else {
-//            button->setText(QString::number(card.GetValue()));
-//        }
-//
-//        button->setStyleSheet("border: 1px solid black;");
-//        connect(button, &QPushButton::clicked,
-//                [this, selectedButton, button, card, cellClickedCallback] {
-//                    if (*selectedButton) {
-//                        (*selectedButton)->setStyleSheet("border: 1px solid black;");
-//                    }
-//                    *selectedButton = button;
-//
-//                    const QColor highlightColor =
-//                            (m_CurrentGame->GetCurrentPlayer() == PlayerTurn::Player1)
-//                                    ? m_Player1Color
-//                                    : m_Player2Color;
-//                    button->setStyleSheet(
-//                            QString("border: 2px solid %1;").arg(highlightColor.name()));
-//
-//                    cellClickedCallback(card);
-//                });
-//
-//        cardsLayout->addWidget(button);
-//    }
-//
-//    return cardsLayout;
-//}
+QHBoxLayout *MainWindow::GenerateHand(const Hand                      &hand,
+                                      const std::function<void(Card)> &cellClickedCallback) {
+    const auto cardsLayout    = new QHBoxLayout();
+    auto       selectedButton = std::make_shared<QPushButton *>(nullptr);
+
+    for (const auto &card : hand) {
+        const auto button = new QPushButton();
+        button->setFixedSize(150, 150);
+
+        QPixmap cardImage = LoadCardImage(card.GetValue(), card.GetPlacedBy());
+        if (!cardImage.isNull()) {
+            button->setIcon(QIcon(cardImage));
+            button->setIconSize(button->size());
+        } else {
+            button->setText(QString::number(card.GetValue()));
+        }
+
+        button->setStyleSheet("border: 3px solid black;");
+        connect(button, &QPushButton::clicked,
+                [this, selectedButton, button, card, cellClickedCallback] {
+                    if (*selectedButton) {
+                        (*selectedButton)->setStyleSheet("border: 3px solid black;");
+                    }
+                    *selectedButton = button;
+
+                    const QColor highlightColor =
+                            (m_CurrentGame->GetCurrentPlayer() == PlayerTurn::Player1)
+                                    ? m_Player1Color
+                                    : m_Player2Color;
+                    button->setStyleSheet(
+                            QString("border: 4px solid %1;").arg(highlightColor.name()));
+
+                    cellClickedCallback(card);
+                });
+
+        cardsLayout->addWidget(button);
+    }
+
+    return cardsLayout;
+}
+
 void MainWindow::ShowWinningMessage(const QString &winnerName) {
     const auto winningWidget = new QWidget(this);
     const auto layout        = new QVBoxLayout(winningWidget);
@@ -338,7 +351,7 @@ void MainWindow::DrawAntrenament() {
                 }
                 auto &board = currentGame->GetBoard();
 
-                const auto properCard = selectedCard->value();
+                auto properCard = selectedCard->value();
                 // todo: fix this method to make it work for introducing the card
                 // todo: check in Board the enum :)
                 if (board.InsertCard(properCard, pos, currentTurn)) {
@@ -412,7 +425,7 @@ void MainWindow::DrawDuelulVrajitorilor() {
                 }
                 auto &board = currentGame->GetBoard();
 
-                const auto properCard = selectedCard->value();
+                auto properCard = selectedCard->value();
 
                 if (board.InsertCard(properCard, pos, currentTurn)) {
                     if (currentGame->CheckWinningConditions()) {
@@ -485,7 +498,7 @@ void MainWindow::DrawDuelulElementelor() {
                 }
                 auto &board = currentGame->GetBoard();
 
-                const auto properCard = selectedCard->value();
+                auto properCard = selectedCard->value();
 
                 if (board.InsertCard(properCard, pos, currentTurn)) {
                     if (currentGame->CheckWinningConditions()) {
@@ -558,7 +571,7 @@ void MainWindow::DrawTurneu() {
                 }
                 auto &board = currentGame->GetBoard();
 
-                const auto properCard = selectedCard->value();
+                auto properCard = selectedCard->value();
 
                 if (board.InsertCard(properCard, pos, currentTurn)) {
                     if (currentGame->CheckWinningConditions()) {
@@ -631,7 +644,7 @@ void MainWindow::DrawRapid() {
                 }
                 auto &board = currentGame->GetBoard();
 
-                const auto properCard = selectedCard->value();
+                auto properCard = selectedCard->value();
 
                 if (board.InsertCard(properCard, pos, currentTurn)) {
                     if (currentGame->CheckWinningConditions()) {

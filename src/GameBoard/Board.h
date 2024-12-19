@@ -40,7 +40,7 @@ public:
     explicit Board(int maxBoardSize);
 
     [[nodiscard]] bool InsertCard(Card &card, const Position &pos, const PlayerTurn &playerTurn,
-                                  CardType cardType);
+                                  const CardType &cardType = CardType::Normal);
     [[nodiscard]] bool InsertIllusion(Card &card, const Position &pos);
     [[nodiscard]] bool InsertEter(Card &card, const Position &pos);
 
