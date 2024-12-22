@@ -5,10 +5,7 @@
 #ifndef WIZARD_H
 #define WIZARD_H
 
-#include <cstdlib>
-#include <ctime>
 #include <random>
-#include "MagicPower.h"
 
 enum class WizardPower {
     EliminateOpponentCard,

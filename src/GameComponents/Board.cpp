@@ -1,4 +1,4 @@
-#include "Board.h"
+#include <GameComponents/Board.h>
 
 #include <fstream>
 #include <iostream>

@@ -6,7 +6,6 @@
 #define MAINWINDOW_H
 
 #include <QApplication>
-// #include <QAudioOutput>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QColorDialog>
@@ -17,7 +16,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
-// #include <QMediaPlayer>
 #include <QObject>
 #include <QPropertyAnimation>
 #include <QPushButton>
@@ -30,7 +28,7 @@
 
 #include <iostream>
 
-#include "Antrenament.h"
+#include <GameModes/Antrenament.h>
 
 class MainWindow final : public QMainWindow {
     Q_OBJECT

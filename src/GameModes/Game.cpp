@@ -2,7 +2,7 @@
 // Created by edi on 28.11.2024.
 //
 
-#include "Game.h"
+#include <GameModes/Game.h>
 
 #include <iostream>
 #include <numeric>

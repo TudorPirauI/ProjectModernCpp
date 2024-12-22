@@ -5,10 +5,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Board.h"
-#include "Player.h"
-
-#include <memory>
+#include <GameComponents/Board.h>
+#include <GameComponents/Player.h>
 
 class Game {
 public:

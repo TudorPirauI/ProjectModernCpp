@@ -5,11 +5,8 @@
 #ifndef ANTRENAMENT_H
 #define ANTRENAMENT_H
 
-#include <unordered_map>
-
-#include "Board.h"
-#include "Game.h"
-#include "Player.h"
+#include <GameComponents/Board.h>
+#include <GameModes/Game.h>
 
 class Antrenament : public Game {
 public:

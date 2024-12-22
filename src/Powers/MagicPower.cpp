@@ -2,7 +2,7 @@
 // Created by Tudor on 11/24/2024.
 //
 
-#include "MagicPower.h"
+#include <Powers/MagicPower.h>
 
 #include <utility>
 

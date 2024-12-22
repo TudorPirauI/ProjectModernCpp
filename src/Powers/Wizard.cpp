@@ -1,5 +1,5 @@
 
-#include "Wizard.h"
+#include <Powers/Wizard.h>
 
 #include <iostream>
 #include <utility>

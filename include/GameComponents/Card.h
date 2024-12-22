@@ -1,7 +1,6 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <ostream>
 #include <utility>
 
 using Position = std::pair<int, int>;

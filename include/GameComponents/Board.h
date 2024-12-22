@@ -1,16 +1,12 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <algorithm>
+#include <GameComponents/Card.h>
+#include <Powers/Wizard.h>
 #include <array>
 #include <map>
 #include <stack>
 #include <unordered_map>
-
-#include "Card.h"
-#include "ElementPower.h"
-#include "Player.h"
-#include "Wizard.h"
 
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};

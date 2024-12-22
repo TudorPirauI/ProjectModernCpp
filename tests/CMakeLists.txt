@@ -1,6 +1,7 @@
 include(FetchContent)
 
-FetchContent_Declare(catch2
+FetchContent_Declare(
+        catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
         GIT_TAG v3.7.1
 )
@@ -12,11 +13,9 @@ if (NOT catch2_POPULATED)
     add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif ()
 
-find_package(Catch2 3 REQUIRED)
-
 add_executable(Tests
-        ../src/Card.cpp
-        ../src/Board.cpp
+        ../src/GameComponents/Card.cpp
+        ../src/GameComponents/Board.cpp
         BoardTests.cpp
         CardTests.cpp
 )

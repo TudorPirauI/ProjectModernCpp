@@ -1,7 +1,6 @@
 #ifndef EXPLOSION_H
 #define EXPLOSION_H
 
-#include <stdexcept>
 #include <vector>
 
 class Explosion {

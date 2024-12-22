@@ -1,4 +1,4 @@
-#include "Player.h"
+#include <GameComponents/Player.h>
 
 #include <algorithm>
 #include <iostream>

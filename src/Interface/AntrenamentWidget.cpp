@@ -1,4 +1,4 @@
-#include "AntrenamentWidget.h"
+#include <Interface/AntrenamentWidget.h>
 
 #include <QPushButton>
 #include <iostream>

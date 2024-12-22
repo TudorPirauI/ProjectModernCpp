@@ -2,7 +2,7 @@
 // Created by Miruna on 11/24/2024.
 //
 
-#include "ElementPower.h"
+#include <Powers/ElementPower.h>
 
 #include <random>
 

@@ -2,11 +2,10 @@
 // Created by mavri on 05.12.2024.
 //
 
-#include "MainWindow.h"
-
-#include "Antrenament.h"
-#include "AntrenamentWidget.h"
-#include "Board.h"
+#include <GameComponents/Board.h>
+#include <GameModes/Antrenament.h>
+#include <Interface/AntrenamentWidget.h>
+#include <Interface/MainWindow.h>
 
 // m_MediaPlayer = new QMediaPlayer(this);
 // m_MediaPlayer->setSource(QUrl::fromLocalFile("../background.mp3"));
