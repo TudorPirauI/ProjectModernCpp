@@ -30,7 +30,7 @@
 
 #include <iostream>
 
-#include "../Game/Antrenament.h"
+#include "Antrenament.h"
 
 class MainWindow final : public QMainWindow {
     Q_OBJECT

@@ -3,25 +3,47 @@ cmake_minimum_required(VERSION 3.30)
 include(CheckIPOSupported)
 include(FetchContent)
 include(ProcessorCount)
+include(CheckCXXCompilerFlag)
 
 project(Eter)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3") # -Wall -Wextra
+check_cxx_compiler_flag("-flto=auto" COMPILER_SUPPORTS_FLTO_AUTO)
+if (COMPILER_SUPPORTS_FLTO_AUTO)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wextra -march=native -flto=auto")
+else ()
+    check_cxx_compiler_flag("-flto" COMPILER_SUPPORTS_FLTO)
+    if (COMPILER_SUPPORTS_FLTO)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wextra -march=native -flto")
+    else ()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wextra -march=native")
+    endif ()
+endif ()
 
-#check_ipo_supported(RESULT ipo_supported OUTPUT ipo_output)
-#
-#if (ipo_supported)
-#    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
-#else ()
-#    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
-#    message(WARNING "Interprocedural Optimization (IPO) is NOT supported: ${ipo_output}")
-#endif ()
+find_program(CCACHE_PROGRAM ccache)
+if (CCACHE_PROGRAM)
+    message(STATUS "Using ccache")
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+endif ()
 
 ProcessorCount(N)
 if (NOT DEFINED CMAKE_BUILD_PARALLEL_LEVEL)
     set(CMAKE_BUILD_PARALLEL_LEVEL ${N})
+endif ()
+
+file(GLOB SOURCES src/*.cpp)
+file(GLOB HEADERS include/*.h)
+
+include_directories(include)
+
+if (NOT SOURCES)
+    message(FATAL_ERROR "No source files found. Please check the 'src' directory.")
+endif ()
+
+if (NOT HEADERS)
+    message(FATAL_ERROR "No header files found. Please check the 'include' directory.")
 endif ()
 
 FetchContent_Declare(
@@ -37,29 +59,17 @@ if (NOT catch2_POPULATED)
     add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif ()
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets) # Multimedia
-
+# Stuff for Qt
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-add_executable(Eter src/main.cpp
-        src/Player/Player.cpp
-        src/GameBoard/Board.cpp
-        src/Card/Card.cpp
-        src/Game/Antrenament.cpp
-        src/MagicPower/MagicPower.cpp
-        src/MagicPower/Wizard.cpp
-        src/MagicPower/ElementPower.cpp
-        src/Game/Game.cpp
-        src/Game/DuelulVrajitorilor.cpp
-        src/MagicPower/Explosion.cpp
-        src/Interface/MainWindow.cpp
-        src/Interface/MainWindow.h
-        src/Interface/AntrenamentWidget.h
-        src/Interface/AntrenamentWidget.cpp
-)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
-target_link_libraries(Eter PRIVATE Qt6::Widgets) # Qt6::Multimedia
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE lib/pch.h)
+
+target_link_libraries(Eter PRIVATE Qt6::Widgets)
 
 #add_subdirectory(tests) # todo fix this for windows

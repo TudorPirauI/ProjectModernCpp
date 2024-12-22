@@ -4,9 +4,9 @@
 
 #include "MainWindow.h"
 
-#include "../Game/Antrenament.h"
-#include "../GameBoard/Board.h"
+#include "Antrenament.h"
 #include "AntrenamentWidget.h"
+#include "Board.h"
 
 // m_MediaPlayer = new QMediaPlayer(this);
 // m_MediaPlayer->setSource(QUrl::fromLocalFile("../background.mp3"));
@@ -736,7 +736,7 @@ void MainWindow::DrawNewGame() {
                 m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
                 std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
                 std::map<std::string, std::function<void()>> gameModeMap = {
-                        {"&Antrenament",
+                        {"Antrenament",
                          [this, player1Name, player2Name] {
                              AntrenamentWidget(player1Name.toStdString(), player2Name.toStdString(),
                                                m_StackedWidget, this);

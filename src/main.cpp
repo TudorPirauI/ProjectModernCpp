@@ -5,10 +5,10 @@
 #include <ranges>
 #include <thread>
 
-#include "Card/Card.h"
-#include "Game/Antrenament.h"
-#include "GameBoard/Board.h"
-#include "Interface/MainWindow.h"
+#include "Antrenament.h"
+#include "Board.h"
+#include "Card.h"
+#include "MainWindow.h"
 
 void PrintAsciiArt() {
     const std::string ascii = R"(

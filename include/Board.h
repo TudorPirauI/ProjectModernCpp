@@ -7,10 +7,10 @@
 #include <stack>
 #include <unordered_map>
 
-#include "../Card/Card.h"
-#include "../MagicPower/ElementPower.h"
-#include "../MagicPower/Wizard.h"
-#include "../Player/Player.h"
+#include "Card.h"
+#include "ElementPower.h"
+#include "Player.h"
+#include "Wizard.h"
 
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};

@@ -5,7 +5,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "../Game/Antrenament.h"
+#include "Antrenament.h"
 
 class AntrenamentWidget final : public QWidget {
     Q_OBJECT

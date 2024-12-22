@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../Card/Card.h"
+#include "Card.h"
 
 using Hand = std::vector<Card>;
 

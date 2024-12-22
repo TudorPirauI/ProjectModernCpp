@@ -5,8 +5,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "../GameBoard/Board.h"
-#include "../Player/Player.h"
+#include "Board.h"
+#include "Player.h"
 
 #include <memory>
 

@@ -7,9 +7,9 @@
 
 #include <unordered_map>
 
-#include "../GameBoard/Board.h"
-#include "../Player/Player.h"
+#include "Board.h"
 #include "Game.h"
+#include "Player.h"
 
 class Antrenament : public Game {
 public:
