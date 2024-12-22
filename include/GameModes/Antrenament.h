@@ -8,7 +8,7 @@
 #include <GameComponents/Board.h>
 #include <GameModes/Game.h>
 
-class Antrenament : public Game {
+class Antrenament final : public Game {
 public:
     Antrenament(const std::string &nameOne, const std::string &nameTwo);
 

@@ -5,8 +5,7 @@
 AntrenamentWidget::AntrenamentWidget(const std::string &nameOne, const std::string &nameTwo,
                                      QStackedWidget *stackedWidget, QWidget *parent) :
     m_AntrenamentWidget(new QWidget(parent)), m_Layout(new QVBoxLayout(m_AntrenamentWidget)),
-    m_StackedWidget(stackedWidget), m_Parent(parent),
-    m_CurrentGame(std::make_unique<Antrenament>(nameOne, nameTwo)) {
+    m_StackedWidget(stackedWidget), m_Parent(parent), m_CurrentGame{nameOne, nameTwo} {
     m_ScoreLabel = new QLabel(m_AntrenamentWidget);
     DrawGame();
 }
@@ -37,12 +36,11 @@ AntrenamentWidget::GenerateBoard(const Board                         &board,
     auto down  = board.GetDown();
 
     if (!board.IsBoardLocked()) {
-        ++right.first;
-        ++down.second;
-        --left.first;
-        --up.second;
+        right = std::make_pair(right.first + 1, right.second);
+        down  = std::make_pair(down.first, down.second + 1);
+        left  = std::make_pair(left.first - 1, left.second);
+        up    = std::make_pair(up.first, up.second - 1);
     }
-
     const auto boardElement = board.GetGameBoard();
 
     for (int j = up.second; j <= down.second; ++j) {
@@ -150,14 +148,9 @@ QHBoxLayout *AntrenamentWidget::GenerateHand(const Hand                      &ha
 }
 
 void AntrenamentWidget::DrawGame() {
-    m_AntrenamentWidget = new QWidget(this);
-    m_Layout            = new QVBoxLayout(m_AntrenamentWidget);
-
-    std::cout << "here\n";
-
-    const auto  currentTurn   = m_CurrentGame->GetCurrentPlayer();
-    const auto  currentPlayer = currentTurn == PlayerTurn::Player1 ? m_CurrentGame->GetPlayer1()
-                                                                   : m_CurrentGame->GetPlayer2();
+    const auto  currentTurn   = m_CurrentGame.GetCurrentPlayer();
+    const auto  currentPlayer = currentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+                                                                   : m_CurrentGame.GetPlayer2();
     const auto &currentHand   = currentPlayer.GetHand();
 
     const auto turnLabel = new QLabel(this);
@@ -175,38 +168,34 @@ void AntrenamentWidget::DrawGame() {
 
     auto selectedCard = std::make_shared<std::optional<Card>>(std::nullopt);
 
+    const auto leftOne = m_CurrentGame.GetBoard().GetLeft();
+
+    std::cout << "First: " << leftOne.first << " " << leftOne.second << '\n';
+
     const auto boardLayout =
-            GenerateBoard(m_CurrentGame->GetBoard(), [this, selectedCard, currentTurn,
-                                                      currentPlayer](const auto &pos) {
+            GenerateBoard(m_CurrentGame.GetBoard(), [this, selectedCard, currentTurn,
+                                                     currentPlayer](const auto &pos) {
                 if (!selectedCard->has_value()) {
                     std::cout << "No card selected!\n";
+                    const auto left = m_CurrentGame.GetBoard().GetLeft();
+                    std::cout << "In Lambda: " << left.first << " " << left.second << '\n';
                     return;
                 }
 
-                std::cout << selectedCard->value().GetValue();
-
-                std::cout << "here1";
-
-                std::cout << "here2";
                 auto properCard = selectedCard->value();
-                std::cout << "here3";
-                if (m_CurrentGame->GetBoard().InsertCard(properCard, pos, currentTurn)) {
+
+                if (m_CurrentGame.GetBoard().InsertCard(properCard, pos, currentTurn)) {
                     std::cout << "here4";
-                    if (m_CurrentGame->CheckWinningConditions()) {
-                        std::cout << "here5";
+                    if (m_CurrentGame.CheckWinningConditions()) {
                         ShowWinningMessage(QString::fromStdString(currentPlayer.GetUserName()));
                         return;
                     }
 
-                    std::cout << "here6";
+                    m_CurrentGame.SetNextPlayerTurn(currentTurn == PlayerTurn::Player1
+                                                            ? PlayerTurn::Player2
+                                                            : PlayerTurn::Player1);
 
-                    m_CurrentGame->SetNextPlayerTurn(currentTurn == PlayerTurn::Player1
-                                                             ? PlayerTurn::Player2
-                                                             : PlayerTurn::Player1);
-
-                    std::cout << "here7";
                     DrawGame();
-                    // m_StackedWidget->repaint();
                 } else {
                     std::cout << std::format("Card {} could not be inserted at ({}, {})\n",
                                              properCard.GetValue(), pos.first, pos.second);
@@ -252,18 +241,16 @@ void AntrenamentWidget::ShowWinningMessage(const QString &winnerName) {
     layout->addWidget(okButton);
     connect(okButton, &QPushButton::clicked, this, [this, winningWidget, winnerName] {
         m_StackedWidget->removeWidget(winningWidget);
-        if (winnerName == QString::fromStdString(m_CurrentGame->GetPlayer1().GetUserName())) {
+        if (winnerName == QString::fromStdString(m_CurrentGame.GetPlayer1().GetUserName())) {
             ++m_Player1Score;
         } else {
             ++m_Player2Score;
         }
-        UpdateScoreLabel(m_CurrentGame->GetPlayer1().GetUserName(),
-                         m_CurrentGame->GetPlayer2().GetUserName());
+        UpdateScoreLabel(m_CurrentGame.GetPlayer1().GetUserName(),
+                         m_CurrentGame.GetPlayer2().GetUserName());
         if (++m_GamesPlayed < 3) {
-            m_CurrentGame = nullptr;
-            m_CurrentGame =
-                    std::make_unique<Antrenament>(m_CurrentGame->GetPlayer1().GetUserName(),
-                                                  m_CurrentGame->GetPlayer2().GetUserName());
+            m_CurrentGame = {m_CurrentGame.GetPlayer1().GetUserName(),
+                             m_CurrentGame.GetPlayer2().GetUserName()};
             DrawGame();
         } else {
             const auto finalScoreWidget = new QWidget(this);
@@ -271,9 +258,9 @@ void AntrenamentWidget::ShowWinningMessage(const QString &winnerName) {
 
             const auto finalScoreLabel = new QLabel(
                     QString("Final Score:\n%1: %2\n%3: %4")
-                            .arg(QString::fromStdString(m_CurrentGame->GetPlayer1().GetUserName()))
+                            .arg(QString::fromStdString(m_CurrentGame.GetPlayer1().GetUserName()))
                             .arg(m_Player1Score)
-                            .arg(QString::fromStdString(m_CurrentGame->GetPlayer2().GetUserName()))
+                            .arg(QString::fromStdString(m_CurrentGame.GetPlayer2().GetUserName()))
                             .arg(m_Player2Score),
                     this);
             QFont finalScoreFont = finalScoreLabel->font();
@@ -291,7 +278,6 @@ void AntrenamentWidget::ShowWinningMessage(const QString &winnerName) {
                 m_GamesPlayed  = 0;
                 m_Player1Score = 0;
                 m_Player2Score = 0;
-                m_CurrentGame  = nullptr;
                 DrawGame();
             });
 

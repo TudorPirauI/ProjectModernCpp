@@ -15,8 +15,8 @@ class AntrenamentWidget final : public QWidget {
     QStackedWidget *m_StackedWidget;
     QWidget        *m_Parent;
 
-    std::unique_ptr<Antrenament> m_CurrentGame;
-    std::optional<Card>          m_SelectedCard;
+    Antrenament         m_CurrentGame;
+    std::optional<Card> m_SelectedCard;
 
     int     m_GamesPlayed  = 0;
     int     m_Player1Score = 0;

@@ -3,11 +3,12 @@
 //
 
 #define CATCH_CONFIG_MAIN
+
 #include <catch2/catch_all.hpp>
 #include <iostream>
 
-#include "../src/Card/Card.h"
-#include "../src/GameBoard/Board.h"
+#include "../include/GameComponents/Board.h"
+#include "../include/GameComponents/Card.h"
 
 TEST_CASE("Card should be inserted successfully", "[Board]") {
     Board board{3};
