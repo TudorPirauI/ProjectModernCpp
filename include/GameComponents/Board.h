@@ -26,7 +26,6 @@ class Board {
                                       START_POSITION};
 
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
-    [[nodiscard]] bool IsBoardFull() const;
 
     bool UpdateCorners(const Position &pos);
     void CheckIsLocked();

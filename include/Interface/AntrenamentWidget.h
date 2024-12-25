@@ -10,13 +10,15 @@
 class AntrenamentWidget final : public QWidget {
     Q_OBJECT
 
+protected:
     QWidget        *m_AntrenamentWidget;
     QVBoxLayout    *m_Layout;
     QStackedWidget *m_StackedWidget;
     QWidget        *m_Parent;
 
-    Antrenament         m_CurrentGame;
-    std::optional<Card> m_SelectedCard;
+    Antrenament               m_CurrentGame;
+    std::unique_ptr<Card>     m_SelectedCard{nullptr};
+    std::unique_ptr<Position> m_SelectedPosition{nullptr};
 
     int     m_GamesPlayed  = 0;
     int     m_Player1Score = 0;
@@ -28,9 +30,10 @@ class AntrenamentWidget final : public QWidget {
     QHBoxLayout *GenerateHand(const Hand                      &hand,
                               const std::function<void(Card)> &cellClickedCallback);
 
-    void ShowWinningMessage(const QString &winnerName);
-    void UpdateScoreLabel(const std::string &nameOne, const std::string &nameTwo) const;
+    // void ShowWinningMessage(const QString &winnerName);
+    // void UpdateScoreLabel(const std::string &nameOne, const std::string &nameTwo) const;
     void DrawGame();
+    bool PlaceCard();
 
 public:
     AntrenamentWidget(const std::string &nameOne, const std::string &nameTwo,

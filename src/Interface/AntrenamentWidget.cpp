@@ -2,23 +2,26 @@
 
 #include <QPushButton>
 #include <iostream>
+
 AntrenamentWidget::AntrenamentWidget(const std::string &nameOne, const std::string &nameTwo,
                                      QStackedWidget *stackedWidget, QWidget *parent) :
     m_AntrenamentWidget(new QWidget(parent)), m_Layout(new QVBoxLayout(m_AntrenamentWidget)),
     m_StackedWidget(stackedWidget), m_Parent(parent), m_CurrentGame{nameOne, nameTwo} {
-    m_ScoreLabel = new QLabel(m_AntrenamentWidget);
+
+    m_CurrentGame = Antrenament(nameOne, nameTwo);
     DrawGame();
 }
 
-QPixmap LoadCardImageTwoLmao(const int cardValue, const PlayerTurn &turn) {
+QPixmap LoadCardImage(const int cardValue, const PlayerTurn &turn) {
     int turnNumber = 1;
     if (turn != PlayerTurn::Player1) {
         turnNumber = 2;
     }
     const QString imagePath = QString("../images/%1_%2.jpg").arg(cardValue).arg(turnNumber);
-    const QPixmap pixmap(imagePath);
+    QPixmap       pixmap(imagePath);
     if (pixmap.isNull()) {
         qDebug() << "Failed to load image for card" << cardValue;
+        return {};
     }
     return pixmap;
 }
@@ -27,88 +30,44 @@ QGridLayout *
 AntrenamentWidget::GenerateBoard(const Board                         &board,
                                  const std::function<void(Position)> &cellClickedCallback) {
     const auto boardLayout = new QGridLayout();
-    // boardLayout->setSpacing(0);
-    // boardLayout->setContentsMargins(0, 0, 0, 0);
 
-    auto left  = board.GetLeft();
-    auto right = board.GetRight();
-    auto up    = board.GetUp();
-    auto down  = board.GetDown();
+    auto [leftX, leftY]   = board.GetLeft();
+    auto [rightX, rightY] = board.GetRight();
+    auto [upX, upY]       = board.GetUp();
+    auto [downX, downY]   = board.GetDown();
 
     if (!board.IsBoardLocked()) {
-        right = std::make_pair(right.first + 1, right.second);
-        down  = std::make_pair(down.first, down.second + 1);
-        left  = std::make_pair(left.first - 1, left.second);
-        up    = std::make_pair(up.first, up.second - 1);
+        ++rightX;
+        ++downY;
+        --leftX;
+        --upY;
     }
-    const auto boardElement = board.GetGameBoard();
 
-    for (int j = up.second; j <= down.second; ++j) {
-        for (int i = left.first; i <= right.first; ++i) {
-            const auto it = boardElement.find({i, j});
-            QString    cellContent;
-            QString    cellStyle = "border: 1px solid black;";
+    const auto &boardElement = board.GetGameBoard();
 
-            QPixmap cardImage;
+    for (int j = upY; j <= downY; ++j) {
+        for (int i = leftX; i <= rightX; ++i) {
+            const auto button = new QPushButton();
+            button->setFixedSize(150, 150);
 
-            if (it == boardElement.end()) {
-                if (board.IsPositionValid({i, j}, Card(2, PlayerTurn::Player1))) {
-                    // cellContent = " V ";
-                    cellStyle += "background-color: green;";
-                } else {
-                    // cellContent = " X ";
-                    cellStyle += "background-color: red;";
-                }
+            const auto placedCard = boardElement.find({i, j});
+
+            if (placedCard == boardElement.end()) {
+                button->setText("Empty");
             } else {
-                const auto card = it->second.top();
-                cardImage       = LoadCardImageTwoLmao(card.GetValue(), card.GetPlacedBy());
-                if (card.GetIsFlipped()) {
-                    cellContent = " H ";
-                    cellStyle += "background-color: #FFFF99;";
-                } else if (card.GetIsEter()) {
-                    cellContent = QString(" %1 ").arg(card.GetValue());
-                    cellStyle += "background-color: #00FFFF;";
-                } else {
-                    cellContent = QString(" %1 ").arg(card.GetValue());
-                    // if (card.GetPlacedBy() == PlayerTurn::Player1) {
-                    //     // cellStyle += QString("background-color:
-                    //     %1;").arg(m_Player1Color.name());
-                    // } else {
-                    //     // cellStyle += QString("background-color:
-                    //     %1;").arg(m_Player2Color.name());
-                    // }
-                }
-
-                // if (card.GetIsEter()) {
-                //     if (card.GetPlacedBy() == PlayerTurn::Player1) {
-                //         // cellStyle += QString("border: 2px solid
-                //         %1;").arg(m_Player1Color.name());
-                //     } else {
-                //         // cellStyle += QString("border: 2px solid
-                //         %1;").arg(m_Player2Color.name());
-                //     }
-                // }
+                button->setText(QString::number(placedCard->second.top().GetValue()));
             }
 
-            const auto cellButton = new QPushButton(this);
-            cellButton->setFixedSize(150, 150);
+            connect(button, &QPushButton::clicked,
+                    [i, j, cellClickedCallback] { cellClickedCallback({i, j}); });
 
-            if (!cardImage.isNull()) {
-                cellButton->setIcon(QIcon(cardImage));
-                cellButton->setIconSize(cellButton->size());
-            } else {
-                cellButton->setStyleSheet(cellStyle);
-                cellButton->setText(cellContent);
-            }
-
-            connect(cellButton, &QPushButton::clicked,
-                    [cellClickedCallback, i, j] { cellClickedCallback({i, j}); });
-            boardLayout->addWidget(cellButton, j - up.second, i - left.first);
+            button->setStyleSheet("border: 3px solid black;");
+            boardLayout->addWidget(button, j - upY, i - leftX);
         }
     }
 
-    boardLayout->setRowStretch(down.second - up.second + 1, 1);
-    boardLayout->setColumnStretch(right.first - left.first + 1, 1);
+    boardLayout->setRowStretch(downY - upY + 1, 1);
+    boardLayout->setColumnStretch(rightX - leftX + 1, 1);
 
     return boardLayout;
 }
@@ -122,7 +81,7 @@ QHBoxLayout *AntrenamentWidget::GenerateHand(const Hand                      &ha
         const auto button = new QPushButton();
         button->setFixedSize(150, 150);
 
-        QPixmap cardImage = LoadCardImageTwoLmao(card.GetValue(), card.GetPlacedBy());
+        QPixmap cardImage = LoadCardImage(card.GetValue(), card.GetPlacedBy());
         if (!cardImage.isNull()) {
             button->setIcon(QIcon(cardImage));
             button->setIconSize(button->size());
@@ -148,158 +107,55 @@ QHBoxLayout *AntrenamentWidget::GenerateHand(const Hand                      &ha
 }
 
 void AntrenamentWidget::DrawGame() {
-    const auto  currentTurn   = m_CurrentGame.GetCurrentPlayer();
-    const auto  currentPlayer = currentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
-                                                                   : m_CurrentGame.GetPlayer2();
-    const auto &currentHand   = currentPlayer.GetHand();
+    const auto boardLayout = GenerateBoard(m_CurrentGame.GetBoard(), [this](const Position &pos) {
+        if (!m_SelectedCard) {
+            std::cout << "No card selected!\n";
+            return;
+        }
 
-    const auto turnLabel = new QLabel(this);
-    turnLabel->setText(
-            QString::fromStdString(std::format("Current turn: {}", currentPlayer.GetUserName())));
-    turnLabel->setAlignment(Qt::AlignCenter);
-    QFont turnLabelFont = turnLabel->font();
-    turnLabelFont.setPointSize(12);
-    turnLabel->setFont(turnLabelFont);
-    turnLabel->setFixedHeight(turnLabel->sizeHint().height());
-    m_Layout->addWidget(turnLabel);
+        std::cout << "Selected card: " << m_SelectedCard->GetValue() << '\n';
 
-    // Add the score label to the layout
-    m_Layout->addWidget(m_ScoreLabel);
-
-    auto selectedCard = std::make_shared<std::optional<Card>>(std::nullopt);
-
-    const auto leftOne = m_CurrentGame.GetBoard().GetLeft();
-
-    std::cout << "First: " << leftOne.first << " " << leftOne.second << '\n';
-
-    const auto boardLayout =
-            GenerateBoard(m_CurrentGame.GetBoard(), [this, selectedCard, currentTurn,
-                                                     currentPlayer](const auto &pos) {
-                if (!selectedCard->has_value()) {
-                    std::cout << "No card selected!\n";
-                    const auto left = m_CurrentGame.GetBoard().GetLeft();
-                    std::cout << "In Lambda: " << left.first << " " << left.second << '\n';
-                    return;
-                }
-
-                auto properCard = selectedCard->value();
-
-                if (m_CurrentGame.GetBoard().InsertCard(properCard, pos, currentTurn)) {
-                    std::cout << "here4";
-                    if (m_CurrentGame.CheckWinningConditions()) {
-                        ShowWinningMessage(QString::fromStdString(currentPlayer.GetUserName()));
-                        return;
-                    }
-
-                    m_CurrentGame.SetNextPlayerTurn(currentTurn == PlayerTurn::Player1
-                                                            ? PlayerTurn::Player2
-                                                            : PlayerTurn::Player1);
-
-                    DrawGame();
-                } else {
-                    std::cout << std::format("Card {} could not be inserted at ({}, {})\n",
-                                             properCard.GetValue(), pos.first, pos.second);
-                }
-            });
-
-    const auto centeredBoardLayout = new QHBoxLayout();
-    centeredBoardLayout->addStretch();
-    centeredBoardLayout->addLayout(boardLayout);
-    centeredBoardLayout->addStretch();
-
-    m_Layout->addLayout(centeredBoardLayout);
-
-    const auto separator = new QFrame(this);
-    separator->setFrameShape(QFrame::HLine);
-    separator->setFrameShadow(QFrame::Sunken);
-    m_Layout->addWidget(separator);
-
-    const auto handLayout = GenerateHand(currentHand, [this, selectedCard](const Card &card) {
-        *selectedCard = card;
-        std::cout << "Selected card: " << selectedCard->value().GetValue() << '\n';
+        *m_SelectedPosition = pos;
+        PlaceCard();
     });
 
-    m_Layout->addLayout(handLayout);
+    const auto hand = m_CurrentGame.GetCurrentPlayer() == PlayerTurn::Player1
+                              ? m_CurrentGame.GetPlayer1().GetHand()
+                              : m_CurrentGame.GetPlayer2().GetHand();
 
+    const auto handElement = GenerateHand(hand, [this](const Card &card) {
+        std::cout << "Selected card: " << card.GetValue() << '\n';
+
+        *m_SelectedCard = card;
+    });
+    // add everything to the layout
+
+    m_Layout->addLayout(boardLayout);
+    m_Layout->addLayout(handElement);
+
+    // draw the layout
+    m_AntrenamentWidget->setLayout(m_Layout);
     m_StackedWidget->addWidget(m_AntrenamentWidget);
     m_StackedWidget->setCurrentWidget(m_AntrenamentWidget);
 }
 
-void AntrenamentWidget::ShowWinningMessage(const QString &winnerName) {
-    const auto winningWidget = new QWidget(this);
-    const auto layout        = new QVBoxLayout(winningWidget);
+bool AntrenamentWidget::PlaceCard() {
+    if (!m_SelectedCard || !m_SelectedPosition) {
+        // std::cout << std::format("Selected card: {}, selected position: {}\n", m_SelectedCard,
+        //                          m_SelectedPosition);
+        return false;
+    }
 
-    const auto label     = new QLabel(QString("%1 has won the game!").arg(winnerName), this);
-    QFont      labelFont = label->font();
-    labelFont.setPointSize(24);
-    labelFont.setBold(true);
-    label->setFont(labelFont);
-    label->setAlignment(Qt::AlignCenter);
-    layout->addWidget(label);
+    const auto success = m_CurrentGame.GetBoard().InsertCard(*m_SelectedCard, *m_SelectedPosition,
+                                                             m_CurrentGame.GetCurrentPlayer());
 
-    const auto okButton = new QPushButton("OK", this);
-    layout->addWidget(okButton);
-    connect(okButton, &QPushButton::clicked, this, [this, winningWidget, winnerName] {
-        m_StackedWidget->removeWidget(winningWidget);
-        if (winnerName == QString::fromStdString(m_CurrentGame.GetPlayer1().GetUserName())) {
-            ++m_Player1Score;
-        } else {
-            ++m_Player2Score;
-        }
-        UpdateScoreLabel(m_CurrentGame.GetPlayer1().GetUserName(),
-                         m_CurrentGame.GetPlayer2().GetUserName());
-        if (++m_GamesPlayed < 3) {
-            m_CurrentGame = {m_CurrentGame.GetPlayer1().GetUserName(),
-                             m_CurrentGame.GetPlayer2().GetUserName()};
-            DrawGame();
-        } else {
-            const auto finalScoreWidget = new QWidget(this);
-            const auto finalLayout      = new QVBoxLayout(finalScoreWidget);
+    if (success) {
+        std::cout << "Card inserted\n";
+        m_SelectedCard.reset();
+        m_SelectedPosition.reset();
+        return true;
+    }
 
-            const auto finalScoreLabel = new QLabel(
-                    QString("Final Score:\n%1: %2\n%3: %4")
-                            .arg(QString::fromStdString(m_CurrentGame.GetPlayer1().GetUserName()))
-                            .arg(m_Player1Score)
-                            .arg(QString::fromStdString(m_CurrentGame.GetPlayer2().GetUserName()))
-                            .arg(m_Player2Score),
-                    this);
-            QFont finalScoreFont = finalScoreLabel->font();
-            finalScoreFont.setPointSize(24);
-            finalScoreFont.setBold(true);
-            finalScoreLabel->setFont(finalScoreFont);
-            finalScoreLabel->setAlignment(Qt::AlignCenter);
-            finalLayout->addWidget(finalScoreLabel);
-
-            const auto finalOkButton = new QPushButton("OK", this);
-            finalLayout->addWidget(finalOkButton);
-            connect(finalOkButton, &QPushButton::clicked, this, [this, finalScoreWidget] {
-                m_StackedWidget->removeWidget(finalScoreWidget);
-                // Reset the game state
-                m_GamesPlayed  = 0;
-                m_Player1Score = 0;
-                m_Player2Score = 0;
-                DrawGame();
-            });
-
-            finalLayout->setAlignment(Qt::AlignCenter);
-
-            m_StackedWidget->addWidget(finalScoreWidget);
-            m_StackedWidget->setCurrentWidget(finalScoreWidget);
-        }
-    });
-
-    layout->setAlignment(Qt::AlignCenter);
-
-    m_StackedWidget->addWidget(winningWidget);
-    m_StackedWidget->setCurrentWidget(winningWidget);
-}
-
-void AntrenamentWidget::UpdateScoreLabel(const std::string &nameOne,
-                                         const std::string &nameTwo) const {
-    m_ScoreLabel->setText(QString("%1: %2 - %3: %4")
-                                  .arg(QString::fromStdString(nameOne))
-                                  .arg(m_Player1Score)
-                                  .arg(QString::fromStdString(nameTwo))
-                                  .arg(m_Player2Score));
-    m_ScoreLabel->show();
+    std::cout << "Card could not be inserted\n";
+    return false;
 }
