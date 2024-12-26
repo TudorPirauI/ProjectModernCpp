@@ -107,26 +107,34 @@ QHBoxLayout *AntrenamentWidget::GenerateHand(const Hand                      &ha
 }
 
 void AntrenamentWidget::DrawGame() {
-    const auto boardLayout = GenerateBoard(m_CurrentGame.GetBoard(), [this](const Position &pos) {
+    m_SelectedCard.reset();
+    m_SelectedPosition.reset();
+
+    const auto boardLayout = GenerateBoard(m_CurrentGame.GetBoard(), [&](const Position &pos) {
         if (!m_SelectedCard) {
             std::cout << "No card selected!\n";
             return;
         }
 
-        std::cout << "Selected card: " << m_SelectedCard->GetValue() << '\n';
+        std::cout << "[a] Selected card: " << m_SelectedCard->GetValue() << '\n';
 
-        *m_SelectedPosition = pos;
-        PlaceCard();
+        std::cout << "[a] Selected position: " << pos.first << ' ' << pos.second << '\n';
+
+        m_SelectedPosition = std::make_unique<Position>(pos);
+
+        if (PlaceCard()) {
+            DrawGame();
+        }
     });
 
     const auto hand = m_CurrentGame.GetCurrentPlayer() == PlayerTurn::Player1
                               ? m_CurrentGame.GetPlayer1().GetHand()
                               : m_CurrentGame.GetPlayer2().GetHand();
 
-    const auto handElement = GenerateHand(hand, [this](const Card &card) {
+    const auto handElement = GenerateHand(hand, [&](const Card &card) {
         std::cout << "Selected card: " << card.GetValue() << '\n';
 
-        *m_SelectedCard = card;
+        m_SelectedCard = std::make_unique<Card>(card);
     });
     // add everything to the layout
 
@@ -149,10 +157,11 @@ bool AntrenamentWidget::PlaceCard() {
     const auto success = m_CurrentGame.GetBoard().InsertCard(*m_SelectedCard, *m_SelectedPosition,
                                                              m_CurrentGame.GetCurrentPlayer());
 
+    m_SelectedCard.reset();
+    m_SelectedPosition.reset();
+
     if (success) {
         std::cout << "Card inserted\n";
-        m_SelectedCard.reset();
-        m_SelectedPosition.reset();
         return true;
     }
 

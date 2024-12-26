@@ -57,12 +57,15 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui)
+if (NOT Qt6_FOUND)
+    message(FATAL_ERROR "Qt6 not found. Please install Qt6.")
+endif ()
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE lib/pch.h)
 
-target_link_libraries(Eter PRIVATE Qt6::Widgets)
+target_link_libraries(Eter PRIVATE Qt6::Widgets Qt6::Core Qt6::Gui)
 
 add_subdirectory(tests)
