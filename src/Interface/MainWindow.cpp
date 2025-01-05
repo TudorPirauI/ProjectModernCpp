@@ -1,5 +1,4 @@
 #include <GameComponents/Board.h>
-#include <GameModes/Antrenament.h>
 #include <Interface/MainWindow.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {

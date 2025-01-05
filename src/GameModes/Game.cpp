@@ -34,7 +34,7 @@ bool Game::CheckWinningConditions() {
         return true;
     }
 
-    if (m_Board.IsBoardLocked() == false) {
+    if (!m_Board.IsBoardLocked()) {
         std::cout << "Board not locked\n";
         return false;
     }

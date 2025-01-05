@@ -15,7 +15,7 @@ bool Board::IsPositionValid(const Position &pos, const Card &card) const {
             return false;
         }
 
-        if (cardOnTop.GetIsEter() == true) {
+        if (cardOnTop.GetIsEter()) {
             return false;
         }
 
@@ -192,7 +192,7 @@ bool Board::VerifyWizardPower(const WizardPower &power, const Position &position
             return false;
         }
         case WizardPower::CreatePit: {
-            if (auto &stack = m_Board[position]; stack.empty() == true) {
+            if (auto &stack = m_Board[position]; stack.empty()) {
                 stack.emplace(true);
                 return true;
             }
@@ -280,7 +280,7 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
         playerVariation = 1;
     }
 
-    if (CheckPlacedCard(pos, playerTurn) == false) {
+    if (!CheckPlacedCard(pos, playerTurn)) {
         compensateForPlacingOnTop = 2;
     }
 

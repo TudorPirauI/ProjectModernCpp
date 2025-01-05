@@ -62,10 +62,10 @@ private:
     void DrawOptions();
 
     // Helper Functions
-    void         CreateLabel(const QString &text, QWidget *parent);
+    static void         CreateLabel(const QString &text, QWidget *parent);
     void         CreateSlider(int &value, QWidget *parent);
     void         CreateColorPicker(const QString &labelText, QColor &color, QWidget *parent);
-    QVBoxLayout *CreateLimitedLayout(QWidget *widget);
+    static QVBoxLayout *CreateLimitedLayout(QWidget *widget);
 
     std::string m_CurrentGameMode;
 };

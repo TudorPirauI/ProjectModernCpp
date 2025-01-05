@@ -1,7 +1,6 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 
 #include <Interface/MainWindow.h>
 
@@ -61,14 +60,14 @@ int main(int argc, char *argv[]) {
     QWidget centralWidget;
     QVBoxLayout mainLayout(&centralWidget);
 
-    QWidget *boardContainer = new QWidget(&centralWidget);
-    QHBoxLayout *boardLayout = new QHBoxLayout(boardContainer);
+    auto *boardContainer = new QWidget(&centralWidget);
+    auto *boardLayout = new QHBoxLayout(boardContainer);
     boardLayout->addStretch();
-    DisplayBoard *displayBoard = new DisplayBoard(boardContainer);
+    auto *displayBoard = new DisplayBoard(boardContainer);
     boardLayout->addWidget(displayBoard);
     boardLayout->addStretch();
 
-    DisplayHand *displayHand = new DisplayHand(&centralWidget);
+    auto *displayHand = new DisplayHand(&centralWidget);
 
     Board board(4); // Create an empty board with size 4
     displayBoard->setBoard(board);
@@ -87,5 +86,5 @@ int main(int argc, char *argv[]) {
     displayBoard->insertCard(Card(1), {0, 0}, PlayerTurn::Player1);
     displayBoard->insertCard(Card(2), {1, 0}, PlayerTurn::Player2);
 
-    return app.exec();
+    return QApplication::exec();
 }
