@@ -18,6 +18,9 @@ public:
     void onDraw();
     Card getSelectedCard() const;
 
+signals:
+    void cardSelected(const Card& card);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;

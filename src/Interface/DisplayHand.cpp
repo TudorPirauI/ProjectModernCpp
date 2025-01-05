@@ -58,6 +58,7 @@ void DisplayHand::mousePressEvent(QMouseEvent *event) {
         QRect cardRect(x, y, cardWidth, cardHeight);
         if (cardRect.contains(event->pos())) {
             m_SelectedCardIndex = i;
+            emit cardSelected(m_Cards[m_SelectedCardIndex]);
             update();
             break;
         }

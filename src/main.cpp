@@ -58,33 +58,30 @@ int main(int argc, char *argv[]) {
 
     QMainWindow mainWindow;
     QWidget centralWidget;
-    QVBoxLayout mainLayout(&centralWidget);
+    QVBoxLayout layout(&centralWidget);
 
-    auto *boardContainer = new QWidget(&centralWidget);
-    auto *boardLayout = new QHBoxLayout(boardContainer);
-    boardLayout->addStretch();
-    auto *displayBoard = new DisplayBoard(boardContainer);
-    boardLayout->addWidget(displayBoard);
-    boardLayout->addStretch();
+    int lines = 4;
+    int columns = 4;
 
-    auto *displayHand = new DisplayHand(&centralWidget);
+    DisplayBoard *displayBoard = new DisplayBoard(&mainWindow, lines, columns);
+    DisplayHand *displayHand = new DisplayHand(&mainWindow);
 
-    Board board(4); // Create an empty board with size 4
+    Board board(10);
+    board.InsertCard(Card(1), {0, 0}, PlayerTurn::Player1);
+
     displayBoard->setBoard(board);
 
     std::vector<Card> cards = {Card(1), Card(2), Card(3), Card(4)};
     displayHand->setCards(cards);
 
-    mainLayout.addWidget(boardContainer);
-    mainLayout.addWidget(displayHand);
+    layout.addWidget(displayBoard);
+    layout.addWidget(displayHand);
+
+    QObject::connect(displayHand, &DisplayHand::cardSelected, displayBoard, &DisplayBoard::placeCard);
 
     mainWindow.setCentralWidget(&centralWidget);
-    mainWindow.resize(1200, 1200);
+    mainWindow.resize(800, 800);
     mainWindow.show();
 
-    // Example of adding cards to the board after it is displayed
-    displayBoard->insertCard(Card(1), {0, 0}, PlayerTurn::Player1);
-    displayBoard->insertCard(Card(2), {1, 0}, PlayerTurn::Player2);
-
-    return QApplication::exec();
+    return app.exec();
 }
