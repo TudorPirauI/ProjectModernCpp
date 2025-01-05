@@ -5,17 +5,24 @@
 #include "Interface/DisplayHand.h"
 #include "GameComponents/Card.h"
 #include <QPainter>
+#include <QMouseEvent>
 
-DisplayHand::DisplayHand(QWidget *parent) : QWidget(parent) {}
+DisplayHand::DisplayHand(QWidget *parent) : QWidget(parent), m_SelectedCardIndex(-1) {}
 
 void DisplayHand::setCards(const std::vector<Card>& cards) {
     m_Cards = cards;
-    update(); // Trigger a repaint
+    update();
 }
 
 void DisplayHand::onDraw() {
-    // This function can be used to trigger a repaint if needed
     update();
+}
+
+Card DisplayHand::getSelectedCard() const {
+    if (m_SelectedCardIndex >= 0 && m_SelectedCardIndex < m_Cards.size()) {
+        return m_Cards[m_SelectedCardIndex];
+    }
+    return Card(-1);
 }
 
 void DisplayHand::paintEvent(QPaintEvent *event) {
@@ -28,9 +35,32 @@ void DisplayHand::paintEvent(QPaintEvent *event) {
     int cardHeight = 150;
     int spacing = 10;
 
-    for (const auto& card : m_Cards) {
+    for (int i = 0; i < m_Cards.size(); ++i) {
+        if (i == m_SelectedCardIndex) {
+            painter.setBrush(Qt::green);
+        } else {
+            painter.setBrush(Qt::NoBrush);
+        }
         painter.drawRect(x, y, cardWidth, cardHeight);
-        painter.drawText(x + 10, y + 20, QString::number(card.GetValue()));
+        painter.drawText(x + 10, y + 20, QString::number(m_Cards[i].GetValue()));
+        x += cardWidth + spacing;
+    }
+}
+
+void DisplayHand::mousePressEvent(QMouseEvent *event) {
+    int x = 10;
+    int y = 10;
+    int cardWidth = 100;
+    int cardHeight = 150;
+    int spacing = 10;
+
+    for (int i = 0; i < m_Cards.size(); ++i) {
+        QRect cardRect(x, y, cardWidth, cardHeight);
+        if (cardRect.contains(event->pos())) {
+            m_SelectedCardIndex = i;
+            update();
+            break;
+        }
         x += cardWidth + spacing;
     }
 }

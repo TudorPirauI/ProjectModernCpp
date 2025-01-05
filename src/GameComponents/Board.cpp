@@ -257,7 +257,7 @@ Board::Board(const int maxBoardSize) :
 
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
-bool Board::InsertCard(Card &card, const Position &pos, const PlayerTurn &playerTurn,
+bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
                        const CardType &cardType) {
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";

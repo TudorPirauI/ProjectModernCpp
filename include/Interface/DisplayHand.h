@@ -16,12 +16,15 @@ public:
     explicit DisplayHand(QWidget *parent = nullptr);
     void setCards(const std::vector<Card>& cards);
     void onDraw();
+    Card getSelectedCard() const;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     std::vector<Card> m_Cards;
+    int m_SelectedCardIndex;
 };
 
 #endif // ETER_DISPLAYHAND_H

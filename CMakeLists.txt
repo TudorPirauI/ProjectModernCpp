@@ -71,10 +71,7 @@ find_package(Qt6 COMPONENTS
         REQUIRED
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS}
-        src/Interface/DisplayHand.cpp
-        include/Interface/DisplayHand.h
-)
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # This is mostly useless, but it helps on certain setups
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
