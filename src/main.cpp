@@ -3,22 +3,29 @@
 #include <Interface/MainWindow.h>
 
 #include "GameModes/Antrenament.h"
+#include "Interface/DisplayHand.h"
+
 
 int main(int argc, char *argv[]) {
+//    QApplication app(argc, argv);
+//
+//    QLoggingCategory::setFilterRules("qt.multimedia.ffmpeg.utils=false");
+//
+//    MainWindow mainWindow;
+//    mainWindow.show();
+//    return QApplication::exec();
+
     QApplication app(argc, argv);
 
-    QLoggingCategory::setFilterRules("qt.multimedia.ffmpeg.utils=false");
+    QMainWindow mainWindow;
+    DisplayHand *displayHand = new DisplayHand(&mainWindow);
 
-    MainWindow mainWindow;
+    std::vector<Card> cards = {Card(1), Card(2), Card(3), Card(4)};
+    displayHand->setCards(cards);
+
+    mainWindow.setCentralWidget(displayHand);
+    mainWindow.resize(600, 400);
     mainWindow.show();
-    return QApplication::exec();
 
-    // Antrenament antrenament("Player 1", "Player 2");
-    //
-    // auto       cardOne = antrenament.GetPlayer1().GetHand()[0];
-    // const auto success = antrenament.GetBoard().InsertCard(cardOne, {0, 0}, PlayerTurn::Player1);
-    //
-    // std::cout << "Card inserted: " << success << '\n';
-    //
-    // return 0;
+    return app.exec();
 }
