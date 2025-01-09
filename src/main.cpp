@@ -1,7 +1,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QVBoxLayout>
-
+#include <QLoggingCategory>
 #include <Interface/MainWindow.h>
 
 #include "GameModes/Antrenament.h"
@@ -9,13 +9,13 @@
 #include "Interface/DisplayHand.h"
 
 int main(int argc, char *argv[]) {
-    //    QApplication app(argc, argv);
-    //
-    //    QLoggingCategory::setFilterRules("qt.multimedia.ffmpeg.utils=false");
-    //
-    //    MainWindow mainWindow;
-    //    mainWindow.show();
-    //    return QApplication::exec();
+        QApplication app(argc, argv);
+
+        //QLoggingCategory::setFilterRules("qt.multimedia.ffmpeg.utils=false");
+
+        MainWindow mainWindow;
+        mainWindow.show();
+        return QApplication::exec();
 
     // Test afisare mana
     //     QApplication app(argc, argv);
@@ -52,35 +52,35 @@ int main(int argc, char *argv[]) {
     //
     //     return app.exec();
 
-    QApplication app(argc, argv);
-
-    QMainWindow mainWindow;
-    QWidget     centralWidget;
-    QVBoxLayout layout(&centralWidget);
-
-    constexpr int lines   = 4;
-    constexpr int columns = 4;
-
-    const auto displayBoard = new DisplayBoard(&mainWindow, lines, columns);
-    const auto displayHand  = new DisplayHand(&mainWindow);
-
-    Board board(10);
-    board.InsertCard(Card(1), {0, 0}, PlayerTurn::Player1);
-
-    displayBoard->SetBoard(board);
-
-    const std::vector cards = {Card(1), Card(2), Card(3), Card(4)};
-    displayHand->SetCards(cards);
-
-    layout.addWidget(displayBoard);
-    layout.addWidget(displayHand);
-
-    QObject::connect(displayHand, &DisplayHand::CardSelected, displayBoard,
-                     &DisplayBoard::PlaceCard);
-
-    mainWindow.setCentralWidget(&centralWidget);
-    mainWindow.resize(800, 800);
-    mainWindow.show();
-
-    return QApplication::exec();
+//    QApplication app(argc, argv);
+//
+//    QMainWindow mainWindow;
+//    QWidget     centralWidget;
+//    QVBoxLayout layout(&centralWidget);
+//
+//    constexpr int lines   = 4;
+//    constexpr int columns = 4;
+//
+//    const auto displayBoard = new DisplayBoard(&mainWindow, lines, columns);
+//    const auto displayHand  = new DisplayHand(&mainWindow);
+//
+//    Board board(10);
+//    board.InsertCard(Card(1), {0, 0}, PlayerTurn::Player1);
+//
+//    displayBoard->SetBoard(board);
+//
+//    const std::vector cards = {Card(1), Card(2), Card(3), Card(4)};
+//    displayHand->SetCards(cards);
+//
+//    layout.addWidget(displayBoard);
+//    layout.addWidget(displayHand);
+//
+//    QObject::connect(displayHand, &DisplayHand::CardSelected, displayBoard,
+//                     &DisplayBoard::PlaceCard);
+//
+//    mainWindow.setCentralWidget(&centralWidget);
+//    mainWindow.resize(800, 800);
+//    mainWindow.show();
+//
+//    return QApplication::exec();
 }
