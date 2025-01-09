@@ -182,11 +182,22 @@ bool Board::VerifyWizardPower(const WizardPower &power, const Position &position
 
             return false;
         }
+        // todo: review this function
         case WizardPower::RemoveRow: {
+            const int rowToRemove = position.first;
+            for (auto it = m_Board.begin(); it != m_Board.end();) {
+                if (it->first.first == rowToRemove) {
+                    it = m_Board.erase(it);
+                } else {
+                    ++it;
+                }
+            }
+            return true;
         }
-        // todo: give a opinion about this
         case WizardPower::CoverOpponentCard: {
-            if (const auto &stack = m_Board[position]; !stack.empty()) {
+            if (auto &stack = m_Board[position];
+                !stack.empty() and stack.top().GetValue() > card.GetValue()) {
+                stack.emplace(card);
                 return true;
             }
 
@@ -212,10 +223,6 @@ bool Board::VerifyWizardPower(const WizardPower &power, const Position &position
             }
             return false;
         }
-        case WizardPower::GainEterCard: {
-            return true;
-        }
-
         // todo: fix the error
         case WizardPower::MoveOpponentStack: {
             if (m_Board[posStack].empty() and m_Board[position].top().GetPlacedBy() != playerTurn) {
@@ -227,34 +234,38 @@ bool Board::VerifyWizardPower(const WizardPower &power, const Position &position
             }
             return false;
         }
+
+        // todo: give the player the eter card, you need to use: GiveEterCard in Game
+        case WizardPower::GainEterCard: {
+            return true;
+        }
+
         case WizardPower::ShiftRowToEdge: {
             const auto &[leftX, leftY]   = GetLeft();
             const auto &[rightX, rightY] = GetRight();
             const auto &[upX, upY]       = GetUp();
             const auto &[downX, downY]   = GetDown();
 
-            if (position.first == upX) {
-                bool ok = true;
+            if (position.first == upX || position.first == downX) {
+                int cardCount = 0;
                 for (auto i = leftY; i <= rightY; ++i) {
-                    if (m_Board[{upX, i}].empty()) {
-                        ok = false;
-                        break;
+                    if (!m_Board[{position.first, i}].empty()) {
+                        ++cardCount;
                     }
                 }
 
-                return ok;
-            }
-
-            if (position.first == downX) {
-                bool ok = true;
-                for (auto i = leftY; i <= rightY; ++i) {
-                    if (m_Board[{upX, i}].empty()) {
-                        ok = false;
-                        break;
+                // todo: make the board to shift to the right edge
+                if (cardCount >= 3) {
+                    // Shift row to the left edge
+                    for (auto i = leftY; i <= rightY; ++i) {
+                        m_Board[{position.first, leftY + (i - leftY)}] =
+                                m_Board[{position.first, i}];
+                        if (i != leftY) {
+                            m_Board.erase({position.first, i});
+                        }
                     }
+                    return true;
                 }
-
-                return ok;
             }
             return false;
         }
