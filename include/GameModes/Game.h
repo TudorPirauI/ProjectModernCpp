@@ -30,6 +30,14 @@ public:
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
     virtual void             SetNewCards() = 0;
 
+    bool VerifyWizardPower(const WizardPower &power, const Position &position,
+                           const Position &posStack, const Card &card,
+                           const PlayerTurn &playerTurn);
+
+    bool VerifyElementalPower(const ElementPower &power, const Position &firstPosition,
+                              const Position &secondPosition, const Card &card,
+                              PlayerTurn playerTurn);
+
     Game(const Game &other)                = default;
     Game(Game &&other) noexcept            = default;
     Game &operator=(const Game &other)     = default;

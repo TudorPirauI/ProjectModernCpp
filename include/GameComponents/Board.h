@@ -8,6 +8,8 @@
 #include <stack>
 #include <unordered_map>
 
+#include "Powers/ElementPower.h"
+
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};
 
@@ -44,7 +46,7 @@ public:
     [[nodiscard]] int  GetMaxBoardSize() const;
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
 
-    [[nodiscard]] GameBoard GetGameBoard() const;
+    [[nodiscard]] GameBoard &GetGameBoard() const;
 
     [[nodiscard]] std::unordered_map<int, int> &GetLineAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetColumnAdvantage();
@@ -63,10 +65,6 @@ public:
     void UpdateDiagonals();
 
     void CleanUpBoard();
-
-    bool VerifyWizardPower(const WizardPower &power, const Position &position,
-                           const Position &posStack, const Card &card,
-                           const PlayerTurn &playerTurn);
 };
 
 #endif // BOARD_H

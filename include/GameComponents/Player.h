@@ -11,6 +11,7 @@ using Hand = std::vector<Card>;
 class Player final {
     std::string m_UserName;
     int         m_Score;
+    int         m_NumberOfIllusion{1};
     Hand        m_Hand;
 
 public:
@@ -30,6 +31,9 @@ public:
     void GiveCard(const Card &card);
     void RemoveCard(const Card &card);
     void GiveEterCard(PlayerTurn playerTurn);
+
+    int  GetIllusion();
+    void SetIllusion(int value);
 };
 
 #endif // PLAYER_H
