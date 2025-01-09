@@ -30,7 +30,7 @@ void DisplayHand::paintEvent(QPaintEvent *event) {
     int      x          = 10;
     int      y          = 10;
     int      cardWidth  = 100;
-    int      cardHeight = 150;
+    int      cardHeight = 100;
     int      spacing    = 10;
 
     for (int i = 0; i < m_Cards.size(); ++i) {
