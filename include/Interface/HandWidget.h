@@ -2,18 +2,18 @@
 // Created by Tudor on 1/5/2025.
 //
 
-#ifndef ETER_DISPLAYHAND_H
-#define ETER_DISPLAYHAND_H
+#ifndef ETER_HANDWIDGET_H
+#define ETER_HANDWIDGET_H
 
 #include <QWidget>
 #include <vector>
 #include "GameComponents/Card.h"
 
-class DisplayHand final : public QWidget {
+class HandWidget final : public QWidget {
     Q_OBJECT
 
 public:
-    explicit DisplayHand(QWidget *parent = nullptr);
+    explicit HandWidget(QWidget *parent = nullptr);
     void               SetCards(const std::vector<Card> &cards);
     void               OnDraw();
     [[nodiscard]] Card GetSelectedCard() const;
@@ -30,4 +30,4 @@ private:
     int               m_SelectedCardIndex;
 };
 
-#endif // ETER_DISPLAYHAND_H
+#endif // ETER_HANDWIDGET_H

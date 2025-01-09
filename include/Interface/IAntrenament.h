@@ -2,35 +2,37 @@
 // Created by Tudor on 1/9/2025.
 //
 
-#ifndef ETER_IANTRENAMENT_H
-#define ETER_IANTRENAMENT_H
+#ifndef IANTRENAMENT_H
+#define IANTRENAMENT_H
 
 #include <QObject>
+#include <optional>
+#include <vector>
+#include "GameComponents/Card.h"
 #include "GameModes/Antrenament.h"
-#include "Interface/DisplayHand.h"
-#include "Interface/DisplayBoard.h"
+#include "Interface/BoardWidget.h"
+#include "Interface/HandWidget.h"
 
-class IAntrenament final : public QObject {
-Q_OBJECT
+class IAntrenament : public QObject {
+    Q_OBJECT
 
 public:
-    explicit IAntrenament(QWidget *parent = nullptr);
+    IAntrenament(const std::string &nameOne, const std::string &nameTwo, QWidget *parent);
     void StartGame();
 
-signals:
-    void GameFinished(PlayerTurn winner);
-
-private slots:
+public slots:
     void OnCardSelected(const Card &card);
-    void OnCardPlaced();
+    void OnCardPlaced(int row, int col);
 
 private:
-    Antrenament m_CurrentGame;
-    DisplayHand *m_DisplayHand;
-    DisplayBoard *m_DisplayBoard;
-    PlayerTurn m_CurrentPlayer;
-    Card m_SelectedCard;
-    QWidget *m_ParentWidget;
+    void SwitchTurn();
+
+    Antrenament         m_CurrentGame;
+    PlayerTurn          m_CurrentPlayer;
+    std::optional<Card> m_SelectedCard;
+    QWidget            *m_ParentWidget;
+    BoardWidget        *m_BoardWidget;
+    HandWidget         *m_HandWidget;
 };
 
-#endif // ETER_IANTRENAMENT_H
+#endif // IANTRENAMENT_H

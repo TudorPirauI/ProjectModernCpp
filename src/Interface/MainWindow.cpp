@@ -1,5 +1,6 @@
 #include <GameComponents/Board.h>
 #include <Interface/MainWindow.h>
+#include "Interface/IAntrenament.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {
     m_StackedWidget = new QStackedWidget(this);
@@ -121,55 +122,27 @@ void MainWindow::DrawNewGame() {
 
                 m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
                 std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
-                std::map<std::string, std::function<void()>> gameModeMap = {
-                        //                        {"Antrenament",
-                        //                         [this, player1Name, player2Name] {
-                        //                             AntrenamentWidget(player1Name.toStdString(),
-                        //                             player2Name.toStdString(),
-                        //                                               m_StackedWidget, this);
-                        //                         }},
-                        // {"&Duelul Vrajitorilor",
-                        //  [this, player1Name, player2Name] {
-                        //      m_CurrentGame = std::make_unique<Antrenament>(
-                        //              player1Name.toStdString(), player2Name.toStdString());
-                        //      DrawDuelulVrajitorilor();
-                        //  }},
-                        // {"&Duelul Elementelor",
-                        //  [this, player1Name, player2Name] {
-                        //      m_CurrentGame = std::make_unique<Antrenament>(
-                        //              player1Name.toStdString(), player2Name.toStdString());
-                        //      DrawDuelulElementelor();
-                        //  }},
-                        // {"&Turneu",
-                        //  [this, player1Name, player2Name] {
-                        //      m_CurrentGame = std::make_unique<Antrenament>(
-                        //              player1Name.toStdString(), player2Name.toStdString());
-                        //      DrawTurneu();
-                        //  }},
-                        // {"&Rapid",
-                        //  [this, player1Name, player2Name] {
-                        //      m_CurrentGame = std::make_unique<Antrenament>(
-                        //              player1Name.toStdString(), player2Name.toStdString());
-                        //      DrawRapid();
-                        //  }},
-                };
 
-                if (gameModeMap.contains(m_CurrentGameMode)) {
-                    m_CurrentState = GameState::InGame;
-                    gameModeMap[m_CurrentGameMode]();
+                if (m_CurrentGameMode == "Antrenament") {
+                    const auto antrenamentWidget = new QWidget(this);
+
+                    IAntrenament antrenamentGame(player1Name.toStdString(),
+                                                 player2Name.toStdString(), antrenamentWidget);
+
+                    m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
+                    m_StackedWidget->addWidget(antrenamentWidget);
+                    m_StackedWidget->setCurrentWidget(antrenamentWidget);
                 } else {
-                    qDebug() << "Selected game mode is not implemented!\n";
+                    qDebug() << "Selected game mode is not implemented yet!\n";
                 }
             });
 
     layout->setSpacing(5);
 
     AddBackButton(newGameWidget);
-
     const auto mainLayout = CreateLimitedLayout(newGameWidget);
 
     m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
-
     const auto containerWidget = new QWidget(this);
     containerWidget->setLayout(mainLayout);
     m_StackedWidget->addWidget(containerWidget);

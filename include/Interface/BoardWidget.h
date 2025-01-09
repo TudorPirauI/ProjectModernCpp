@@ -2,18 +2,18 @@
 // Created by Tudor on 1/5/2025.
 //
 
-#ifndef ETER_DISPLAYBOARD_H
-#define ETER_DISPLAYBOARD_H
+#ifndef ETER_BOARDWIDGET_H
+#define ETER_BOARDWIDGET_H
 
 #include <QWidget>
 #include <vector>
 #include "GameComponents/Board.h"
 
-class DisplayBoard final : public QWidget {
+class BoardWidget final : public QWidget {
     Q_OBJECT
 
 public:
-    explicit DisplayBoard(QWidget *parent = nullptr, int lines = 10, int columns = 10);
+    explicit BoardWidget(QWidget *parent = nullptr, int lines = 10, int columns = 10);
     void SetBoard(const Board &board);
     void OnDraw();
     void InsertCard(const Card &card, const std::pair<int, int> &position, const PlayerTurn &turn);
@@ -33,4 +33,4 @@ private:
     bool  m_CardSelected;
 };
 
-#endif // ETER_DISPLAYBOARD_H
+#endif // ETER_BOARDWIDGET_H

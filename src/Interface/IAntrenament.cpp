@@ -3,53 +3,95 @@
 //
 
 #include "Interface/IAntrenament.h"
+#include <QLabel>
 #include <QVBoxLayout>
+#include "Interface/BoardWidget.h"
+#include "Interface/HandWidget.h"
 
-IAntrenament::IAntrenament(QWidget *parent)
-        : QObject(parent),
-          m_CurrentGame("Player1", "Player2"),
-          m_CurrentPlayer(PlayerTurn::Player1),
-          m_SelectedCard(1),
-          m_ParentWidget(parent) {
+IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
+                           QWidget *parent) :
+    QObject(parent), m_CurrentGame(nameOne, nameTwo), m_CurrentPlayer(PlayerTurn::Player1),
+    m_SelectedCard(std::nullopt), m_ParentWidget(parent) {
 
-    m_DisplayHand = new DisplayHand(parent);
-    m_DisplayBoard = new DisplayBoard(parent, 3, 3);
+    m_BoardWidget = new BoardWidget(parent, 4, 4);
+    m_HandWidget  = new HandWidget(parent);
 
-    connect(m_DisplayHand, &DisplayHand::CardSelected, this, &IAntrenament::OnCardSelected);
-    connect(m_DisplayBoard, &DisplayBoard::PlaceCard, this, &IAntrenament::OnCardPlaced);
+    auto layout = new QVBoxLayout(parent);
+
+    auto  titleLabel = new QLabel("Antrenament", parent);
+    QFont font;
+    font.setPointSize(24);
+    font.setBold(true);
+    titleLabel->setFont(font);
+    titleLabel->setAlignment(Qt::AlignCenter);
+
+    layout->addWidget(titleLabel);
+    layout->addWidget(m_BoardWidget);
+    layout->addWidget(m_HandWidget);
+
+    parent->setLayout(layout);
+
+    //    connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
+    //    connect(m_BoardWidget, &BoardWidget::PlaceCard, this,
+    //            [this](const Card &, const std::pair<int, int> &position) {
+    //                OnCardPlaced(position.first, position.second);
+    //            });
+
+    StartGame();
 }
 
 void IAntrenament::StartGame() {
-    m_CurrentGame.SetNewCards();
-    DisplayHand();
-    DisplayBoard();
+    m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+
+    m_HandWidget->SetCards(m_CurrentGame.GetPlayer1().GetHand());
+    m_BoardWidget->OnDraw();
+
+    qDebug() << "Game started!";
 }
 
 void IAntrenament::OnCardSelected(const Card &card) {
     m_SelectedCard = card;
-    m_DisplayBoard->PlaceCard(m_SelectedCard);
+
+    m_BoardWidget->PlaceCard(card);
+
+    qDebug() << "Card selected with value:" << card.GetValue();
 }
 
-void IAntrenament::OnCardPlaced() {
-    if (m_SelectedCard.GetValue() == -1) {
+void IAntrenament::OnCardPlaced(int row, int col) {
+    if (!m_SelectedCard.has_value()) {
+        qDebug() << "No card selected!";
         return;
     }
 
-    if (m_CurrentPlayer == PlayerTurn::Player1) {
-        m_CurrentGame.GetPlayer1().RemoveCard(m_SelectedCard);
-    } else {
-        m_CurrentGame.GetPlayer2().RemoveCard(m_SelectedCard);
-    }
+    const auto cardValue = m_SelectedCard.value().GetValue();
+    const Card card(cardValue);
 
-    DisplayHand();
-    DisplayBoard();
+    //    if (m_CurrentGame.GetBoard().IsPositionEmpty(row, col)) {
+    //        m_CurrentGame.GetBoard().InsertCard(card, {row, col}, m_CurrentPlayer);
+    //        m_BoardWidget->InsertCard(card, {row, col}, m_CurrentPlayer);
+    //
+    //        auto &currentPlayer = m_CurrentPlayer == PlayerTurn::Player1 ?
+    //        m_CurrentGame.GetPlayer1()
+    //                                                                     :
+    //                                                                     m_CurrentGame.GetPlayer2();
+    //        currentPlayer.RemoveCard(cardValue);
+    //
+    //        m_SelectedCard.reset();
+    //
+    //        SwitchTurn();
+    //    } else {
+    //        qDebug() << "Position not empty! Try another.";
+    //    }
+}
 
-    if (m_CurrentGame.CheckWinningConditions()) {
-        emit GameFinished(m_CurrentPlayer);
-        return;
-    }
+void IAntrenament::SwitchTurn() {
+    m_CurrentPlayer =
+            (m_CurrentPlayer == PlayerTurn::Player1) ? PlayerTurn::Player2 : PlayerTurn::Player1;
 
-    m_CurrentPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? PlayerTurn::Player2 : PlayerTurn::Player1;
+    const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
+                                                                      : m_CurrentGame.GetPlayer2();
+    m_HandWidget->SetCards(nextPlayer.GetHand());
 
-    DisplayHand();
+    qDebug() << "Switched to player:"
+             << (m_CurrentPlayer == PlayerTurn::Player1 ? "Player1" : "Player2");
 }

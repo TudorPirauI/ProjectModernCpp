@@ -5,8 +5,8 @@
 #include <Interface/MainWindow.h>
 
 #include "GameModes/Antrenament.h"
-#include "Interface/DisplayBoard.h"
-#include "Interface/DisplayHand.h"
+#include "Interface/BoardWidget.h"
+#include "Interface/HandWidget.h"
 
 int main(int argc, char *argv[]) {
         QApplication app(argc, argv);
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     //     QApplication app(argc, argv);
     //
     //     QMainWindow mainWindow;
-    //     DisplayHand *displayHand = new DisplayHand(&mainWindow);
+    //     HandWidget *displayHand = new HandWidget(&mainWindow);
     //
     //     std::vector<Card> cards = {Card(1), Card(2), Card(3), Card(4)};
     //     displayHand->setCards(cards);
@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     //     QApplication app(argc, argv);
     //
     //     QMainWindow mainWindow;
-    //     DisplayBoard *displayBoard = new DisplayBoard(&mainWindow);
+    //     BoardWidget *displayBoard = new BoardWidget(&mainWindow);
     //
     //     Board board(10);
     //     board.InsertCard(Card(1), {0, 0}, PlayerTurn::Player1);
@@ -61,8 +61,8 @@ int main(int argc, char *argv[]) {
 //    constexpr int lines   = 4;
 //    constexpr int columns = 4;
 //
-//    const auto displayBoard = new DisplayBoard(&mainWindow, lines, columns);
-//    const auto displayHand  = new DisplayHand(&mainWindow);
+//    const auto displayBoard = new BoardWidget(&mainWindow, lines, columns);
+//    const auto displayHand  = new HandWidget(&mainWindow);
 //
 //    Board board(10);
 //    board.InsertCard(Card(1), {0, 0}, PlayerTurn::Player1);
@@ -75,8 +75,8 @@ int main(int argc, char *argv[]) {
 //    layout.addWidget(displayBoard);
 //    layout.addWidget(displayHand);
 //
-//    QObject::connect(displayHand, &DisplayHand::CardSelected, displayBoard,
-//                     &DisplayBoard::PlaceCard);
+//    QObject::connect(displayHand, &HandWidget::CardSelected, displayBoard,
+//                     &BoardWidget::PlaceCard);
 //
 //    mainWindow.setCentralWidget(&centralWidget);
 //    mainWindow.resize(800, 800);

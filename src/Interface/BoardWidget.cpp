@@ -2,34 +2,34 @@
 // Created by Tudor on 1/5/2025.
 //
 
-#include "Interface/DisplayBoard.h"
+#include "Interface/BoardWidget.h"
 #include <QMouseEvent>
 #include <QPainter>
 #include "GameComponents/Board.h"
 
-DisplayBoard::DisplayBoard(QWidget *parent, const int lines, const int columns) :
+BoardWidget::BoardWidget(QWidget *parent, const int lines, const int columns) :
     QWidget(parent), m_Board(10), m_Lines(lines), m_Columns(columns), m_SelectedCard(1),
     m_CardSelected(false) {}
 
-void DisplayBoard::SetBoard(const Board &board) {
+void BoardWidget::SetBoard(const Board &board) {
     m_Board = board;
     update();
 }
 
-void DisplayBoard::OnDraw() { update(); }
+void BoardWidget::OnDraw() { update(); }
 
-void DisplayBoard::InsertCard(const Card &card, const std::pair<int, int> &position,
-                              const PlayerTurn &turn) {
+void BoardWidget::InsertCard(const Card &card, const std::pair<int, int> &position,
+                             const PlayerTurn &turn) {
     m_Board.InsertCard(card, position, turn);
     update();
 }
 
-void DisplayBoard::PlaceCard(const Card &card) {
+void BoardWidget::PlaceCard(const Card &card) {
     m_SelectedCard = card;
     m_CardSelected = true;
 }
 
-void DisplayBoard::paintEvent(QPaintEvent *event) {
+void BoardWidget::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
 
     QPainter      painter(this);
@@ -53,7 +53,7 @@ void DisplayBoard::paintEvent(QPaintEvent *event) {
     }
 }
 
-void DisplayBoard::mousePressEvent(QMouseEvent *event) {
+void BoardWidget::mousePressEvent(QMouseEvent *event) {
     if (m_CardSelected) {
         constexpr int cellSize = 50;
         constexpr int xOffset  = 10;

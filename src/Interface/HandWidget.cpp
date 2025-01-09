@@ -2,28 +2,28 @@
 // Created by Tudor on 1/5/2025.
 //
 
-#include "Interface/DisplayHand.h"
+#include "Interface/HandWidget.h"
 #include <QMouseEvent>
 #include <QPainter>
 #include "GameComponents/Card.h"
 
-DisplayHand::DisplayHand(QWidget *parent) : QWidget(parent), m_SelectedCardIndex(-1) {}
+HandWidget::HandWidget(QWidget *parent) : QWidget(parent), m_SelectedCardIndex(-1) {}
 
-void DisplayHand::SetCards(const std::vector<Card> &cards) {
+void HandWidget::SetCards(const std::vector<Card> &cards) {
     m_Cards = cards;
     update();
 }
 
-void DisplayHand::OnDraw() { update(); }
+void HandWidget::OnDraw() { update(); }
 
-Card DisplayHand::GetSelectedCard() const {
+Card HandWidget::GetSelectedCard() const {
     if (m_SelectedCardIndex >= 0 && m_SelectedCardIndex < m_Cards.size()) {
         return m_Cards[m_SelectedCardIndex];
     }
     return Card(-1);
 }
 
-void DisplayHand::paintEvent(QPaintEvent *event) {
+void HandWidget::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
 
     QPainter painter(this);
@@ -45,7 +45,7 @@ void DisplayHand::paintEvent(QPaintEvent *event) {
     }
 }
 
-void DisplayHand::mousePressEvent(QMouseEvent *event) {
+void HandWidget::mousePressEvent(QMouseEvent *event) {
     int x          = 10;
     int y          = 10;
     int cardWidth  = 100;
