@@ -105,6 +105,7 @@ void MainWindow::DrawNewGame() {
     const auto startGameButton = new QPushButton("Start Game", this);
     layout->addWidget(startGameButton);
 
+    // Updated the `startGameButton` logic
     connect(startGameButton, &QPushButton::clicked, this,
             [this, player1Input, player2Input, buttonGroup] {
                 const auto player1Name = player1Input->text();
@@ -123,18 +124,36 @@ void MainWindow::DrawNewGame() {
                 m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
                 std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
 
+                // Open new windows based on game mode
+                QWidget *gameWidget;
                 if (m_CurrentGameMode == "Antrenament") {
-                    const auto antrenamentWidget = new QWidget(this);
-
+                    gameWidget = new QWidget(this);
                     IAntrenament antrenamentGame(player1Name.toStdString(),
-                                                 player2Name.toStdString(), antrenamentWidget);
-
-                    m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
-                    m_StackedWidget->addWidget(antrenamentWidget);
-                    m_StackedWidget->setCurrentWidget(antrenamentWidget);
+                                                 player2Name.toStdString(), gameWidget);
+                } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {
+                    gameWidget = new QWidget(this);
+                    IAntrenament antrenamentGame(player1Name.toStdString(),
+                                                 player2Name.toStdString(), gameWidget);
+                } else if (m_CurrentGameMode == "Duelul Elementelor") {
+                    gameWidget = new QWidget(this);
+                    IAntrenament antrenamentGame(player1Name.toStdString(),
+                                                 player2Name.toStdString(), gameWidget);
+                } else if (m_CurrentGameMode == "Turneu") {
+                    gameWidget = new QWidget(this);
+                    IAntrenament antrenamentGame(player1Name.toStdString(),
+                                                 player2Name.toStdString(), gameWidget);
+                } else if (m_CurrentGameMode == "Rapid") {
+                    gameWidget = new QWidget(this);
+                    IAntrenament antrenamentGame(player1Name.toStdString(),
+                                                 player2Name.toStdString(), gameWidget);
                 } else {
                     qDebug() << "Selected game mode is not implemented yet!\n";
+                    return;
                 }
+                
+                m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
+                m_StackedWidget->addWidget(gameWidget);
+                m_StackedWidget->setCurrentWidget(gameWidget);
             });
 
     layout->setSpacing(5);

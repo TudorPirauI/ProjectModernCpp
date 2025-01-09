@@ -203,160 +203,174 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
                                 const Position &secondPosition, const Card &card,
                                 const PlayerTurn playerTurn) {
     auto &board = m_Board.GetGameBoard();
-    switch (power) {
-        case ElementIndexPower::ControlledExplosion:
-            return "The board explodes!";
-        case ElementIndexPower::Destruction:
-            return "Removes the opponent's last played card from the game.";
-        case ElementIndexPower::Flames:
-            return "Flip the opponent's illusion face up. Then play a card on any position on the "
-                   "board.";
-        case ElementIndexPower::Lava:
-            return "Choose a number, provided that at least 2 cards with that number are visible "
-                   "on the board. All visible cards with this number return to their owners' "
-                   "hands.";
-        case ElementIndexPower::FromAshes:
-            return "Choose one of your own cards that was removed from the game and play it "
-                   "immediately.";
-        case ElementIndexPower::Sparks:
-            return "Choose any of your own cards covered by the opponent and play it immediately "
-                   "on another position.";
-        case ElementIndexPower::Blizzard:
-            return "Return a visible card of the opponent to their hand.";
-        case ElementIndexPower::Gale:
-            return "All cards covered by other cards return to their owners' hands.";
-        case ElementIndexPower::Hurricane:
-            return "Shift a fully occupied row by 1 position in the desired direction. Cards in "
-                   "the stack that move out of the board boundaries return to their owners' hands.";
-        case ElementIndexPower::Gust:
-            return "Move any visible card on the board horizontally or vertically to an adjacent "
-                   "position with a card of a lower number.";
-        case ElementIndexPower::Mirage: {
-            if (!board[firstPosition].empty() and board[firstPosition].top().GetIsIllusion() and
-                board[firstPosition].top().GetPlacedBy() == playerTurn) {
-                const auto &cardIlussion = board[firstPosition].top();
-                board[firstPosition].pop();
 
-                m_Player1.GiveCard(cardIlussion);
-                board[firstPosition].emplace(card);
-
-                return true;
-            }
-
-            return false;
-        }
-        case ElementIndexPower::Storm: {
-            if (board[firstPosition].size() >= 2) {
-                while (!board[firstPosition].empty()) {
-                    board[firstPosition].pop();
-                }
-                m_Board.UpdateDiagonals();
-                return true;
-            }
-
-            return false;
-        }
-        case ElementIndexPower::Tide: {
-            if (!board[firstPosition].empty() and !board[secondPosition].empty()) {
-                std::swap(board[firstPosition], board[secondPosition]);
-                return true;
-            }
-
-            return false;
-        }
-        case ElementIndexPower::Fog: {
-            if (playerTurn == PlayerTurn::Player1) {
-                m_Player1.SetIllusion(m_Player1.GetIllusion() + 1);
-                return true;
-            }
-
-            m_Player2.SetIllusion(m_Player2.GetIllusion() + 1);
-            return true;
-        }
-
-        case ElementIndexPower::Wave:
-            return "Move a stack to an adjacent empty position. Play a card on the newly empty "
-                   "position.";
-        case ElementIndexPower::Whirlpool:
-            return "Move 2 cards from the same row, separated by an empty space, into that empty "
-                   "space. The card with the higher number goes on top, and in case of a tie, the "
-                   "player chooses.";
-        case ElementIndexPower::Tsunami: {
-            "Choose a row. During the opponent's next turn, they cannot "
-            "place cards on that row.";
-        }
-
-        // todo: fix this method:)
-        case ElementIndexPower::Waterfall: {
-            const auto &[leftX, leftY]   = m_Board.GetLeft();
-            const auto &[rightX, rightY] = m_Board.GetRight();
-            const auto row               = firstPosition.first;
-
-            int cardCount = 0;
-
-            for (auto i = leftY; i <= rightY; ++i) {
-                if (!board[{row, i}].empty()) {
-                    ++cardCount;
-                }
-            }
-
-            if (cardCount >= 3) {
-                std::stack<Card> cards;
-                for (auto i = leftY; i <= rightY; ++i) {
-                    while (!board[{row, i}].empty()) {
-                        cards.push(board[{row, i}].top());
-                        board[{row, i}].pop();
-                    }
-
-                    if (i != leftY) {
-                        board.erase({row, i});
-                    }
-                }
-                board[{row, leftY}] = std::move(cards);
-                m_Board.UpdateDiagonals();
-                return true;
-            }
-            return false;
-        }
-        case ElementIndexPower::Support:
-            return "The value of one of your cards (1/2/3) increases by 1. If that card is covered "
-                   "or returned to the hand, it loses the bonus.";
-        case ElementIndexPower::Earthquake: {
-            for (auto it = board.begin(); it != board.end();) {
-                if (auto &stack = it->second; !stack.empty() && stack.top().GetValue() == 1) {
-                    stack.pop();
-                    if (stack.empty()) {
-                        it = board.erase(it);
-                        continue;
-                    }
-                }
-                ++it;
-            }
-            m_Board.UpdateDiagonals();
-            return true;
-        }
-        case ElementIndexPower::Shattering:
-            return "The value of an opponent's card (2/3/4) decreases by 1. If that card is "
-                   "covered or returned to the hand, it loses the penalty.";
-        case ElementIndexPower::Granite:
-            return "Place a neutral card on the board such that it defines at least one boundary "
-                   "of the game board.";
-        case ElementIndexPower::Avalanche:
-            return "Choose 2 adjacent stacks horizontally/vertically. Shift the two stacks by 1 "
-                   "position in their row.";
-        case ElementIndexPower::Boulder: {
-            if (!board[firstPosition].empty() and board[firstPosition].top().GetIsIllusion()) {
-                board[firstPosition].pop();
-                board[firstPosition].emplace(card);
-
-                return true;
-            }
-
-            return false;
-        }
-        default:
-            return "Unknown power.";
-    }
+    //    switch (power) {
+    //        case ElementIndexPower::ControlledExplosion:
+    //            return "The board explodes!";
+    //        case ElementIndexPower::Destruction:
+    //            return "Removes the opponent's last played card from the game.";
+    //        case ElementIndexPower::Flames:
+    //            return "Flip the opponent's illusion face up. Then play a card on any position on
+    //            the "
+    //                   "board.";
+    //        case ElementIndexPower::Lava:
+    //            return "Choose a number, provided that at least 2 cards with that number are
+    //            visible "
+    //                   "on the board. All visible cards with this number return to their owners' "
+    //                   "hands.";
+    //        case ElementIndexPower::FromAshes:
+    //            return "Choose one of your own cards that was removed from the game and play it "
+    //                   "immediately.";
+    //        case ElementIndexPower::Sparks:
+    //            return "Choose any of your own cards covered by the opponent and play it
+    //            immediately "
+    //                   "on another position.";
+    //        case ElementIndexPower::Blizzard:
+    //            return "Return a visible card of the opponent to their hand.";
+    //        case ElementIndexPower::Gale:
+    //            return "All cards covered by other cards return to their owners' hands.";
+    //        case ElementIndexPower::Hurricane:
+    //            return "Shift a fully occupied row by 1 position in the desired direction. Cards
+    //            in "
+    //                   "the stack that move out of the board boundaries return to their owners'
+    //                   hands.";
+    //        case ElementIndexPower::Gust:
+    //            return "Move any visible card on the board horizontally or vertically to an
+    //            adjacent "
+    //                   "position with a card of a lower number.";
+    //        case ElementIndexPower::Mirage: {
+    //            if (!board[firstPosition].empty() and board[firstPosition].top().GetIsIllusion()
+    //            and
+    //                board[firstPosition].top().GetPlacedBy() == playerTurn) {
+    //                const auto &cardIlussion = board[firstPosition].top();
+    //                board[firstPosition].pop();
+    //
+    //                m_Player1.GiveCard(cardIlussion);
+    //                board[firstPosition].emplace(card);
+    //
+    //                return true;
+    //            }
+    //
+    //            return false;
+    //        }
+    //        case ElementIndexPower::Storm: {
+    //            if (board[firstPosition].size() >= 2) {
+    //                while (!board[firstPosition].empty()) {
+    //                    board[firstPosition].pop();
+    //                }
+    //                m_Board.UpdateDiagonals();
+    //                return true;
+    //            }
+    //
+    //            return false;
+    //        }
+    //        case ElementIndexPower::Tide: {
+    //            if (!board[firstPosition].empty() and !board[secondPosition].empty()) {
+    //                std::swap(board[firstPosition], board[secondPosition]);
+    //                return true;
+    //            }
+    //
+    //            return false;
+    //        }
+    //        case ElementIndexPower::Fog: {
+    //            if (playerTurn == PlayerTurn::Player1) {
+    //                m_Player1.SetIllusion(m_Player1.GetIllusion() + 1);
+    //                return true;
+    //            }
+    //
+    //            m_Player2.SetIllusion(m_Player2.GetIllusion() + 1);
+    //            return true;
+    //        }
+    //
+    //        case ElementIndexPower::Wave:
+    //            return "Move a stack to an adjacent empty position. Play a card on the newly empty
+    //            "
+    //                   "position.";
+    //        case ElementIndexPower::Whirlpool:
+    //            return "Move 2 cards from the same row, separated by an empty space, into that
+    //            empty "
+    //                   "space. The card with the higher number goes on top, and in case of a tie,
+    //                   the " "player chooses.";
+    //        case ElementIndexPower::Tsunami: {
+    //            "Choose a row. During the opponent's next turn, they cannot "
+    //            "place cards on that row.";
+    //        }
+    //
+    //        // todo: fix this method:)
+    //        case ElementIndexPower::Waterfall: {
+    //            const auto &[leftX, leftY]   = m_Board.GetLeft();
+    //            const auto &[rightX, rightY] = m_Board.GetRight();
+    //            const auto row               = firstPosition.first;
+    //
+    //            int cardCount = 0;
+    //
+    //            for (auto i = leftY; i <= rightY; ++i) {
+    //                if (!board[{row, i}].empty()) {
+    //                    ++cardCount;
+    //                }
+    //            }
+    //
+    //            if (cardCount >= 3) {
+    //                std::stack<Card> cards;
+    //                for (auto i = leftY; i <= rightY; ++i) {
+    //                    while (!board[{row, i}].empty()) {
+    //                        cards.push(board[{row, i}].top());
+    //                        board[{row, i}].pop();
+    //                    }
+    //
+    //                    if (i != leftY) {
+    //                        board.erase({row, i});
+    //                    }
+    //                }
+    //                board[{row, leftY}] = std::move(cards);
+    //                m_Board.UpdateDiagonals();
+    //                return true;
+    //            }
+    //            return false;
+    //        }
+    //        case ElementIndexPower::Support:
+    //            return "The value of one of your cards (1/2/3) increases by 1. If that card is
+    //            covered "
+    //                   "or returned to the hand, it loses the bonus.";
+    //        case ElementIndexPower::Earthquake: {
+    //            for (auto it = board.begin(); it != board.end();) {
+    //                if (auto &stack = it->second; !stack.empty() && stack.top().GetValue() == 1) {
+    //                    stack.pop();
+    //                    if (stack.empty()) {
+    //                        it = board.erase(it);
+    //                        continue;
+    //                    }
+    //                }
+    //                ++it;
+    //            }
+    //            m_Board.UpdateDiagonals();
+    //            return true;
+    //        }
+    //        case ElementIndexPower::Shattering:
+    //            return "The value of an opponent's card (2/3/4) decreases by 1. If that card is "
+    //                   "covered or returned to the hand, it loses the penalty.";
+    //        case ElementIndexPower::Granite:
+    //            return "Place a neutral card on the board such that it defines at least one
+    //            boundary "
+    //                   "of the game board.";
+    //        case ElementIndexPower::Avalanche:
+    //            return "Choose 2 adjacent stacks horizontally/vertically. Shift the two stacks by
+    //            1 "
+    //                   "position in their row.";
+    //        case ElementIndexPower::Boulder: {
+    //            if (!board[firstPosition].empty() and board[firstPosition].top().GetIsIllusion())
+    //            {
+    //                board[firstPosition].pop();
+    //                board[firstPosition].emplace(card);
+    //
+    //                return true;
+    //            }
+    //
+    //            return false;
+    //        }
+    //        default:
+    //            return "Unknown power.";
+    //    }
 
     m_Board.UpdateDiagonals();
 
