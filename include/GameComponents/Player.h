@@ -29,6 +29,7 @@ public:
     void SetHand(const Hand &hand);
     void GiveCard(const Card &card);
     void RemoveCard(const Card &card);
+    void GiveEterCard(PlayerTurn playerTurn);
 };
 
 #endif // PLAYER_H
