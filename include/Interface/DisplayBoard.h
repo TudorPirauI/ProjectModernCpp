@@ -9,17 +9,17 @@
 #include <vector>
 #include "GameComponents/Board.h"
 
-class DisplayBoard : public QWidget {
-Q_OBJECT
+class DisplayBoard final : public QWidget {
+    Q_OBJECT
 
 public:
     explicit DisplayBoard(QWidget *parent = nullptr, int lines = 10, int columns = 10);
-    void setBoard(const Board& board);
-    void onDraw();
-    void insertCard(const Card& card, const std::pair<int, int>& position, PlayerTurn turn);
+    void SetBoard(const Board &board);
+    void OnDraw();
+    void InsertCard(const Card &card, const std::pair<int, int> &position, const PlayerTurn &turn);
 
 public slots:
-    void placeCard(const Card& card);
+    void PlaceCard(const Card &card);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -27,10 +27,10 @@ protected:
 
 private:
     Board m_Board;
-    int m_Lines;
-    int m_Columns;
-    Card m_SelectedCard;
-    bool m_CardSelected;
+    int   m_Lines;
+    int   m_Columns;
+    Card  m_SelectedCard;
+    bool  m_CardSelected;
 };
 
 #endif // ETER_DISPLAYBOARD_H

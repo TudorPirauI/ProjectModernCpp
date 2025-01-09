@@ -63,8 +63,8 @@ private:
 
     // Helper Functions
     static void         CreateLabel(const QString &text, QWidget *parent);
-    void         CreateSlider(int &value, QWidget *parent);
-    void         CreateColorPicker(const QString &labelText, QColor &color, QWidget *parent);
+    void                CreateSlider(int &value, QWidget *parent);
+    void                CreateColorPicker(const QString &labelText, QColor &color, QWidget *parent);
     static QVBoxLayout *CreateLimitedLayout(QWidget *widget);
 
     std::string m_CurrentGameMode;

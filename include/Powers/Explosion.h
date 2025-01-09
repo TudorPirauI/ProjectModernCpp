@@ -8,7 +8,7 @@ public:
     enum class Effect { Nothing, Eliminate, Return, Hole };
 
     explicit Explosion(const std::vector<std::vector<Effect>> &effectMap);
-    Explosion Generate(int size);
+    static Explosion Generate(int size);
 
 private:
     std::vector<std::vector<Effect>> m_Effects;

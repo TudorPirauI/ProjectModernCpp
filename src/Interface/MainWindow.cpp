@@ -54,7 +54,7 @@ void MainWindow::DrawMenu() {
         buttonFont.setPointSize(20);
         button->setFont(buttonFont);
 
-        connect(button, &QPushButton::clicked, this, [this, slot]() { (this->*slot)(); });
+        connect(button, &QPushButton::clicked, this, [this, slot] { (this->*slot)(); });
         layout->addWidget(button);
     };
 
@@ -70,7 +70,6 @@ void MainWindow::DrawMenu() {
 
     // m_ScoreLabel->hide();
 }
-
 
 void MainWindow::DrawNewGame() {
     const auto newGameWidget = new QWidget(this);
@@ -123,11 +122,12 @@ void MainWindow::DrawNewGame() {
                 m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
                 std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
                 std::map<std::string, std::function<void()>> gameModeMap = {
-//                        {"Antrenament",
-//                         [this, player1Name, player2Name] {
-//                             AntrenamentWidget(player1Name.toStdString(), player2Name.toStdString(),
-//                                               m_StackedWidget, this);
-//                         }},
+                        //                        {"Antrenament",
+                        //                         [this, player1Name, player2Name] {
+                        //                             AntrenamentWidget(player1Name.toStdString(),
+                        //                             player2Name.toStdString(),
+                        //                                               m_StackedWidget, this);
+                        //                         }},
                         // {"&Duelul Vrajitorilor",
                         //  [this, player1Name, player2Name] {
                         //      m_CurrentGame = std::make_unique<Antrenament>(
@@ -279,7 +279,7 @@ void MainWindow::CreateColorPicker(const QString &labelText, QColor &color, QWid
         colorFrame->setStyleSheet(QString("background-color: %1; border: 1px solid black;")
                                           .arg(color.isValid() ? color.name() : "#FFFFFF"));
 
-        connect(colorPicker, &QPushButton::clicked, this, [this, &color, colorFrame]() {
+        connect(colorPicker, &QPushButton::clicked, this, [this, &color, colorFrame] {
             const auto newColor = QColorDialog::getColor(color, this, "Select Color");
             if (newColor.isValid()) {
                 color = newColor;

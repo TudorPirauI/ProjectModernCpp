@@ -30,7 +30,7 @@ public:
     Wizard &operator=(const Wizard &other)     = default;
     Wizard &operator=(Wizard &&other) noexcept = default;
     Wizard();
-    ~Wizard();
+    ~Wizard() = default;
 
     [[nodiscard]] std::string GetWizardPowerDescription() const;
 

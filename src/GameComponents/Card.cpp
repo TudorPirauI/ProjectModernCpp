@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 Card::Card(const int value) {
+    // todo: initialise mplaced by here (?)
     if (value > 4 || value < 1) {
         throw std::invalid_argument("Invalid card value");
     }

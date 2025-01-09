@@ -2,9 +2,8 @@
 #include <Powers/Wizard.h>
 
 #include <iostream>
-#include <utility>
-
 #include <random>
+#include <utility>
 
 int Wizard::RandomPower() {
     static std::random_device            rd;
@@ -15,8 +14,6 @@ int Wizard::RandomPower() {
 }
 
 Wizard::Wizard() : m_Type(static_cast<WizardPower>(RandomPower())) {}
-
-Wizard::~Wizard() = default;
 
 std::string Wizard::GetWizardPowerDescription() const {
     switch (m_Type) {

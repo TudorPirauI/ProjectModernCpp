@@ -10,8 +10,8 @@ Explosion Explosion::Generate(const int size) {
         throw std::invalid_argument("Dimensiunea trebuie să fie 3 sau 4.");
     }
 
-    const int minEffects = (size == 3) ? 2 : 3;
-    const int maxEffects = (size == 3) ? 4 : 6;
+    const int minEffects = size == 3 ? 2 : 3;
+    const int maxEffects = size == 3 ? 4 : 6;
 
     const int numEffects = RandomInt(minEffects, maxEffects);
 

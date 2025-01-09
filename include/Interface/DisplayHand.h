@@ -9,17 +9,17 @@
 #include <vector>
 #include "GameComponents/Card.h"
 
-class DisplayHand : public QWidget {
-Q_OBJECT
+class DisplayHand final : public QWidget {
+    Q_OBJECT
 
 public:
     explicit DisplayHand(QWidget *parent = nullptr);
-    void setCards(const std::vector<Card>& cards);
-    void onDraw();
-    Card getSelectedCard() const;
+    void               SetCards(const std::vector<Card> &cards);
+    void               OnDraw();
+    [[nodiscard]] Card GetSelectedCard() const;
 
 signals:
-    void cardSelected(const Card& card);
+    void CardSelected(const Card &card);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -27,7 +27,7 @@ protected:
 
 private:
     std::vector<Card> m_Cards;
-    int m_SelectedCardIndex;
+    int               m_SelectedCardIndex;
 };
 
 #endif // ETER_DISPLAYHAND_H
