@@ -171,6 +171,7 @@ void Board::UpdateDiagonals() {
 }
 
 bool Board::VerifyWizardPower(const WizardPower &power, const Position &position,
+                              const Position &posStack, const Card &card,
                               const PlayerTurn &playerTurn) {
     switch (power) {
         case WizardPower::EliminateOpponentCard: {
@@ -199,15 +200,31 @@ bool Board::VerifyWizardPower(const WizardPower &power, const Position &position
 
             return false;
         }
-        // todo: frontend :)
+
+        // todo: fix the error
         case WizardPower::MoveOwnStack: {
+            if (m_Board[posStack].empty() and m_Board[position].top().GetPlacedBy() == playerTurn) {
+                m_Board[posStack] = m_Board[position];
+                while (!m_Board[position].empty()) {
+                    m_Board[position].pop();
+                }
+                return true;
+            }
             return false;
         }
         case WizardPower::GainEterCard: {
             return true;
         }
-        // todo: frontend :)
+
+        // todo: fix the error
         case WizardPower::MoveOpponentStack: {
+            if (m_Board[posStack].empty() and m_Board[position].top().GetPlacedBy() != playerTurn) {
+                m_Board[posStack] = m_Board[position];
+                while (!m_Board[position].empty()) {
+                    m_Board[position].pop();
+                }
+                return true;
+            }
             return false;
         }
         case WizardPower::ShiftRowToEdge: {

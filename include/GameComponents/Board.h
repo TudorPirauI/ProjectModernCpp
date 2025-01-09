@@ -65,6 +65,7 @@ public:
     void CleanUpBoard();
 
     bool VerifyWizardPower(const WizardPower &power, const Position &position,
+                           const Position &posStack, const Card &card,
                            const PlayerTurn &playerTurn);
 };
 
