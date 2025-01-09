@@ -4,6 +4,8 @@
 #include <iostream>
 #include <ranges>
 
+#include "GameComponents/Player.h"
+
 // TODO: inca nu se foloseste [posX, posY] peste tot, sunt niste locuri unde nu cred ca isi au
 // rostul.
 
@@ -170,114 +172,9 @@ void Board::UpdateDiagonals() {
     updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal);
 }
 
-bool Board::VerifyWizardPower(const WizardPower &power, const Position &position,
-                              const Position &posStack, const Card &card,
-                              const PlayerTurn &playerTurn) {
-    switch (power) {
-        case WizardPower::EliminateOpponentCard: {
-            if (auto &stack = m_Board[position]; stack.size() >= 2) {
-                stack.pop();
-                return true;
-            }
-
-            return false;
-        }
-        // todo: review this function
-        case WizardPower::RemoveRow: {
-            const int rowToRemove = position.first;
-            for (auto it = m_Board.begin(); it != m_Board.end();) {
-                if (it->first.first == rowToRemove) {
-                    it = m_Board.erase(it);
-                } else {
-                    ++it;
-                }
-            }
-            return true;
-        }
-        case WizardPower::CoverOpponentCard: {
-            if (auto &stack = m_Board[position];
-                !stack.empty() and stack.top().GetValue() > card.GetValue()) {
-                stack.emplace(card);
-                return true;
-            }
-
-            return false;
-        }
-        case WizardPower::CreatePit: {
-            if (auto &stack = m_Board[position]; stack.empty()) {
-                stack.emplace(true);
-                return true;
-            }
-
-            return false;
-        }
-
-        // todo: fix the error
-        case WizardPower::MoveOwnStack: {
-            if (m_Board[posStack].empty() and m_Board[position].top().GetPlacedBy() == playerTurn) {
-                m_Board[posStack] = m_Board[position];
-                while (!m_Board[position].empty()) {
-                    m_Board[position].pop();
-                }
-                return true;
-            }
-            return false;
-        }
-        // todo: fix the error
-        case WizardPower::MoveOpponentStack: {
-            if (m_Board[posStack].empty() and m_Board[position].top().GetPlacedBy() != playerTurn) {
-                m_Board[posStack] = m_Board[position];
-                while (!m_Board[position].empty()) {
-                    m_Board[position].pop();
-                }
-                return true;
-            }
-            return false;
-        }
-
-        // todo: give the player the eter card, you need to use: GiveEterCard in Game
-        case WizardPower::GainEterCard: {
-            return true;
-        }
-
-        case WizardPower::ShiftRowToEdge: {
-            const auto &[leftX, leftY]   = GetLeft();
-            const auto &[rightX, rightY] = GetRight();
-            const auto &[upX, upY]       = GetUp();
-            const auto &[downX, downY]   = GetDown();
-
-            if (position.first == upX || position.first == downX) {
-                int cardCount = 0;
-                for (auto i = leftY; i <= rightY; ++i) {
-                    if (!m_Board[{position.first, i}].empty()) {
-                        ++cardCount;
-                    }
-                }
-
-                // todo: make the board to shift to the right edge
-                if (cardCount >= 3) {
-                    // Shift row to the left edge
-                    for (auto i = leftY; i <= rightY; ++i) {
-                        m_Board[{position.first, leftY + (i - leftY)}] =
-                                m_Board[{position.first, i}];
-                        if (i != leftY) {
-                            m_Board.erase({position.first, i});
-                        }
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-        default: {
-            return false;
-        }
-    }
-}
-
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 
-GameBoard Board::GetGameBoard() const { return m_Board; }
+GameBoard &Board::GetGameBoard() const { return m_Board; }
 
 Board::Board(const int maxBoardSize) :
     m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}), m_PrincipalDiagonal({}),
