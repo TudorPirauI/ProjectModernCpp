@@ -174,7 +174,7 @@ void Board::UpdateDiagonals() {
 
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }
 
-GameBoard &Board::GetGameBoard() const { return m_Board; }
+GameBoard &Board::GetGameBoard() { return m_Board; }
 
 Board::Board(const int maxBoardSize) :
     m_MaxBoardSize(maxBoardSize), m_Lines({}), m_Columns({}), m_PrincipalDiagonal({}),

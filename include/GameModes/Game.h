@@ -34,7 +34,7 @@ public:
                            const Position &posStack, const Card &card,
                            const PlayerTurn &playerTurn);
 
-    bool VerifyElementalPower(const ElementPower &power, const Position &firstPosition,
+    bool VerifyElementalPower(const ElementIndexPower &power, const Position &firstPosition,
                               const Position &secondPosition, const Card &card,
                               PlayerTurn playerTurn);
 

@@ -46,7 +46,7 @@ public:
     [[nodiscard]] int  GetMaxBoardSize() const;
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
 
-    [[nodiscard]] GameBoard &GetGameBoard() const;
+    [[nodiscard]] GameBoard &GetGameBoard();
 
     [[nodiscard]] std::unordered_map<int, int> &GetLineAdvantage();
     [[nodiscard]] std::unordered_map<int, int> &GetColumnAdvantage();

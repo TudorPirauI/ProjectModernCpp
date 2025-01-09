@@ -199,7 +199,7 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
     }
 }
 
-bool Game::VerifyElementalPower(const ElementPower &power, const Position &firstPosition,
+bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &firstPosition,
                                 const Position &secondPosition, const Card &card,
                                 const PlayerTurn playerTurn) {
     auto &board = m_Board.GetGameBoard();
