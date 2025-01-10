@@ -24,8 +24,12 @@ void       Card::SetPlacedBy(const PlayerTurn placedBy) { m_PlacedBy = placedBy;
 
 bool Card::operator==(const Card &other) const { return this->m_Value == other.m_Value; }
 
+int Card::GetModifier() { return m_onModifier; }
+
+void Card::SetModifier(const int value) { m_onModifier = value; }
+
 void Card::SetValue(const int value) { m_Value = value; }
-int  Card::GetValue() const { return m_Value; }
+int  Card::GetValue() const { return m_Value - m_onModifier; }
 
 void Card::SetIllusion(const bool isIllusion) { m_IsIllusion = isIllusion; }
 bool Card::GetIsIllusion() const { return m_IsIllusion; }

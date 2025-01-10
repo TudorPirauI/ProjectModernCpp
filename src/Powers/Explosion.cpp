@@ -15,6 +15,7 @@ Explosion Explosion::Generate(const int size) {
 
     const int numEffects = RandomInt(minEffects, maxEffects);
 
+    // todo: this must be a positions vector not a vector
     std::vector effectMap(size, std::vector(size, Effect::Nothing));
 
     for (int i = 0; i < numEffects; ++i) {

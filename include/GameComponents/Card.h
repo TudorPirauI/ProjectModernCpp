@@ -11,6 +11,7 @@ std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn);
 
 class Card {
     int        m_Value;
+    int        m_onModifier{0};
     PlayerTurn m_PlacedBy : 1;
     bool       m_IsIllusion : 1 {false};
     bool       m_IsEter : 1 {false};
@@ -42,5 +43,8 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Card &card);
     bool                 operator==(const Card &other) const;
+
+    int  GetModifier();
+    void SetModifier(int value);
 };
 #endif // CARD_H
