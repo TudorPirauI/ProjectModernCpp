@@ -357,7 +357,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             "Choose a row. During the opponent's next turn, they cannot "
             "place cards on that row.";
         }
-
         // todo: fix this method:)
         case ElementIndexPower::Waterfall: {
             const auto &[leftX, leftY]   = m_Board.GetLeft();
