@@ -5,15 +5,14 @@
 #ifndef IANTRENAMENT_H
 #define IANTRENAMENT_H
 
-#include <QObject>
-#include <optional>
-#include <vector>
 #include "GameComponents/Card.h"
 #include "GameModes/Antrenament.h"
 #include "Interface/BoardWidget.h"
 #include "Interface/HandWidget.h"
 
-class IAntrenament : public QObject {
+#include <pch.h>
+
+class IAntrenament final : public QObject {
     Q_OBJECT
 
 public:

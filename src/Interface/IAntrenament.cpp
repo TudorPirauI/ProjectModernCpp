@@ -3,10 +3,6 @@
 //
 
 #include "Interface/IAntrenament.h"
-#include <QLabel>
-#include <QVBoxLayout>
-#include "Interface/BoardWidget.h"
-#include "Interface/HandWidget.h"
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
                            QWidget *parent) :
@@ -16,10 +12,10 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
     m_BoardWidget = new BoardWidget(parent, 4, 4);
     m_HandWidget  = new HandWidget(parent);
 
-    auto layout = new QVBoxLayout(parent);
+    const auto layout = new QVBoxLayout(parent);
 
-    auto  titleLabel = new QLabel("Antrenament", parent);
-    QFont font;
+    const auto titleLabel = new QLabel("Antrenament", parent);
+    QFont      font;
     font.setPointSize(24);
     font.setBold(true);
     titleLabel->setFont(font);
@@ -31,7 +27,7 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     parent->setLayout(layout);
 
-    //    connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
+    connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
     //    connect(m_BoardWidget, &BoardWidget::PlaceCard, this,
     //            [this](const Card &, const std::pair<int, int> &position) {
     //                OnCardPlaced(position.first, position.second);

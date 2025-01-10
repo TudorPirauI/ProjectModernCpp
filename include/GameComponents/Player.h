@@ -1,10 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <string>
-#include <vector>
-
-#include <GameComponents/Card.h>
+#include "GameComponents/Card.h"
+#include "pch.h"
 
 using Hand = std::vector<Card>;
 

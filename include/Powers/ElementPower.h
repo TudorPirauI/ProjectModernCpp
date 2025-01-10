@@ -5,7 +5,7 @@
 #ifndef ELEMENTPOWER_H
 #define ELEMENTPOWER_H
 
-#include <string>
+#include "pch.h"
 
 enum class ElementIndexPower {
     ControlledExplosion,
@@ -36,7 +36,7 @@ enum class ElementIndexPower {
 
 class ElementPower {
     static ElementIndexPower RandomPower();
-    static std::string              GetElementPowerDescription(ElementIndexPower power);
+    static std::string       GetElementPowerDescription(ElementIndexPower power);
 
 public:
     explicit ElementPower(ElementIndexPower power);

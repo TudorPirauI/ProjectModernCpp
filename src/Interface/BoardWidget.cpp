@@ -3,9 +3,8 @@
 //
 
 #include "Interface/BoardWidget.h"
-#include <QMouseEvent>
-#include <QPainter>
 #include "GameComponents/Board.h"
+#include "pch.h"
 
 BoardWidget::BoardWidget(QWidget *parent, const int lines, const int columns) :
     QWidget(parent), m_Board(10), m_Lines(lines), m_Columns(columns), m_SelectedCard(1),

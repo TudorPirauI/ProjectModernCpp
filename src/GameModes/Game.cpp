@@ -2,11 +2,8 @@
 // Created by edi on 28.11.2024.
 //
 
-#include <GameModes/Game.h>
-
-#include <iostream>
-#include <numeric>
-#include <ranges>
+#include "GameModes/Game.h"
+#include "pch.h"
 
 Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne,
            const std::string &nameTwo) :

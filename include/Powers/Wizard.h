@@ -5,7 +5,7 @@
 #ifndef WIZARD_H
 #define WIZARD_H
 
-#include <random>
+#include "pch.h"
 
 enum class WizardPower {
     EliminateOpponentCard,

@@ -1,7 +1,5 @@
-#include <Powers/Explosion.h>
-
-#include <ctime>
-#include <random>
+#include "Powers/Explosion.h"
+#include "pch.h"
 
 Explosion::Explosion(const std::vector<std::vector<Effect>> &effectMap) : m_Effects(effectMap) {}
 

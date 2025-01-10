@@ -1,13 +1,6 @@
-#include <GameComponents/Board.h>
-
-#include <fstream>
-#include <iostream>
-#include <ranges>
-
+#include "GameComponents/Board.h"
 #include "GameComponents/Player.h"
-
-// TODO: inca nu se foloseste [posX, posY] peste tot, sunt niste locuri unde nu cred ca isi au
-// rostul.
+#include "pch.h"
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (const auto cardOnPosition = m_Board.find(pos); cardOnPosition != m_Board.end()) {
@@ -189,7 +182,7 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
         return false;
     }
 
-    if (cardType == CardType::Ilusion) {
+    if (cardType == CardType::Illusion) {
         if (!InsertIllusion(card, pos))
             return false;
     }

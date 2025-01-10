@@ -5,7 +5,8 @@
 #ifndef DUELULVRAJITORILOR_H
 #define DUELULVRAJITORILOR_H
 
-#include <GameModes/Game.h>
+#include "GameModes/Game.h"
+#include "Powers/Wizard.h"
 
 class DuelulVrajitorilor : public Game {
     int    m_ScoreWinning{2};

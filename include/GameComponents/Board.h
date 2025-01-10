@@ -1,19 +1,13 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <GameComponents/Card.h>
-#include <Powers/Wizard.h>
-#include <array>
-#include <map>
-#include <stack>
-#include <unordered_map>
-
-#include "Powers/ElementPower.h"
+#include "GameComponents/Card.h"
+#include "pch.h"
 
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};
 
-enum class CardType { Normal, Eter, Ilusion };
+enum class CardType { Normal, Eter, Illusion };
 
 class Board {
     GameBoard                    m_Board;

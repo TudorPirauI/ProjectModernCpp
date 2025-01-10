@@ -5,26 +5,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QApplication>
-#include <QButtonGroup>
-#include <QCheckBox>
-#include <QColorDialog>
-#include <QComboBox>
-#include <QFont>
-#include <QGraphicsBlurEffect>
-#include <QGroupBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QMainWindow>
-#include <QObject>
-#include <QPropertyAnimation>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QSlider>
-#include <QStackedWidget>
-#include <QTimer>
-#include <QUrl>
-#include <QVBoxLayout>
+#include <pch.h>
 
 class MainWindow final : public QMainWindow {
     Q_OBJECT

@@ -3,9 +3,8 @@
 //
 
 #include "Interface/HandWidget.h"
-#include <QMouseEvent>
-#include <QPainter>
 #include "GameComponents/Card.h"
+#include "pch.h"
 
 HandWidget::HandWidget(QWidget *parent) : QWidget(parent), m_SelectedCardIndex(-1) {}
 

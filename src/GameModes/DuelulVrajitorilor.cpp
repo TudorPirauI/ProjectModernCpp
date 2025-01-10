@@ -2,7 +2,7 @@
 // Created by Tudor on 11/28/2024.
 //
 
-#include <GameModes/DuelulVrajitorilor.h>
+#include "GameModes/DuelulVrajitorilor.h"
 
 Wizard DuelulVrajitorilor::GetPlayerAbility1() { return m_AbilityPlayer1; }
 

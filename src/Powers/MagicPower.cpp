@@ -2,9 +2,8 @@
 // Created by Tudor on 11/24/2024.
 //
 
-#include <Powers/MagicPower.h>
-
-#include <utility>
+#include "Powers/MagicPower.h"
+#include "pch.h"
 
 MagicPower::MagicPower(std::string name, const int id) : m_Name(std::move(name)), m_Id(id) {}
 

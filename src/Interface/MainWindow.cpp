@@ -1,5 +1,4 @@
-#include <GameComponents/Board.h>
-#include <Interface/MainWindow.h>
+#include "Interface/MainWindow.h"
 #include "Interface/IAntrenament.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {
@@ -150,7 +149,7 @@ void MainWindow::DrawNewGame() {
                     qDebug() << "Selected game mode is not implemented yet!\n";
                     return;
                 }
-                
+
                 m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
                 m_StackedWidget->addWidget(gameWidget);
                 m_StackedWidget->setCurrentWidget(gameWidget);

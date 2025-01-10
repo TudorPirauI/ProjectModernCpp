@@ -1,7 +1,7 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <utility>
+#include "pch.h"
 
 using Position = std::pair<int, int>;
 
@@ -11,7 +11,7 @@ std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn);
 
 class Card {
     int        m_Value;
-    int        m_onModifier{0};
+    int        m_OnModifier{0};
     PlayerTurn m_PlacedBy : 1;
     bool       m_IsIllusion : 1 {false};
     bool       m_IsEter : 1 {false};

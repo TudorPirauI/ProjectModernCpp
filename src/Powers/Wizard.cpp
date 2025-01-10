@@ -1,9 +1,6 @@
 
-#include <Powers/Wizard.h>
-
-#include <iostream>
-#include <random>
-#include <utility>
+#include "Powers/Wizard.h"
+#include "pch.h"
 
 int Wizard::RandomPower() {
     static std::random_device            rd;

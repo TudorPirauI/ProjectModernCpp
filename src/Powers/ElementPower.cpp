@@ -2,9 +2,8 @@
 // Created by Miruna on 11/24/2024.
 //
 
-#include <Powers/ElementPower.h>
-
-#include <random>
+#include "Powers/ElementPower.h"
+#include "pch.h"
 
 ElementIndexPower ElementPower::RandomPower() {
     constexpr int totalPowers = 24;

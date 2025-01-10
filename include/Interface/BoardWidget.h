@@ -5,9 +5,8 @@
 #ifndef ETER_BOARDWIDGET_H
 #define ETER_BOARDWIDGET_H
 
-#include <QWidget>
-#include <vector>
 #include "GameComponents/Board.h"
+#include "pch.h"
 
 class BoardWidget final : public QWidget {
     Q_OBJECT

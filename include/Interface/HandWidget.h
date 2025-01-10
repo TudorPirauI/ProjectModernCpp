@@ -5,8 +5,7 @@
 #ifndef ETER_HANDWIDGET_H
 #define ETER_HANDWIDGET_H
 
-#include <QWidget>
-#include <vector>
+#include "pch.h"
 #include "GameComponents/Card.h"
 
 class HandWidget final : public QWidget {
