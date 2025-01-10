@@ -212,16 +212,21 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
         case ElementIndexPower::Destruction:
             return "Removes the opponent's last played card from the game.";
         case ElementIndexPower::Flames: {
+            if (board[firstPosition].empty())
+                return false;
+
+            return board[firstPosition].top().GetIsIllusion();
         }
-            "Flip the opponent's illusion face up. Then play a card on any position on the "
-            "board.";
         case ElementIndexPower::Lava:
             return "Choose a number, provided that at least 2 cards with that number are visible "
                    "on the board. All visible cards with this number return to their owners' "
                    "hands.";
-        case ElementIndexPower::FromAshes:
-            return "Choose one of your own cards that was removed from the game and play it "
-                   "immediately.";
+        case ElementIndexPower::FromAshes: {
+            // todo: the methods are implemented they just need to be used in frontend
+            "Choose one of your own cards that was removed from the game and play it "
+            "immediately.";
+            return true;
+        }
         case ElementIndexPower::Sparks: {
             if (board[firstPosition].size() < 2)
                 return false;
@@ -287,10 +292,10 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
         case ElementIndexPower::Mirage: {
             if (!board[firstPosition].empty() and board[firstPosition].top().GetIsIllusion() and
                 board[firstPosition].top().GetPlacedBy() == playerTurn) {
-                const auto &cardIlussion = board[firstPosition].top();
+                const auto &cardIllusion = board[firstPosition].top();
                 board[firstPosition].pop();
 
-                m_Player1.GiveCard(cardIlussion);
+                m_Player1.GiveCard(cardIllusion);
                 board[firstPosition].emplace(card);
 
                 return true;
@@ -328,9 +333,22 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return true;
         }
 
-        case ElementIndexPower::Wave:
-            return "Move a stack to an adjacent empty position. Play a card on the newly empty "
-                   "position.";
+        case ElementIndexPower::Wave: {
+            if (board[firstPosition].empty() or !board[secondPosition].empty())
+                return false;
+
+            if (std::abs(firstPosition.first - secondPosition.first) > 1 or
+                std::abs(firstPosition.second - secondPosition.second) > 1)
+                return false;
+
+            board[secondPosition] = std::move(board[firstPosition]);
+
+            board[firstPosition] = {};
+
+            board[firstPosition].emplace(card);
+
+            return true;
+        }
         case ElementIndexPower::Whirlpool:
             return "Move 2 cards from the same row, separated by an empty space, into that empty "
                    "space. The card with the higher number goes on top, and in case of a tie, the "

@@ -11,6 +11,7 @@ class Player final {
     int         m_Score;
     int         m_NumberOfIllusion{1};
     Hand        m_Hand;
+    Hand        m_RemovedCards;
 
 public:
     Player(std::string name, Hand hand);
@@ -32,6 +33,10 @@ public:
 
     int  GetIllusion();
     void SetIllusion(int value);
+
+    void AddToRemovedCards(const Card &card);
+    Hand GetRemovedCards();
+    void RemoveFromRemovedCards(const Card &card);
 };
 
 #endif // PLAYER_H

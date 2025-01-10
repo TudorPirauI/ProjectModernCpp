@@ -38,3 +38,13 @@ void Player::GiveEterCard(const PlayerTurn playerTurn) {
 int Player::GetIllusion() { return m_NumberOfIllusion; }
 
 void Player::SetIllusion(const int value) { m_NumberOfIllusion = value; }
+
+void Player::AddToRemovedCards(const Card &card) { m_RemovedCards.emplace_back(card); }
+
+Hand Player::GetRemovedCards() { return m_RemovedCards; }
+
+void Player::RemoveFromRemovedCards(const Card &card) {
+    if (const auto it = std::ranges::find(m_RemovedCards, card); it != m_RemovedCards.end()) {
+        m_RemovedCards.erase(it);
+    }
+}
