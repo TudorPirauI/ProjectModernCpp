@@ -40,6 +40,7 @@ file(GLOB SOURCES src/**/*.cpp src/*.cpp)
 file(GLOB HEADERS include/**/*.h include/*.h)
 
 include_directories(include)
+include_directories("lib")
 
 if (NOT SOURCES)
     message(FATAL_ERROR "No source files found. Please check the 'src' directory.")

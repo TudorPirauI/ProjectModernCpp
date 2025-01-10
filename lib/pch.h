@@ -8,14 +8,34 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <random>
+#include <ranges>
 #include <sstream>
+#include <stack>
 #include <string>
 #include <vector>
 
-#ifdef _WIN32
-// todo
-#else
-// todo
-#endif
+#include <QApplication>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
+#include <QFont>
+#include <QGraphicsBlurEffect>
+#include <QGroupBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMainWindow>
+#include <QMouseEvent>
+#include <QObject>
+#include <QPainter>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSlider>
+#include <QStackedWidget>
+#include <QTimer>
+#include <QUrl>
+#include <QVBoxLayout>
 
 #endif // PCH_H
