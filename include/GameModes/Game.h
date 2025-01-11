@@ -38,7 +38,7 @@ public:
 
     bool VerifyElementalPower(const ElementIndexPower &power, const Position &firstPosition,
                               const Position &secondPosition, const Card &card,
-                              PlayerTurn playerTurn);
+                              PlayerTurn playerTurn, int chosenNumber);
 
     Game(const Game &other)                = default;
     Game(Game &&other) noexcept            = default;

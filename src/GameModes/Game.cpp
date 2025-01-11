@@ -203,7 +203,7 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
 
 bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &firstPosition,
                                 const Position &secondPosition, const Card &card,
-                                const PlayerTurn playerTurn) {
+                                const PlayerTurn playerTurn, int chosenNumber) {
     auto &board = m_Board.GetGameBoard();
 
     switch (power) {
@@ -226,10 +226,35 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return board[firstPosition].top().GetIsIllusion();
         }
-        case ElementIndexPower::Lava:
-            return "Choose a number, provided that at least 2 cards with that number are visible "
-                   "on the board. All visible cards with this number return to their owners' "
-                   "hands.";
+        case ElementIndexPower::Lava: {
+            int count = 0;
+
+            for (const auto &stack : board | std::views::values) {
+                if (!stack.empty() && stack.top().GetValue() == chosenNumber) {
+                    ++count;
+                }
+            }
+
+            if (count < 2) {
+                return false;
+            }
+
+            for (auto &stack : board | std::views::values) {
+                if (!stack.empty() && stack.top().GetValue() == chosenNumber) {
+                    auto cardToReturn = stack.top();
+                    stack.pop();
+
+                    if (cardToReturn.GetPlacedBy() == PlayerTurn::Player1) {
+                        m_Player1.GiveCard(cardToReturn);
+                    } else {
+                        m_Player2.GiveCard(cardToReturn);
+                    }
+                }
+            }
+
+            m_Board.UpdateDiagonals();
+            return true;
+        }
         case ElementIndexPower::FromAshes: {
             // todo: the methods are implemented they just need to be used in frontend
             "Choose one of your own cards that was removed from the game and play it "
@@ -509,9 +534,22 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return false;
         }
         case ElementIndexPower::Granite: {
+            auto newBoard = RemadeGameBoard(m_Board);
+
+            Card graniteCard{};
+
+            graniteCard.SetIsGranite(true);
+
+            if (!newBoard.InsertCard(card, firstPosition, PlayerTurn::Granite, CardType::Granite))
+                return false;
+
+            if (!newBoard.UpdateDiagonals())
+                return false;
+
+            m_Board = newBoard;
+
+            return true;
         }
-            return "Place a neutral card on the board such that it defines at least one boundary "
-                   "of the game board.";
         case ElementIndexPower::Avalanche: {
             if (std::abs(firstPosition.first - secondPosition.first) > 1 ||
                 std::abs(firstPosition.second - secondPosition.second) > 1) {
@@ -583,21 +621,6 @@ void Game::SetLastCardPlayer1(const Position &position) { m_LastPositionPlayer1 
 
 void Game::SetLastCardPlayer2(const Position &position) { m_LastPositionPlayer2 = position; }
 
-Board Game::RemadeGameBoard(Board board) {
-    Board modifiedBoard{board.GetMaxBoardSize()};
-
-    for (auto [position, stack] : board.GetGameBoard()) {
-        while (!stack.empty()) {
-            const auto &card = stack.top();
-            stack.pop();
-
-            modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card));
-        }
-    }
-
-    return board;
-}
-
 void Game::CheckModifierCard(std::stack<Card> &stack) {
     if (stack.top().GetModifier() != 0) {
         auto &card = stack.top();
@@ -620,4 +643,19 @@ CardType Game::GetCardType(const Card &card) {
         return CardType::Illusion;
 
     return CardType::Normal;
+}
+
+Board Game::RemadeGameBoard(Board board) {
+    Board modifiedBoard{board.GetMaxBoardSize()};
+
+    for (auto [position, stack] : board.GetGameBoard()) {
+        while (!stack.empty()) {
+            const auto &card = stack.top();
+            stack.pop();
+
+            modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card));
+        }
+    }
+
+    return board;
 }
