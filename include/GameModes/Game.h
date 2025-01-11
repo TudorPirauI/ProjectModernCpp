@@ -48,6 +48,12 @@ public:
     void SetLastCardPlayer1(const Position &position);
     void SetLastCardPlayer2(const Position &position);
 
+    Position GetLastCardPlayer1();
+    Position GetLastCardPlayer2();
+
+    int GetRowPlayer1();
+    int GetRowPlayer2();
+
 protected:
     // todo: add last card played by the both players;
     Board      m_Board;
@@ -64,6 +70,7 @@ protected:
     int        m_ScoreToWin{};
 
     Board RemadeGameBoard();
+    void  CheckModifierCard(std::stack<Card> &stack);
 };
 
 #endif // GAME_H

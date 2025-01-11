@@ -211,8 +211,10 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return "The board explodes!";
         case ElementIndexPower::Destruction: {
             if (playerTurn == PlayerTurn::Player1) {
+                m_Player2.AddToRemovedCards(board[m_LastPositionPlayer2].top());
                 board[m_LastPositionPlayer2].pop();
             } else {
+                m_Player1.AddToRemovedCards(board[m_LastPositionPlayer1].top());
                 board[m_LastPositionPlayer1].pop();
             }
 
@@ -293,9 +295,34 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
         case ElementIndexPower::Hurricane:
             return "Shift a fully occupied row by 1 position in the desired direction. Cards in "
                    "the stack that move out of the board boundaries return to their owners' hands.";
-        case ElementIndexPower::Gust:
-            return "Move any visible card on the board horizontally or vertically to an adjacent "
-                   "position with a card of a lower number.";
+        case ElementIndexPower::Gust: {
+            if (firstPosition == secondPosition or
+                std::abs(firstPosition.first - secondPosition.first > 1) or
+                std::abs(firstPosition.second - secondPosition.second) > 1) {
+                return false;
+            }
+
+            auto &firstStack  = board[firstPosition];
+            auto &secondStack = board[secondPosition];
+
+            if (firstStack.empty() || secondStack.empty()) {
+                return false;
+            }
+
+            const auto &firstCard = firstStack.top();
+
+            if (const auto &secondCard = secondStack.top();
+                firstCard.GetValue() <= secondCard.GetValue()) {
+                return false;
+            }
+
+            CheckModifierCard(secondStack);
+            secondStack.push(firstCard);
+            firstStack.pop();
+
+            m_Board.UpdateDiagonals();
+            return true;
+        }
         case ElementIndexPower::Mirage: {
             if (!board[firstPosition].empty() and board[firstPosition].top().GetIsIllusion() and
                 board[firstPosition].top().GetPlacedBy() == playerTurn) {
@@ -557,3 +584,18 @@ void Game::SetLastCardPlayer1(const Position &position) { m_LastPositionPlayer1 
 void Game::SetLastCardPlayer2(const Position &position) { m_LastPositionPlayer2 = position; }
 
 Board Game::RemadeGameBoard() { return m_Board; }
+
+void Game::CheckModifierCard(std::stack<Card> &stack) {
+    if (stack.top().GetModifier() != 0) {
+        auto &card = stack.top();
+        stack.pop();
+        card.SetModifier(0);
+        stack.emplace(card);
+    }
+}
+
+Position Game::GetLastCardPlayer1() { return m_LastPositionPlayer1; }
+Position Game::GetLastCardPlayer2() { return m_LastPositionPlayer2; }
+
+int Game::GetRowPlayer1() { return m_RowPlayer1; }
+int Game::GetRowPlayer2() { return m_RowPlayer2; }
