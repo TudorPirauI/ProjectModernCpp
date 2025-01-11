@@ -317,10 +317,62 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             }
             return true;
         }
+        // todo: make a review for this function
         case ElementIndexPower::Hurricane: {
+            const int row = firstPosition.first;
+
+            int                   countCards = 0;
+            std::vector<Position> stacksPosition;
+
+            for (const auto &[position, stack] : m_Board.GetGameBoard()) {
+                if (position.first == row and !stack.empty()) {
+                    ++countCards;
+                    stacksPosition.emplace_back(position);
+                }
+            }
+
+            if (countCards != m_Board.GetMaxBoardSize() + 1) {
+                return false;
+            }
+
+            auto  newBoard     = RemadeGameBoard(m_Board);
+            auto &newGameBoard = newBoard.GetGameBoard();
+            Hand  player1Hand{};
+            Hand  player2Hand{};
+
+            for (auto it = stacksPosition.rbegin(); it != stacksPosition.rend(); ++it) {
+                if (const auto &pos = *it;
+                    !newBoard.IsWithinBorderRestrictions({pos.first, pos.second + 1})) {
+                    auto stack = newGameBoard[{pos.first, pos.second}];
+                    while (!stack.empty()) {
+                        if (const auto &cardOnTop = stack.top();
+                            cardOnTop.GetPlacedBy() == PlayerTurn::Player1) {
+                            player1Hand.emplace_back(cardOnTop);
+                        } else {
+                            player2Hand.emplace_back(cardOnTop);
+                        }
+                        stack.pop();
+                    }
+                    if (newBoard.UpdateDiagonals())
+                        return false;
+                } else {
+                    newGameBoard[{pos.first, pos.second + 1}] = std::move(newGameBoard[pos]);
+                    newGameBoard[pos]                         = {};
+                }
+            }
+
+            auto giveCardsFromHand = [](Player &player, const Hand &hand) {
+                for (const auto &cardHand : hand) {
+                    player.GiveCard(cardHand);
+                }
+            };
+
+            giveCardsFromHand(m_Player1, player1Hand);
+            giveCardsFromHand(m_Player2, player2Hand);
+
+            m_Board.UpdateDiagonals();
+            return true;
         }
-            return "Shift a fully occupied row by 1 position in the desired direction. Cards in "
-                   "the stack that move out of the board boundaries return to their owners' hands.";
         case ElementIndexPower::Gust: {
             if (firstPosition == secondPosition or
                 std::abs(firstPosition.first - secondPosition.first > 1) or

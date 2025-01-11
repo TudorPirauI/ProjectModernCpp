@@ -129,6 +129,20 @@ void Board::SetRight(const Position &position) { m_Corners[1] = position; }
 void Board::SetUp(const Position &position) { m_Corners[2] = position; }
 void Board::SetDown(const Position &position) { m_Corners[3] = position; }
 
+bool Board::IsWithinBorderRestrictions(const Position position) {
+    if (!m_IsLocked) {
+        return false;
+    }
+
+    const auto &[leftX, leftY]   = GetLeft();
+    const auto &[rightX, rightY] = GetRight();
+    const auto &[downX, downY]   = GetDown();
+    const auto &[upX, upY]       = GetUp();
+
+    return position.first >= leftX && position.first <= rightX && position.second >= upY &&
+           position.second <= downY;
+}
+
 bool Board::UpdateDiagonals() {
     m_PrincipalDiagonal.clear();
     m_SecondaryDiagonal.clear();
