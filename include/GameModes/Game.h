@@ -13,6 +13,8 @@
 class Game {
 public:
     enum class GameState { NotFinished, NormalWin, FinishedCards };
+    int m_RowPlayer1{-200};
+    int m_RowPlayer2{-200};
 
     virtual ~Game() = default;
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);

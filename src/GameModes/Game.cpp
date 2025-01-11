@@ -349,13 +349,52 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return true;
         }
-        case ElementIndexPower::Whirlpool:
-            return "Move 2 cards from the same row, separated by an empty space, into that empty "
-                   "space. The card with the higher number goes on top, and in case of a tie, the "
-                   "player chooses.";
+        case ElementIndexPower::Whirlpool: {
+            if (firstPosition.first != secondPosition.first) {
+                return false;
+            }
+
+            auto &firstStack  = board[firstPosition];
+            auto &secondStack = board[secondPosition];
+
+            if (firstStack.empty() || secondStack.empty()) {
+                return false;
+            }
+
+            Position emptySpace = {firstPosition.first,
+                                   (firstPosition.second + secondPosition.second) / 2};
+
+            if (!board[emptySpace].empty()) {
+                return false;
+            }
+
+            const auto &firstCardStack  = firstStack.top();
+            const auto &secondCardStack = secondStack.top();
+
+            firstStack.pop();
+            secondStack.pop();
+
+            std::stack<Card> emptyStack;
+
+            if (firstCardStack.GetValue() > secondCardStack.GetValue()) {
+                emptyStack.emplace(firstCardStack);
+                emptyStack.emplace(secondCardStack);
+            } else {
+                emptyStack.emplace(secondCardStack);
+                emptyStack.emplace(firstCardStack);
+            }
+
+            m_Board.UpdateDiagonals();
+            return true;
+        }
         case ElementIndexPower::Tsunami: {
-            "Choose a row. During the opponent's next turn, they cannot "
-            "place cards on that row.";
+            if (playerTurn == PlayerTurn::Player1)
+                m_RowPlayer2 = firstPosition.first;
+            else {
+                m_RowPlayer1 = firstPosition.first;
+            }
+
+            return true;
         }
         // todo: fix this method:)
         case ElementIndexPower::Waterfall: {
