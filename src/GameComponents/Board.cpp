@@ -3,10 +3,13 @@
 #include "pch.h"
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
-    if (const auto cardOnPosition = m_Board.find(pos); cardOnPosition != m_Board.end()) {
+    if (const auto cardOnPosition = m_Board.find(pos);
+        card.GetIsGranite() or cardOnPosition != m_Board.end()) {
         printf("ma-ta2\n");
+
         const auto cardOnTop = cardOnPosition->second.top();
-        if (cardOnTop.GetValue() >= card.GetValue()) {
+
+        if (cardOnTop.GetValue() >= card.GetValue() or cardOnTop.GetIsGranite()) {
             return false;
         }
 
@@ -126,7 +129,7 @@ void Board::SetRight(const Position &position) { m_Corners[1] = position; }
 void Board::SetUp(const Position &position) { m_Corners[2] = position; }
 void Board::SetDown(const Position &position) { m_Corners[3] = position; }
 
-void Board::UpdateDiagonals() {
+bool Board::UpdateDiagonals() {
     m_PrincipalDiagonal.clear();
     m_SecondaryDiagonal.clear();
 
@@ -177,10 +180,16 @@ bool Board::IsBoardLocked() const { return m_IsLocked; }
 
 bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
                        const CardType &cardType) {
+    if (cardType == CardType::Granite and !m_Board[pos].empty())
+        return false;
+
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
         return false;
     }
+
+    if (cardType == CardType::Granite)
+        return true;
 
     if (cardType == CardType::Illusion) {
         if (!InsertIllusion(card, pos))

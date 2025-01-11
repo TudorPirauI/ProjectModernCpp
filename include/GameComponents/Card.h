@@ -5,7 +5,7 @@
 
 using Position = std::pair<int, int>;
 
-enum class PlayerTurn { Player1, Player2 };
+enum class PlayerTurn { Player1, Player2, Granite };
 
 std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn);
 
@@ -16,9 +16,11 @@ class Card {
     bool       m_IsIllusion : 1 {false};
     bool       m_IsEter : 1 {false};
     bool       m_IsFlipped : 1 {false};
+    bool       m_IsGranite : 1 {false};
 
 public:
     explicit Card(int value);
+    Card();
     Card(int value, PlayerTurn playerTurn);
 
     Card(const Card &other)                = default;
@@ -40,6 +42,9 @@ public:
 
     [[nodiscard]] PlayerTurn GetPlacedBy() const;
     void                     SetPlacedBy(PlayerTurn placedBy);
+
+    [[nodiscard]] bool GetIsGranite() const;
+    void               SetIsGranite(bool isGranite);
 
     friend std::ostream &operator<<(std::ostream &os, const Card &card);
     bool                 operator==(const Card &other) const;

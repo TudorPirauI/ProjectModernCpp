@@ -7,7 +7,7 @@
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};
 
-enum class CardType { Normal, Eter, Illusion };
+enum class CardType { Normal, Eter, Illusion, Granite };
 
 class Board {
     GameBoard                    m_Board;
@@ -56,7 +56,7 @@ public:
     void SetRight(const Position &position);
     void SetUp(const Position &position);
     void SetDown(const Position &position);
-    void UpdateDiagonals();
+    bool UpdateDiagonals();
 
     void CleanUpBoard();
 };
