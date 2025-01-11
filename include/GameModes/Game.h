@@ -13,8 +13,6 @@
 class Game {
 public:
     enum class GameState { NotFinished, NormalWin, FinishedCards };
-    int m_RowPlayer1{-200};
-    int m_RowPlayer2{-200};
 
     virtual ~Game() = default;
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
@@ -47,6 +45,9 @@ public:
     Game &operator=(const Game &other)     = default;
     Game &operator=(Game &&other) noexcept = default;
 
+    void SetLastCardPlayer1(const Position &position);
+    void SetLastCardPlayer2(const Position &position);
+
 protected:
     // todo: add last card played by the both players;
     Board      m_Board;
@@ -56,7 +57,13 @@ protected:
     GameState  m_GameState{GameState::NotFinished};
     int        m_ScorePlayer1{0};
     int        m_ScorePlayer2{0};
+    int        m_RowPlayer1{-200};
+    int        m_RowPlayer2{-200};
+    Position   m_LastPositionPlayer1;
+    Position   m_LastPositionPlayer2;
     int        m_ScoreToWin{};
+
+    Board RemadeGameBoard();
 };
 
 #endif // GAME_H

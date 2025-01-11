@@ -209,8 +209,15 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
     switch (power) {
         case ElementIndexPower::ControlledExplosion:
             return "The board explodes!";
-        case ElementIndexPower::Destruction:
-            return "Removes the opponent's last played card from the game.";
+        case ElementIndexPower::Destruction: {
+            if (playerTurn == PlayerTurn::Player1) {
+                board[m_LastPositionPlayer2].pop();
+            } else {
+                board[m_LastPositionPlayer1].pop();
+            }
+
+            return true;
+        }
         case ElementIndexPower::Flames: {
             if (board[firstPosition].empty())
                 return false;
@@ -544,3 +551,9 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
     return false;
 }
+
+void Game::SetLastCardPlayer1(const Position &position) { m_LastPositionPlayer1 = position; }
+
+void Game::SetLastCardPlayer2(const Position &position) { m_LastPositionPlayer2 = position; }
+
+Board Game::RemadeGameBoard() { return m_Board; }
