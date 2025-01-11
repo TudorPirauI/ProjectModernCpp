@@ -69,8 +69,9 @@ protected:
     Position   m_LastPositionPlayer2;
     int        m_ScoreToWin{};
 
-    Board RemadeGameBoard();
-    void  CheckModifierCard(std::stack<Card> &stack);
+    Board    RemadeGameBoard(Board board);
+    void     CheckModifierCard(std::stack<Card> &stack);
+    CardType GetCardType(const Card &card);
 };
 
 #endif // GAME_H

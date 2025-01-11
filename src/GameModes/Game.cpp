@@ -292,7 +292,8 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             }
             return true;
         }
-        case ElementIndexPower::Hurricane:
+        case ElementIndexPower::Hurricane: {
+        }
             return "Shift a fully occupied row by 1 position in the desired direction. Cards in "
                    "the stack that move out of the board boundaries return to their owners' hands.";
         case ElementIndexPower::Gust: {
@@ -366,7 +367,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             m_Player2.SetIllusion(m_Player2.GetIllusion() + 1);
             return true;
         }
-
         case ElementIndexPower::Wave: {
             if (board[firstPosition].empty() or !board[secondPosition].empty())
                 return false;
@@ -478,7 +478,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return false;
         }
-
         case ElementIndexPower::Earthquake: {
             for (auto it = board.begin(); it != board.end();) {
                 if (auto &stack = it->second; !stack.empty() && stack.top().GetValue() == 1) {
@@ -509,7 +508,8 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return false;
         }
-        case ElementIndexPower::Granite:
+        case ElementIndexPower::Granite: {
+        }
             return "Place a neutral card on the board such that it defines at least one boundary "
                    "of the game board.";
         case ElementIndexPower::Avalanche: {
@@ -583,7 +583,20 @@ void Game::SetLastCardPlayer1(const Position &position) { m_LastPositionPlayer1 
 
 void Game::SetLastCardPlayer2(const Position &position) { m_LastPositionPlayer2 = position; }
 
-Board Game::RemadeGameBoard() { return m_Board; }
+Board Game::RemadeGameBoard(Board board) {
+    Board modifiedBoard{board.GetMaxBoardSize()};
+
+    for (auto [position, stack] : board.GetGameBoard()) {
+        while (!stack.empty()) {
+            const auto &card = stack.top();
+            stack.pop();
+
+            modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card));
+        }
+    }
+
+    return board;
+}
 
 void Game::CheckModifierCard(std::stack<Card> &stack) {
     if (stack.top().GetModifier() != 0) {
@@ -599,3 +612,12 @@ Position Game::GetLastCardPlayer2() { return m_LastPositionPlayer2; }
 
 int Game::GetRowPlayer1() { return m_RowPlayer1; }
 int Game::GetRowPlayer2() { return m_RowPlayer2; }
+
+CardType Game::GetCardType(const Card &card) {
+    if (card.GetIsEter())
+        return CardType::Eter;
+    if (card.GetIsIllusion())
+        return CardType::Illusion;
+
+    return CardType::Normal;
+}
