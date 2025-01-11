@@ -203,24 +203,58 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
 
 bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &firstPosition,
                                 const Position &secondPosition, const Card &card,
-                                const PlayerTurn playerTurn) {
+                                const PlayerTurn playerTurn, int chosenNumber) {
     auto &board = m_Board.GetGameBoard();
 
     switch (power) {
         case ElementIndexPower::ControlledExplosion:
             return "The board explodes!";
-        case ElementIndexPower::Destruction:
-            return "Removes the opponent's last played card from the game.";
+        case ElementIndexPower::Destruction: {
+            if (playerTurn == PlayerTurn::Player1) {
+                m_Player2.AddToRemovedCards(board[m_LastPositionPlayer2].top());
+                board[m_LastPositionPlayer2].pop();
+            } else {
+                m_Player1.AddToRemovedCards(board[m_LastPositionPlayer1].top());
+                board[m_LastPositionPlayer1].pop();
+            }
+
+            return true;
+        }
         case ElementIndexPower::Flames: {
             if (board[firstPosition].empty())
                 return false;
 
             return board[firstPosition].top().GetIsIllusion();
         }
-        case ElementIndexPower::Lava:
-            return "Choose a number, provided that at least 2 cards with that number are visible "
-                   "on the board. All visible cards with this number return to their owners' "
-                   "hands.";
+        case ElementIndexPower::Lava: {
+            int count = 0;
+
+            for (const auto &stack : board | std::views::values) {
+                if (!stack.empty() && stack.top().GetValue() == chosenNumber) {
+                    ++count;
+                }
+            }
+
+            if (count < 2) {
+                return false;
+            }
+
+            for (auto &stack : board | std::views::values) {
+                if (!stack.empty() && stack.top().GetValue() == chosenNumber) {
+                    auto cardToReturn = stack.top();
+                    stack.pop();
+
+                    if (cardToReturn.GetPlacedBy() == PlayerTurn::Player1) {
+                        m_Player1.GiveCard(cardToReturn);
+                    } else {
+                        m_Player2.GiveCard(cardToReturn);
+                    }
+                }
+            }
+
+            m_Board.UpdateDiagonals();
+            return true;
+        }
         case ElementIndexPower::FromAshes: {
             // todo: the methods are implemented they just need to be used in frontend
             "Choose one of your own cards that was removed from the game and play it "
@@ -283,12 +317,90 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             }
             return true;
         }
-        case ElementIndexPower::Hurricane:
-            return "Shift a fully occupied row by 1 position in the desired direction. Cards in "
-                   "the stack that move out of the board boundaries return to their owners' hands.";
-        case ElementIndexPower::Gust:
-            return "Move any visible card on the board horizontally or vertically to an adjacent "
-                   "position with a card of a lower number.";
+        // todo: make a review for this function
+        case ElementIndexPower::Hurricane: {
+            const int row = firstPosition.first;
+
+            int                   countCards = 0;
+            std::vector<Position> stacksPosition;
+
+            for (const auto &[position, stack] : m_Board.GetGameBoard()) {
+                if (position.first == row and !stack.empty()) {
+                    ++countCards;
+                    stacksPosition.emplace_back(position);
+                }
+            }
+
+            if (countCards != m_Board.GetMaxBoardSize() + 1) {
+                return false;
+            }
+
+            auto  newBoard     = RemadeGameBoard(m_Board);
+            auto &newGameBoard = newBoard.GetGameBoard();
+            Hand  player1Hand{};
+            Hand  player2Hand{};
+
+            for (auto it = stacksPosition.rbegin(); it != stacksPosition.rend(); ++it) {
+                if (const auto &pos = *it;
+                    !newBoard.IsWithinBorderRestrictions({pos.first, pos.second + 1})) {
+                    auto stack = newGameBoard[{pos.first, pos.second}];
+                    while (!stack.empty()) {
+                        if (const auto &cardOnTop = stack.top();
+                            cardOnTop.GetPlacedBy() == PlayerTurn::Player1) {
+                            player1Hand.emplace_back(cardOnTop);
+                        } else {
+                            player2Hand.emplace_back(cardOnTop);
+                        }
+                        stack.pop();
+                    }
+                    if (newBoard.UpdateDiagonals())
+                        return false;
+                } else {
+                    newGameBoard[{pos.first, pos.second + 1}] = std::move(newGameBoard[pos]);
+                    newGameBoard[pos]                         = {};
+                }
+            }
+
+            auto giveCardsFromHand = [](Player &player, const Hand &hand) {
+                for (const auto &cardHand : hand) {
+                    player.GiveCard(cardHand);
+                }
+            };
+
+            giveCardsFromHand(m_Player1, player1Hand);
+            giveCardsFromHand(m_Player2, player2Hand);
+
+            m_Board.UpdateDiagonals();
+            return true;
+        }
+        case ElementIndexPower::Gust: {
+            if (firstPosition == secondPosition or
+                std::abs(firstPosition.first - secondPosition.first > 1) or
+                std::abs(firstPosition.second - secondPosition.second) > 1) {
+                return false;
+            }
+
+            auto &firstStack  = board[firstPosition];
+            auto &secondStack = board[secondPosition];
+
+            if (firstStack.empty() || secondStack.empty()) {
+                return false;
+            }
+
+            const auto &firstCard = firstStack.top();
+
+            if (const auto &secondCard = secondStack.top();
+                firstCard.GetValue() <= secondCard.GetValue()) {
+                return false;
+            }
+
+            CheckModifierCard(secondStack);
+            secondStack.push(firstCard);
+            firstStack.pop();
+
+            m_Board.UpdateDiagonals();
+            return true;
+        }
         case ElementIndexPower::Mirage: {
             if (!board[firstPosition].empty() and board[firstPosition].top().GetIsIllusion() and
                 board[firstPosition].top().GetPlacedBy() == playerTurn) {
@@ -332,7 +444,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             m_Player2.SetIllusion(m_Player2.GetIllusion() + 1);
             return true;
         }
-
         case ElementIndexPower::Wave: {
             if (board[firstPosition].empty() or !board[secondPosition].empty())
                 return false;
@@ -349,15 +460,53 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return true;
         }
-        case ElementIndexPower::Whirlpool:
-            return "Move 2 cards from the same row, separated by an empty space, into that empty "
-                   "space. The card with the higher number goes on top, and in case of a tie, the "
-                   "player chooses.";
-        case ElementIndexPower::Tsunami: {
-            "Choose a row. During the opponent's next turn, they cannot "
-            "place cards on that row.";
-        }
+        case ElementIndexPower::Whirlpool: {
+            if (firstPosition.first != secondPosition.first) {
+                return false;
+            }
 
+            auto &firstStack  = board[firstPosition];
+            auto &secondStack = board[secondPosition];
+
+            if (firstStack.empty() || secondStack.empty()) {
+                return false;
+            }
+
+            Position emptySpace = {firstPosition.first,
+                                   (firstPosition.second + secondPosition.second) / 2};
+
+            if (!board[emptySpace].empty()) {
+                return false;
+            }
+
+            const auto &firstCardStack  = firstStack.top();
+            const auto &secondCardStack = secondStack.top();
+
+            firstStack.pop();
+            secondStack.pop();
+
+            std::stack<Card> emptyStack;
+
+            if (firstCardStack.GetValue() > secondCardStack.GetValue()) {
+                emptyStack.emplace(firstCardStack);
+                emptyStack.emplace(secondCardStack);
+            } else {
+                emptyStack.emplace(secondCardStack);
+                emptyStack.emplace(firstCardStack);
+            }
+
+            m_Board.UpdateDiagonals();
+            return true;
+        }
+        case ElementIndexPower::Tsunami: {
+            if (playerTurn == PlayerTurn::Player1)
+                m_RowPlayer2 = firstPosition.first;
+            else {
+                m_RowPlayer1 = firstPosition.first;
+            }
+
+            return true;
+        }
         // todo: fix this method:)
         case ElementIndexPower::Waterfall: {
             const auto &[leftX, leftY]   = m_Board.GetLeft();
@@ -406,7 +555,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return false;
         }
-
         case ElementIndexPower::Earthquake: {
             for (auto it = board.begin(); it != board.end();) {
                 if (auto &stack = it->second; !stack.empty() && stack.top().GetValue() == 1) {
@@ -437,9 +585,23 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return false;
         }
-        case ElementIndexPower::Granite:
-            return "Place a neutral card on the board such that it defines at least one boundary "
-                   "of the game board.";
+        case ElementIndexPower::Granite: {
+            auto newBoard = RemadeGameBoard(m_Board);
+
+            Card graniteCard{};
+
+            graniteCard.SetIsGranite(true);
+
+            if (!newBoard.InsertCard(card, firstPosition, PlayerTurn::Granite, CardType::Granite))
+                return false;
+
+            if (!newBoard.UpdateDiagonals())
+                return false;
+
+            m_Board = newBoard;
+
+            return true;
+        }
         case ElementIndexPower::Avalanche: {
             if (std::abs(firstPosition.first - secondPosition.first) > 1 ||
                 std::abs(firstPosition.second - secondPosition.second) > 1) {
@@ -505,4 +667,47 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
     m_Board.UpdateDiagonals();
 
     return false;
+}
+
+void Game::SetLastCardPlayer1(const Position &position) { m_LastPositionPlayer1 = position; }
+
+void Game::SetLastCardPlayer2(const Position &position) { m_LastPositionPlayer2 = position; }
+
+void Game::CheckModifierCard(std::stack<Card> &stack) {
+    if (stack.top().GetModifier() != 0) {
+        auto &card = stack.top();
+        stack.pop();
+        card.SetModifier(0);
+        stack.emplace(card);
+    }
+}
+
+Position Game::GetLastCardPlayer1() { return m_LastPositionPlayer1; }
+Position Game::GetLastCardPlayer2() { return m_LastPositionPlayer2; }
+
+int Game::GetRowPlayer1() { return m_RowPlayer1; }
+int Game::GetRowPlayer2() { return m_RowPlayer2; }
+
+CardType Game::GetCardType(const Card &card) {
+    if (card.GetIsEter())
+        return CardType::Eter;
+    if (card.GetIsIllusion())
+        return CardType::Illusion;
+
+    return CardType::Normal;
+}
+
+Board Game::RemadeGameBoard(Board board) {
+    Board modifiedBoard{board.GetMaxBoardSize()};
+
+    for (auto [position, stack] : board.GetGameBoard()) {
+        while (!stack.empty()) {
+            const auto &card = stack.top();
+            stack.pop();
+
+            modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card));
+        }
+    }
+
+    return board;
 }

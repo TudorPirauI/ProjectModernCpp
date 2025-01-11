@@ -12,6 +12,8 @@ Card::Card(const int value) {
     m_Value = value;
 }
 
+Card::Card() {}
+
 Card::Card(const int value, const PlayerTurn playerTurn) : m_Value(value), m_PlacedBy(playerTurn) {}
 
 bool Card::GetIsFlipped() const { return m_IsFlipped; }
@@ -19,6 +21,9 @@ void Card::SetIsFlipped(const bool isFlipped) { m_IsFlipped = isFlipped; }
 
 PlayerTurn Card::GetPlacedBy() const { return m_PlacedBy; }
 void       Card::SetPlacedBy(const PlayerTurn placedBy) { m_PlacedBy = placedBy; }
+
+bool Card::GetIsGranite() const { return m_IsGranite; }
+void Card::SetIsGranite(const bool isGranite) { m_IsGranite = isGranite; }
 
 bool Card::operator==(const Card &other) const { return this->m_Value == other.m_Value; }
 

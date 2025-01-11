@@ -38,12 +38,21 @@ public:
 
     bool VerifyElementalPower(const ElementIndexPower &power, const Position &firstPosition,
                               const Position &secondPosition, const Card &card,
-                              PlayerTurn playerTurn);
+                              PlayerTurn playerTurn, int chosenNumber);
 
     Game(const Game &other)                = default;
     Game(Game &&other) noexcept            = default;
     Game &operator=(const Game &other)     = default;
     Game &operator=(Game &&other) noexcept = default;
+
+    void SetLastCardPlayer1(const Position &position);
+    void SetLastCardPlayer2(const Position &position);
+
+    Position GetLastCardPlayer1();
+    Position GetLastCardPlayer2();
+
+    int GetRowPlayer1();
+    int GetRowPlayer2();
 
 protected:
     // todo: add last card played by the both players;
@@ -54,7 +63,15 @@ protected:
     GameState  m_GameState{GameState::NotFinished};
     int        m_ScorePlayer1{0};
     int        m_ScorePlayer2{0};
+    int        m_RowPlayer1{-200};
+    int        m_RowPlayer2{-200};
+    Position   m_LastPositionPlayer1;
+    Position   m_LastPositionPlayer2;
     int        m_ScoreToWin{};
+
+    Board    RemadeGameBoard(Board board);
+    void     CheckModifierCard(std::stack<Card> &stack);
+    CardType GetCardType(const Card &card);
 };
 
 #endif // GAME_H
