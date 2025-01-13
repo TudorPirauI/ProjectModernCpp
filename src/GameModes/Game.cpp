@@ -101,6 +101,7 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
         // todo: review this function
         case WizardPower::RemoveRow: {
             const int rowToRemove = position.first;
+
             for (auto it = board.begin(); it != board.end();) {
                 if (it->first.first == rowToRemove) {
                     it = board.erase(it);
@@ -126,31 +127,60 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
                 return true;
             }
 
+            m_Board.UpdateDiagonals();
             return false;
         }
-
-        // todo: fix the error
         case WizardPower::MoveOwnStack: {
-            if (board[posStack].empty() and board[position].top().GetPlacedBy() == playerTurn) {
-                board[posStack] = board[position];
+            auto newBoard = RemadeGameBoard(m_Board);
+
+            if (auto &newGameBoard = newBoard.GetGameBoard();
+                newGameBoard[posStack].empty() and !newGameBoard[position].empty() and
+                newGameBoard[position].top().GetPlacedBy() == playerTurn) {
+
+                while (!newGameBoard[position].empty()) {
+                    const auto &cardOnTop = newGameBoard[position].top();
+                    const auto  result    = newBoard.InsertCard(
+                            cardOnTop, position, cardOnTop.GetPlacedBy(), GetCardType(card));
+
+                    if (result == false)
+                        return false;
+                }
+
                 while (!board[position].empty()) {
                     board[position].pop();
                 }
+
+                newBoard.UpdateDiagonals();
+                m_Board = newBoard;
                 return true;
             }
-            m_Board.UpdateDiagonals();
+
             return false;
         }
-        // todo: fix the error
         case WizardPower::MoveOpponentStack: {
-            if (board[posStack].empty() and board[position].top().GetPlacedBy() != playerTurn) {
-                board[posStack] = board[position];
+            auto newBoard = RemadeGameBoard(m_Board);
+            if (auto &newGameBoard = newBoard.GetGameBoard();
+                newGameBoard[posStack].empty() and !newGameBoard[position].empty() and
+                newGameBoard[position].top().GetPlacedBy() != playerTurn) {
+
+                while (!newGameBoard[position].empty()) {
+                    const auto &cardOnTop = newGameBoard[position].top();
+                    const auto  result    = newBoard.InsertCard(
+                            cardOnTop, position, cardOnTop.GetPlacedBy(), GetCardType(card));
+
+                    if (result == false)
+                        return false;
+                }
+
                 while (!board[position].empty()) {
                     board[position].pop();
                 }
+
+                newBoard.UpdateDiagonals();
+                m_Board = newBoard;
+
                 return true;
             }
-            m_Board.UpdateDiagonals();
             return false;
         }
 
@@ -162,7 +192,7 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
             }
             return true;
         }
-
+        // todo: make the board to shift to the right edge
         case WizardPower::ShiftRowToEdge: {
             const auto &[leftX, leftY]   = m_Board.GetLeft();
             const auto &[rightX, rightY] = m_Board.GetRight();
@@ -177,7 +207,6 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
                     }
                 }
 
-                // todo: make the board to shift to the right edge
                 if (cardCount >= 3) {
                     // Shift row to the left edge
                     for (auto i = leftY; i <= rightY; ++i) {
