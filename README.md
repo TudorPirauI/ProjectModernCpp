@@ -34,11 +34,18 @@ Use the built in `Run` command from your preferred IDE.
 
 ### Linux
 
-Depending on your distribution / DE, install the dependencies accordingly.
+Depending on your distribution / DE, install the dependencies:
 
 * CMake 3.30
 * QT 6.8
-* Catch2 (specified in `/tests/CMakeLists.txt`)
-* etc. (figure it out on you're own, you're a linux user)
+* Catch2 (optional, specified in `/tests/CMakeLists.txt`)
+* etc. (figure it out on your own, you're a linux user)
 
-Use the built in `Run` command from your preferred IDE.
+Run the following:
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+You should see the `Eter` executable. If needed, `chmod +x` it, then execute it.
