@@ -54,6 +54,8 @@ public:
     int GetRowPlayer1();
     int GetRowPlayer2();
 
+    bool CheckPlayerIllusion(Player &player);
+
 protected:
     // todo: add last card played by the both players;
     Board      m_Board;

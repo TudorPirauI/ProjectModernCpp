@@ -49,7 +49,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Card &card);
     bool                 operator==(const Card &other) const;
 
-    int  GetModifier();
+    int  GetModifier() const;
     void SetModifier(int value);
 };
 #endif // CARD_H

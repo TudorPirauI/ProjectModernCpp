@@ -107,6 +107,27 @@ bool Board::CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn) {
     return m_Board[pos].empty() || m_Board[pos].top().GetPlacedBy() == playerTurn;
 }
 
+bool Board::CheckTwoLinesFull() {
+    std::unordered_map<int, int> numberOfCardsPerLines;
+
+    for (const auto &[position, stacks] : m_Board) {
+        if (!stacks.empty())
+            ++numberOfCardsPerLines[position.first];
+    }
+
+    int counter = 0;
+
+    for (const auto &[row, numberOfCards] : numberOfCardsPerLines) {
+        if (numberOfCards == m_MaxBoardSize)
+            ++counter;
+    }
+
+    if (counter >= 2)
+        return true;
+
+    return false;
+}
+
 void Board::CleanUpBoard() {
     m_Board.clear();
     m_Corners[0] = m_Corners[1] = m_Corners[2] = m_Corners[3] = std::make_pair(0, 0);
@@ -227,6 +248,13 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
 
     m_Lines[pos.first] += compensateForPlacingOnTop * playerVariation;
     m_Columns[pos.second] += compensateForPlacingOnTop * playerVariation;
+
+    if (!m_Board[pos].empty() and m_Board[pos].top().GetModifier() != 0) {
+        auto cardOnTop = m_Board[pos].top();
+        m_Board[pos].pop();
+        cardOnTop.SetModifier(0);
+        m_Board[pos].emplace(cardOnTop);
+    }
 
     m_Board[pos].push(card);
 

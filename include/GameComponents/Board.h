@@ -17,15 +17,18 @@ class Board {
     std::unordered_map<int, int> m_PrincipalDiagonal;
     std::unordered_map<int, int> m_SecondaryDiagonal;
     bool                         m_IsLocked{false};
+    bool                         m_TwoRowsOccupied{false};
 
     std::array<Position, 4> m_Corners{START_POSITION, START_POSITION, START_POSITION,
                                       START_POSITION};
 
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
 
-    bool UpdateCorners(const Position &pos);
     void CheckIsLocked();
+
+    bool UpdateCorners(const Position &pos);
     bool CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn);
+    bool CheckTwoLinesFull();
 
 public:
     explicit Board(int maxBoardSize);

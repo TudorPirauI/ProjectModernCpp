@@ -21,7 +21,16 @@ void Player::ShowCards() {
 
 void Player::SetHand(const Hand &hand) { m_Hand = hand; }
 
-void Player::GiveCard(const Card &card) { m_Hand.emplace_back(card); }
+void Player::GiveCard(const Card &card) {
+    if (card.GetModifier() != 0) {
+        auto modifiedCard = card;
+
+        modifiedCard.SetModifier(0);
+
+        m_Hand.emplace_back(modifiedCard);
+    }
+    m_Hand.emplace_back(card);
+}
 
 void Player::RemoveCard(const Card &card) {
     if (const auto it = std::ranges::find(m_Hand, card); it != m_Hand.end()) {
@@ -39,7 +48,16 @@ int Player::GetIllusion() { return m_NumberOfIllusion; }
 
 void Player::SetIllusion(const int value) { m_NumberOfIllusion = value; }
 
-void Player::AddToRemovedCards(const Card &card) { m_RemovedCards.emplace_back(card); }
+void Player::AddToRemovedCards(const Card &card) {
+    if (card.GetModifier() != 0) {
+        auto modifiedCard = card;
+
+        modifiedCard.SetModifier(0);
+
+        m_RemovedCards.emplace_back(modifiedCard);
+    }
+    m_RemovedCards.emplace_back(card);
+}
 
 Hand Player::GetRemovedCards() { return m_RemovedCards; }
 

@@ -83,8 +83,6 @@ int Game::GetPlayer2Score() const { return m_ScorePlayer2; }
 
 int Game::GetScoreToWin() const { return m_ScoreToWin; }
 
-// todo: make another gameboard to check if the cards are added correctly to the board
-// todo: after changes of the format of the board
 bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
                              const Position &posStack, const Card &card,
                              const PlayerTurn &playerTurn) {
@@ -284,10 +282,10 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             m_Board.UpdateDiagonals();
             return true;
         }
-        case ElementIndexPower::FromAshes: {
             // todo: the methods are implemented they just need to be used in frontend
             "Choose one of your own cards that was removed from the game and play it "
             "immediately.";
+        case ElementIndexPower::FromAshes: {
             return true;
         }
         case ElementIndexPower::Sparks: {
@@ -445,15 +443,26 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return false;
         }
         case ElementIndexPower::Storm: {
-            if (board[firstPosition].size() >= 2) {
-                while (!board[firstPosition].empty()) {
-                    board[firstPosition].pop();
+            auto  newBoard     = RemadeGameBoard(m_Board);
+            auto &newGameBoard = newBoard.GetGameBoard();
+
+            for (auto &[position, stack] : board) {
+                if (stack.size() >= 2) {
+                    while (!stack.empty()) {
+                        stack.pop();
+                    }
+                    newBoard.UpdateDiagonals();
                 }
-                m_Board.UpdateDiagonals();
-                return true;
             }
 
-            return false;
+            if (const auto &checkBoard = RemadeGameBoard(newBoard);
+                checkBoard.GetMaxBoardSize() == 0)
+                return false;
+
+            newBoard.UpdateDiagonals();
+            m_Board = newBoard;
+
+            return true;
         }
         case ElementIndexPower::Tide: {
             if (!board[firstPosition].empty() and !board[secondPosition].empty()) {
@@ -463,7 +472,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return false;
         }
-        // todo: fix the illusion on insert card
         case ElementIndexPower::Fog: {
             if (playerTurn == PlayerTurn::Player1) {
                 m_Player1.SetIllusion(m_Player1.GetIllusion() + 1);
@@ -569,9 +577,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return false;
         }
         case ElementIndexPower::Support: {
-            // todo
-            "If that card is covered "
-            "or returned to the hand, it loses the bonus.";
             if (board[firstPosition].empty())
                 return false;
 
@@ -599,9 +604,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return true;
         }
         case ElementIndexPower::Shattering: {
-            // todo:
-            "If that card is "
-            "covered or returned to the hand, it loses the penalty.";
             if (board[firstPosition].empty())
                 return false;
 
@@ -693,8 +695,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return "Unknown power.";
     }
 
-    m_Board.UpdateDiagonals();
-
     return false;
 }
 
@@ -717,6 +717,15 @@ Position Game::GetLastCardPlayer2() { return m_LastPositionPlayer2; }
 int Game::GetRowPlayer1() { return m_RowPlayer1; }
 int Game::GetRowPlayer2() { return m_RowPlayer2; }
 
+bool Game::CheckPlayerIllusion(Player &player) {
+    if (player.GetIllusion() > 0) {
+        player.SetIllusion(player.GetIllusion() - 1);
+        return true;
+    }
+
+    return false;
+}
+
 CardType Game::GetCardType(const Card &card) {
     if (card.GetIsEter())
         return CardType::Eter;
@@ -734,7 +743,9 @@ Board Game::RemadeGameBoard(Board board) {
             const auto &card = stack.top();
             stack.pop();
 
-            modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card));
+            if (!modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card))) {
+                return Board{0};
+            }
         }
     }
 
