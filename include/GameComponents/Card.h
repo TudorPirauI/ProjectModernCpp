@@ -12,7 +12,7 @@ std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn);
 class Card {
     int        m_Value;
     int        m_OnModifier{0};
-    PlayerTurn m_PlacedBy : 1;
+    PlayerTurn m_PlacedBy : 2; // todo: potentially make this a std::optional?
     bool       m_IsIllusion : 1 {false};
     bool       m_IsEter : 1 {false};
     bool       m_IsFlipped : 1 {false};
@@ -27,6 +27,7 @@ public:
     Card(Card &&other) noexcept            = default;
     Card &operator=(const Card &other)     = default;
     Card &operator=(Card &&other) noexcept = default;
+    ~Card()                                = default;
 
     void              SetValue(int value);
     [[nodiscard]] int GetValue() const;

@@ -201,6 +201,8 @@ bool Board::UpdateDiagonals() {
     updateDiagonal(m_PrincipalDiagonal, isOnPrincipalDiagonal);
     std::cout << "Diagonala Secundara:\n";
     updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal);
+
+    return true; // TODO: This was missing a return, see if this was the right value lol
 }
 
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }

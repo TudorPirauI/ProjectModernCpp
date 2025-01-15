@@ -19,7 +19,7 @@ Card HandWidget::GetSelectedCard() const {
     if (m_SelectedCardIndex >= 0 && m_SelectedCardIndex < m_Cards.size()) {
         return m_Cards[m_SelectedCardIndex];
     }
-    return Card(-1);
+    return Card(-1); // this is stupid and is going to cause runtime problems
 }
 
 void HandWidget::paintEvent(QPaintEvent *event) {
@@ -55,7 +55,11 @@ void HandWidget::mousePressEvent(QMouseEvent *event) {
         QRect cardRect(x, y, cardWidth, cardHeight);
         if (cardRect.contains(event->pos())) {
             m_SelectedCardIndex = i;
-            emit CardSelected(m_Cards[m_SelectedCardIndex]);
+
+            emit CardSelected(m_Cards[m_SelectedCardIndex].GetValue());
+            std::cout << "Signal emitted from HandWidget for card index: " << m_SelectedCardIndex
+                      << std::endl;
+
             update();
             break;
         }

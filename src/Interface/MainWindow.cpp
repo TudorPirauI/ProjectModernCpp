@@ -125,7 +125,7 @@ void MainWindow::DrawNewGame() {
 
                 // Open new windows based on game mode
                 QWidget *gameWidget;
-                if (m_CurrentGameMode == "Antrenament") {
+                if (m_CurrentGameMode == "&Antrenament") {
                     gameWidget = new QWidget(this);
                     IAntrenament antrenamentGame(player1Name.toStdString(),
                                                  player2Name.toStdString(), gameWidget);

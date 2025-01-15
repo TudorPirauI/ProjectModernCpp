@@ -20,8 +20,8 @@ public:
     void StartGame();
 
 public slots:
-    void OnCardSelected(const Card &card);
-    void OnCardPlaced(int row, int col);
+    void OnCardSelected(int cardValue);
+    void OnPositionSelected(int x, int y);
 
 private:
     void SwitchTurn();
@@ -29,9 +29,10 @@ private:
     Antrenament         m_CurrentGame;
     PlayerTurn          m_CurrentPlayer;
     std::optional<Card> m_SelectedCard;
-    QWidget            *m_ParentWidget;
-    BoardWidget        *m_BoardWidget;
-    HandWidget         *m_HandWidget;
+
+    QWidget     *m_ParentWidget;
+    BoardWidget *m_BoardWidget;
+    HandWidget  *m_HandWidget;
 };
 
 #endif // IANTRENAMENT_H

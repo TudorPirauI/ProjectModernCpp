@@ -12,7 +12,7 @@ Card::Card(const int value) {
     m_Value = value;
 }
 
-Card::Card() {}
+Card::Card() = default;
 
 Card::Card(const int value, const PlayerTurn playerTurn) : m_Value(value), m_PlacedBy(playerTurn) {}
 
@@ -27,7 +27,7 @@ void Card::SetIsGranite(const bool isGranite) { m_IsGranite = isGranite; }
 
 bool Card::operator==(const Card &other) const { return this->m_Value == other.m_Value; }
 
-int Card::GetModifier() { return m_OnModifier; }
+int Card::GetModifier() const { return m_OnModifier; }
 
 void Card::SetModifier(const int value) { m_OnModifier = value; }
 
