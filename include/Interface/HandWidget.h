@@ -5,8 +5,8 @@
 #ifndef ETER_HANDWIDGET_H
 #define ETER_HANDWIDGET_H
 
-#include "pch.h"
 #include "GameComponents/Card.h"
+#include "pch.h"
 
 class HandWidget final : public QWidget {
     Q_OBJECT
@@ -18,7 +18,7 @@ public:
     [[nodiscard]] Card GetSelectedCard() const;
 
 signals:
-    void CardSelected(const Card &card);
+    void CardSelected(int cardValue);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

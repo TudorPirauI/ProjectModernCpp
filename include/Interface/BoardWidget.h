@@ -12,13 +12,13 @@ class BoardWidget final : public QWidget {
     Q_OBJECT
 
 public:
-    explicit BoardWidget(QWidget *parent = nullptr, int lines = 10, int columns = 10);
+    explicit BoardWidget(QWidget *parent = nullptr, int size = 3);
+
     void SetBoard(const Board &board);
     void OnDraw();
-    void InsertCard(const Card &card, const std::pair<int, int> &position, const PlayerTurn &turn);
 
-public slots:
-    void PlaceCard(const Card &card);
+signals:
+    void BoardSlotClicked(int x, int y);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -26,10 +26,7 @@ protected:
 
 private:
     Board m_Board;
-    int   m_Lines;
-    int   m_Columns;
-    Card  m_SelectedCard;
-    bool  m_CardSelected;
+    int   m_Size;
 };
 
 #endif // ETER_BOARDWIDGET_H
