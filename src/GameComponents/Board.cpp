@@ -110,7 +110,7 @@ bool Board::CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn) {
 bool Board::CheckTwoLinesFull() {
     std::unordered_map<int, int> numberOfCardsPerLines;
 
-    for (const auto &[position, stacks] : m_Board) {
+    for (const auto  &[position, stacks] : m_Board) {
         if (!stacks.empty())
             ++numberOfCardsPerLines[position.first];
     }
