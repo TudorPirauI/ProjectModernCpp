@@ -78,6 +78,23 @@ find_package(Qt6 COMPONENTS
         REQUIRED
 )
 
+find_package(nlohmann_json QUIET)
+
+if (nlohmann_json_FOUND)
+    message(STATUS "Found nlohmann_json")
+else ()
+    message(STATUS "Fetching nlohmann_json")
+
+    FetchContent_Declare(
+            nlohmann_json
+            GIT_REPOSITORY https://github.com/nlohmann/json.git
+            GIT_TAG v3.11.3
+    )
+
+    FetchContent_MakeAvailable(nlohmann_json)
+
+endif ()
+
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # This is mostly useless, but it helps on certain setups (obviously windows is to blame)
@@ -117,4 +134,5 @@ target_link_libraries(Eter PRIVATE
         Qt6::Gui
         Qt6::Widgets
         Qt6::Multimedia
+        nlohmann_json::nlohmann_json
 )
