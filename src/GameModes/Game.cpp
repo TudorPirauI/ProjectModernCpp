@@ -4,9 +4,6 @@
 
 #include "GameModes/Game.h"
 
-#include <ranges>
-#include "pch.h"
-
 Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne,
            const std::string &nameTwo) :
     m_Board(boardSize), m_Player1(nameOne, {}), m_Player2(nameTwo, {}), m_ScoreToWin(scoreToWin) {}

@@ -1,5 +1,4 @@
 #include "GameComponents/Player.h"
-#include "pch.h"
 
 Player::Player(std::string name, Hand hand) :
     m_UserName{std::move(name)}, m_Score{0}, m_Hand{std::move(hand)} {}

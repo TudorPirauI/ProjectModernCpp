@@ -5,8 +5,6 @@
 #ifndef WIZARD_H
 #define WIZARD_H
 
-#include "pch.h"
-
 enum class WizardPower {
     EliminateOpponentCard,
     RemoveRow,

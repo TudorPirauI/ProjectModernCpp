@@ -4,7 +4,6 @@
 
 #include "Interface/HandWidget.h"
 #include "GameComponents/Card.h"
-#include "pch.h"
 
 HandWidget::HandWidget(QWidget *parent) : QWidget(parent), m_SelectedCardIndex(-1) {}
 

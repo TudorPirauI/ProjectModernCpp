@@ -2,7 +2,6 @@
 #define BOARD_H
 
 #include "GameComponents/Card.h"
-#include "pch.h"
 
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};

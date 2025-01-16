@@ -6,7 +6,6 @@
 #define ETER_HANDWIDGET_H
 
 #include "GameComponents/Card.h"
-#include "pch.h"
 
 class HandWidget final : public QWidget {
     Q_OBJECT

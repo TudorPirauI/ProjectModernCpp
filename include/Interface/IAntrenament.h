@@ -10,8 +10,6 @@
 #include "Interface/BoardWidget.h"
 #include "Interface/HandWidget.h"
 
-#include <pch.h>
-
 class IAntrenament final : public QWidget {
     Q_OBJECT
 

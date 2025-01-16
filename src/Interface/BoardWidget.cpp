@@ -4,7 +4,6 @@
 
 #include "Interface/BoardWidget.h"
 #include "GameComponents/Board.h"
-#include "pch.h"
 
 BoardWidget::BoardWidget(QWidget *parent, const int size) :
     QWidget(parent), m_Board(size), m_Size(size) {}

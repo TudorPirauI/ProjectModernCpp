@@ -1,5 +1,4 @@
 #include "GameComponents/Card.h"
-#include "pch.h"
 
 Card::Card(const int value) {
     // todo: initialise mplaced by here (?)
