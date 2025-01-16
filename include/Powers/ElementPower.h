@@ -35,8 +35,7 @@ enum class ElementIndexPower {
 };
 
 class ElementPower {
-    static ElementIndexPower RandomPower();
-    static std::string       GetElementPowerDescription(ElementIndexPower power);
+    ElementIndexPower m_Power;
 
 public:
     explicit ElementPower(ElementIndexPower power);
@@ -49,11 +48,14 @@ public:
 
     ElementPower &operator=(ElementPower &&other) noexcept = default;
 
+    void        RandomPower();
+    std::string GetElementPowerDescription(ElementIndexPower power);
+
     ~ElementPower() = default;
 
     [[nodiscard]] ElementIndexPower GetPower() const;
 
-    void SetPower(ElementIndexPower newPower);
+    void SetPower(const ElementIndexPower &newPower);
 };
 
 #endif // ELEMENTPOWER_H

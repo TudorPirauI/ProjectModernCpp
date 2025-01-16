@@ -5,14 +5,14 @@
 #include "Powers/ElementPower.h"
 #include "pch.h"
 
-ElementIndexPower ElementPower::RandomPower() {
+void ElementPower::RandomPower() {
     constexpr int totalPowers = 24;
 
     static std::random_device            rd;
     static std::mt19937                  gen(rd());
     static std::uniform_int_distribution dis(0, totalPowers - 1);
 
-    return static_cast<ElementIndexPower>(dis(gen));
+    m_Power = static_cast<ElementIndexPower>(dis(gen));
 }
 
 std::string ElementPower::GetElementPowerDescription(const ElementIndexPower power) {
@@ -86,3 +86,5 @@ std::string ElementPower::GetElementPowerDescription(const ElementIndexPower pow
             return "Unknown power.";
     }
 }
+ElementIndexPower ElementPower::GetPower() const { return m_Power; }
+void              ElementPower::SetPower(const ElementIndexPower &newPower) { m_Power = newPower; }

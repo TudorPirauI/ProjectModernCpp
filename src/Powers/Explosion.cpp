@@ -3,6 +3,7 @@
 
 Explosion::Explosion(const std::vector<std::vector<Effect>> &effectMap) : m_Effects(effectMap) {}
 
+// todo: review the explosion to work well
 Explosion Explosion::Generate(const int size) {
     if (size != 3 && size != 4) {
         throw std::invalid_argument("Dimensiunea trebuie să fie 3 sau 4.");

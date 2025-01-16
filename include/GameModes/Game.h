@@ -13,9 +13,6 @@
 // todo: make another game mode using DuelulVrajitorilor and DuelulElementelor
 // todo: restart the game or continue the last game
 // todo: the same power that was used by a player can't be used by another player
-// todo: DuelulVrajitorilor - the players must have:
-// todo: 10 cărți: 1, 1, 2, 2, 2, 3, 3, 3, 4, Eter; fiecare jucător primește un vrăjitor aleatoriu
-// și distinct; Format meci: 3/5
 // todo: DuelulElementelor - the players must have:
 // fiecare jucător are 10 cărți: 1, 1, 2, 2, 2, 3,  3, 3, 4, Eter; se aleg 2 puteri distincte în mod
 // aleatoriu; cele 2 puteri pot fi folosite de amândoi jucătorii; Format meci: 3/5
