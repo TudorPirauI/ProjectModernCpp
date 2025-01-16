@@ -213,7 +213,7 @@ Board::Board(const int maxBoardSize) :
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
 bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
-                       const CardType &cardType, Player& player) {
+                       const CardType &cardType, Player &player1, Player &player2) {
     if (cardType == CardType::Granite and !m_Board[pos].empty())
         return false;
 
@@ -228,7 +228,13 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
     if (cardType == CardType::Illusion) {
         if (!InsertIllusion(card, pos))
             return false;
+
+        if (playerTurn == PlayerTurn::Player1)
+            player1.SetHasIllusionInGame(true);
+        else
+            player2.SetHasIllusionInGame(true);
     }
+
     if (cardType == CardType::Eter) {
         if (!InsertEter(card, pos))
             return false;
@@ -253,6 +259,15 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
         m_Board[pos].pop();
         cardOnTop.SetModifier(0);
         m_Board[pos].emplace(cardOnTop);
+    }
+
+    if (m_Board[pos].top().GetIsIllusion()) {
+        if (CoverIllusion(card, pos)) {
+            if (playerTurn == PlayerTurn::Player1)
+                player2.SetHasIllusionInGame(false);
+            else
+                player1.SetHasIllusionInGame(false);
+        }
     }
 
     m_Board[pos].push(card);
