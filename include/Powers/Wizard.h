@@ -19,8 +19,8 @@ enum class WizardPower {
 
 class Wizard {
     WizardPower m_Type;
-    static int  RandomPower();
-    bool        m_HasUsedPowerInMatch{false};
+
+    bool m_HasUsedPowerInMatch{false};
 
 public:
     Wizard(const Wizard &other)                = default;
@@ -29,7 +29,7 @@ public:
     Wizard &operator=(Wizard &&other) noexcept = default;
     Wizard();
     ~Wizard() = default;
-
+    static int                RandomPower();
     [[nodiscard]] std::string GetWizardPowerDescription() const;
 
     WizardPower ActivatePower();
