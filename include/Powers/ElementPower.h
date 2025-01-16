@@ -5,8 +5,6 @@
 #ifndef ELEMENTPOWER_H
 #define ELEMENTPOWER_H
 
-#include "pch.h"
-
 enum class ElementIndexPower {
     ControlledExplosion,
     Destruction,

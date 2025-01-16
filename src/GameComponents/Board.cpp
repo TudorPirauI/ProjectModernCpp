@@ -1,6 +1,5 @@
 #include "GameComponents/Board.h"
 #include "GameComponents/Player.h"
-#include "pch.h"
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (const auto cardOnPosition = m_Board.find(pos);

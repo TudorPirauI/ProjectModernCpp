@@ -3,7 +3,6 @@
 //
 
 #include "Powers/ElementPower.h"
-#include "pch.h"
 
 void ElementPower::RandomPower() {
     constexpr int totalPowers = 24;

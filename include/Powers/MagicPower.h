@@ -5,8 +5,6 @@
 #ifndef MAGICPOWER_H
 #define MAGICPOWER_H
 
-#include "pch.h"
-
 class MagicPower {
     std::string m_Name;
     int         m_Id;

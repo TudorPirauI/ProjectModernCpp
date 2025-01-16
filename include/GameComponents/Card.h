@@ -1,8 +1,6 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include "pch.h"
-
 using Position = std::pair<int, int>;
 
 enum class PlayerTurn { Player1, Player2, Granite };

@@ -2,7 +2,6 @@
 #define PLAYER_H
 
 #include "GameComponents/Card.h"
-#include "pch.h"
 
 using Hand = std::vector<Card>;
 

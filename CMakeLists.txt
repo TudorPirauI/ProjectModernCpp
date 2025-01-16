@@ -1,27 +1,32 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.28) # Visual Studio comes bundled with 3.28-microsoft-version-something-something
+
+project(Eter)
 
 include(CheckIPOSupported)
 include(FetchContent)
 include(ProcessorCount)
 include(CheckCXXCompilerFlag)
 
-project(Eter)
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if (NOT WIN32)
-    check_cxx_compiler_flag("-flto=auto" COMPILER_SUPPORTS_FLTO_AUTO)
-    if (COMPILER_SUPPORTS_FLTO_AUTO)
-        message(STATUS "Using Auto LTO")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -flto=auto")
-    elseif (check_cxx_compiler_flag ("-flto" COMPILER_SUPPORTS_FLTO))
+ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "Building in Release mode with all optimisations")
+    add_compile_options(-Ofast)
+
+    check_cxx_compiler_flag("-flto" COMPILER_SUPPORTS_FLTO)
+    if (COMPILER_SUPPORTS_FLTO)
         message(STATUS "Using LTO")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -flto")
-    else ()
-        message(STATUS "Not using LTO")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native")
+        add_compile_options(-flto)
+        add_link_options(-flto)
     endif ()
+elseif (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Building in Debug mode")
+    add_compile_options(-Og)
+else ()
+    message(WARNING "Unknown build type (${CMAKE_BUILD_TYPE}). Not applying any extra optimisations.")
 endif ()
 
 find_program(CCACHE_PROGRAM ccache)
@@ -40,7 +45,7 @@ file(GLOB SOURCES src/**/*.cpp src/*.cpp)
 file(GLOB HEADERS include/**/*.h include/*.h)
 
 include_directories(include)
-include_directories("lib")
+include_directories("./lib")
 
 if (NOT SOURCES)
     message(FATAL_ERROR "No source files found. Please check the 'src' directory.")
@@ -74,7 +79,7 @@ find_package(Qt6 COMPONENTS
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
-# This is mostly useless, but it helps on certain setups
+# This is mostly useless, but it helps on certain setups (obviously windows is to blame)
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(DEBUG_SUFFIX)
     if (MSVC AND CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -104,12 +109,10 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     endforeach (QT_LIB)
 endif ()
 
-target_precompile_headers(${PROJECT_NAME} PRIVATE lib/pch.h)
+target_precompile_headers(${PROJECT_NAME} PRIVATE ./lib/pch.h)
 
 target_link_libraries(Eter PRIVATE
         Qt::Core
         Qt::Gui
         Qt::Widgets
 )
-
-#add_subdirectory(tests)

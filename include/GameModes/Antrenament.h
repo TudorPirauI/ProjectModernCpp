@@ -5,7 +5,6 @@
 #ifndef ANTRENAMENT_H
 #define ANTRENAMENT_H
 
-#include "GameComponents/Board.h"
 #include "GameModes/Game.h"
 
 class Antrenament final : public Game {

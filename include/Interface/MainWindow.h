@@ -5,8 +5,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <pch.h>
-
 // todo: the methods are implemented they just need to be used in frontend
 // "Choose one of your own cards that was removed from the game and play it "
 //         "immediately.";
