@@ -14,6 +14,7 @@ class Player final {
     Hand        m_RemovedCards;
 
 public:
+    Player() = default;
     Player(std::string name, Hand hand);
     Player(const Player &other)                = default;
     Player(Player &&other) noexcept            = default;

@@ -9,7 +9,7 @@
 #include "Powers/Wizard.h"
 
 class DuelulVrajitorilor : public Game {
-    int    m_ScoreWinning{2};
+    int    m_ScoreWinning{5};
     Wizard m_AbilityPlayer1;
     Wizard m_AbilityPlayer2;
 

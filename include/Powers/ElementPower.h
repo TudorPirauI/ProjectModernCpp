@@ -38,6 +38,8 @@ class ElementPower {
 public:
     explicit ElementPower(ElementIndexPower power);
 
+    ElementPower() = default;
+
     ElementPower(const ElementPower &other) = default;
 
     ElementPower(ElementPower &&other) noexcept = default;

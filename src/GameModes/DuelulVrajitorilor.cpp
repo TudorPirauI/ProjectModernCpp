@@ -14,16 +14,15 @@ const std::vector<Card> CARDS_PLAYER1 = CREATE_CARDS(CARD_VALUES, PlayerTurn::Pl
 const std::vector<Card> CARDS_PLAYER2 = CREATE_CARDS(CARD_VALUES, PlayerTurn::Player2);
 
 void DuelulVrajitorilor::SetNewCards() {
-    m_Player1.SetHand(CARDS_PLAYER1);
-    m_Player2.SetHand(CARDS_PLAYER2);
+    m_Player1.SetHand(
+            CREATE_CARDS(CARD_VALUES, PlayerTurn::Player1)); // Creează cărțile direct aici
+    m_Player2.SetHand(CREATE_CARDS(CARD_VALUES, PlayerTurn::Player2));
 
-    Card cardEter;
-
-    cardEter.SetValue(1);
+    Card cardEter(1, PlayerTurn::Player1); // Inițializare directă cu constructor
     cardEter.SetEter(true);
-    cardEter.SetPlacedBy(PlayerTurn::Player1);
 
     m_Player1.GiveCard(cardEter);
+
     cardEter.SetPlacedBy(PlayerTurn::Player2);
     m_Player2.GiveCard(cardEter);
 
