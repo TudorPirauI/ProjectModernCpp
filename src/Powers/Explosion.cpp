@@ -1,11 +1,13 @@
 #include "Powers/Explosion.h"
+#include "../include/GameComponents/Card.h"
 
-Explosion::Explosion(const std::vector<std::vector<Effect>> &effectMap) : m_Effects(effectMap) {}
+Explosion::Explosion(const std::vector<std::pair<Position, Effect>> &effectMap) :
+    m_Effects(effectMap) {}
 
-// todo: review the explosion to work well
-Explosion Explosion::Generate(const int size) {
-    if (size != 3 && size != 4) {
-        throw std::invalid_argument("Dimensiunea trebuie să fie 3 sau 4.");
+Explosion Explosion::Generate(const int size, const Position &left, const Position &up,
+                              const Position &down, const Position &right) {
+    if (size < 3 or size > 4) {
+        throw std::invalid_argument("Size must be 3 or 4");
     }
 
     const int minEffects = size == 3 ? 2 : 3;
@@ -13,24 +15,29 @@ Explosion Explosion::Generate(const int size) {
 
     const int numEffects = RandomInt(minEffects, maxEffects);
 
-    // todo: this must be a positions vector not a vector
-    std::vector effectMap(size, std::vector(size, Effect::Nothing));
+    std::vector<std::pair<Position, Effect>> effects;
 
     for (int i = 0; i < numEffects; ++i) {
-        const Effect effect = GenerateRandomEffect();
-        int          x      = RandomInt(0, size - 1);
-        int          y      = RandomInt(0, size - 1);
+        Effect effect = GenerateRandomEffect();
+        int    x      = RandomInt(up.first, down.first - 1);
+        int    y      = RandomInt(left.second, right.second - 1);
 
-        while (effectMap[x][y] != Effect::Nothing) {
-            x = RandomInt(0, size - 1);
-            y = RandomInt(0, size - 1);
+        Position pos = {x, y};
+        while (std::ranges::find_if(effects, [&pos](const auto &pair) {
+                   return pair.first == pos;
+               }) != effects.end()) {
+            x   = RandomInt(0, size - 1);
+            y   = RandomInt(0, size - 1);
+            pos = {x, y};
         }
 
-        effectMap[x][y] = effect;
+        effects.emplace_back(pos, effect);
     }
 
-    return Explosion(effectMap);
+    return effects;
 }
+
+// todo: check if 2  rows are full of cards
 
 Explosion::Effect Explosion::GenerateRandomEffect() {
     const int roll = RandomInt(1, 100);
