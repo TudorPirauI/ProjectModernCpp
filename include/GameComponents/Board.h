@@ -24,7 +24,6 @@ class Board {
 
     [[nodiscard]] bool CheckProximity(const Position &pos) const;
 
-    bool UpdateCorners(const Position &pos);
     bool CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn);
     bool CheckTwoLinesFull();
 
@@ -58,9 +57,11 @@ public:
     void SetUp(const Position &position);
     void SetDown(const Position &position);
 
+    bool UpdateCorners(const Position &pos);
+
     void CheckIsLocked();
 
-    bool IsWithinBorderRestrictions(Position position);
+    bool IsWithinBorderRestrictions(const Position &position);
 
     bool UpdateDiagonals();
 

@@ -152,7 +152,7 @@ void Board::SetRight(const Position &position) { m_Corners[1] = position; }
 void Board::SetUp(const Position &position) { m_Corners[2] = position; }
 void Board::SetDown(const Position &position) { m_Corners[3] = position; }
 
-bool Board::IsWithinBorderRestrictions(const Position position) {
+bool Board::IsWithinBorderRestrictions(const Position &position) {
     if (!m_IsLocked) {
         return false;
     }

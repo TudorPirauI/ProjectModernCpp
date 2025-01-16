@@ -61,6 +61,9 @@ public:
     Position GetLastCardPlayer1();
     Position GetLastCardPlayer2();
 
+    void SetIllusionEnabled(bool value);
+    bool GetIllusionEnabled() const;
+
     int GetRowPlayer1();
     int GetRowPlayer2();
 
@@ -80,6 +83,7 @@ protected:
     Position   m_LastPositionPlayer1;
     Position   m_LastPositionPlayer2;
     int        m_ScoreToWin{};
+    bool       m_IllusionEnabled{false};
 
     Board    RemadeGameBoard(Board board);
     void     CheckModifierCard(std::stack<Card> &stack);
