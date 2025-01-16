@@ -100,6 +100,8 @@ void Board::CheckIsLocked() {
         std::abs(upY - downY) == m_MaxBoardSize - 1) {
         m_IsLocked = true;
         std::cout << "Board is locked\n";
+    } else {
+        m_IsLocked = false;
     }
 }
 
@@ -110,7 +112,7 @@ bool Board::CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn) {
 bool Board::CheckTwoLinesFull() {
     std::unordered_map<int, int> numberOfCardsPerLines;
 
-    for (const auto  &[position, stacks] : m_Board) {
+    for (const auto &[position, stacks] : m_Board) {
         if (!stacks.empty())
             ++numberOfCardsPerLines[position.first];
     }

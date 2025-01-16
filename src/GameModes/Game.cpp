@@ -96,17 +96,25 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
 
             return false;
         }
-        // todo: review this function
         case WizardPower::RemoveRow: {
-            const int rowToRemove = position.first;
+            const int rowToRemove  = position.first;
+            auto      newBoard     = RemadeGameBoard(m_Board);
+            auto     &newGameBoard = newBoard.GetGameBoard();
 
-            for (auto it = board.begin(); it != board.end();) {
+            for (auto it = newGameBoard.begin(); it != newGameBoard.end(); ++it) {
                 if (it->first.first == rowToRemove) {
                     it = board.erase(it);
-                } else {
-                    ++it;
                 }
             }
+
+            const auto &checkNewBoard = RemadeGameBoard(newBoard);
+
+            if (checkNewBoard.GetMaxBoardSize() == 0)
+                return false;
+
+            m_Board = checkNewBoard;
+            m_Board.CheckIsLocked();
+
             m_Board.UpdateDiagonals();
             return true;
         }
@@ -181,7 +189,6 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
             }
             return false;
         }
-
         case WizardPower::GainEterCard: {
             if (playerTurn == PlayerTurn::Player1) {
                 m_Player1.GiveEterCard(PlayerTurn::Player1);
@@ -190,32 +197,43 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
             }
             return true;
         }
-        // todo: make the board to shift to the right edge
         case WizardPower::ShiftRowToEdge: {
             const auto &[leftX, leftY]   = m_Board.GetLeft();
             const auto &[rightX, rightY] = m_Board.GetRight();
             const auto &[upX, upY]       = m_Board.GetUp();
             const auto &[downX, downY]   = m_Board.GetDown();
 
-            if (position.first == upX || position.first == downX) {
-                int cardCount = 0;
+            auto countOccupiedPositions = [&](int row) {
+                int count = 0;
+                for (auto i = leftY; i <= rightY; ++i) {
+                    if (!board[{row, i}].empty()) {
+                        ++count;
+                    }
+                }
+                return count;
+            };
+
+            const auto &occupiedPositions = countOccupiedPositions(position.first);
+
+            if (position.first == upX and occupiedPositions >= 3) {
                 for (auto i = leftY; i <= rightY; ++i) {
                     if (!board[{position.first, i}].empty()) {
-                        ++cardCount;
+                        board[{downX + 1, i}] = std::move(board[{position.first, i}]);
+                        board.erase({position.first, i});
                     }
                 }
-
-                if (cardCount >= 3) {
-                    // Shift row to the left edge
-                    for (auto i = leftY; i <= rightY; ++i) {
-                        board[{position.first, leftY + (i - leftY)}] = board[{position.first, i}];
-                        if (i != leftY) {
-                            board.erase({position.first, i});
-                        }
+                m_Board.UpdateDiagonals();
+                return true;
+            }
+            if (position.first == downX and occupiedPositions >= 3) {
+                for (auto i = leftY; i <= rightY; ++i) {
+                    if (!board[{position.first, i}].empty()) {
+                        board[{upX - 1, i}] = std::move(board[{position.first, i}]);
+                        board.erase({position.first, i});
                     }
-                    m_Board.UpdateDiagonals();
-                    return true;
                 }
+                m_Board.UpdateDiagonals();
+                return true;
             }
             return false;
         }
