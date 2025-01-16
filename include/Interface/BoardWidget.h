@@ -15,14 +15,9 @@ public:
     explicit BoardWidget(QWidget *parent = nullptr, int size = 3);
 
     void SetBoard(const Board &board);
-    void OnDraw();
 
 signals:
     void BoardSlotClicked(int x, int y);
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     Board m_Board;

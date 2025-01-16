@@ -10,59 +10,38 @@ HandWidget::HandWidget(QWidget *parent) : QWidget(parent), m_SelectedCardIndex(-
 
 void HandWidget::SetCards(const std::vector<Card> &cards) {
     m_Cards = cards;
-    update();
-}
 
-void HandWidget::OnDraw() { update(); }
+    qDeleteAll(m_Buttons);
+    m_Buttons.clear();
 
-Card HandWidget::GetSelectedCard() const {
-    if (m_SelectedCardIndex >= 0 && m_SelectedCardIndex < m_Cards.size()) {
-        return m_Cards[m_SelectedCardIndex];
-    }
-    return Card(-1); // this is stupid and is going to cause runtime problems
-}
-
-void HandWidget::paintEvent(QPaintEvent *event) {
-    Q_UNUSED(event);
-
-    QPainter painter(this);
-    int      x          = 10;
-    int      y          = 10;
-    int      cardWidth  = 100;
-    int      cardHeight = 100;
-    int      spacing    = 10;
+    int           x          = 10;
+    constexpr int y          = 10;
+    constexpr int cardWidth  = 100;
+    constexpr int cardHeight = 150;
+    constexpr int spacing    = 10;
 
     for (int i = 0; i < m_Cards.size(); ++i) {
-        if (i == m_SelectedCardIndex) {
-            painter.setBrush(Qt::green);
-        } else {
-            painter.setBrush(Qt::NoBrush);
-        }
-        painter.drawRect(x, y, cardWidth, cardHeight);
-        painter.drawText(x + 10, y + 20, QString::number(m_Cards[i].GetValue()));
-        x += cardWidth + spacing;
-    }
-}
+        std::cout << m_Cards[i].GetValue() << ' ';
+        auto button = new QPushButton(QString::number(m_Cards[i].GetValue()), this);
 
-void HandWidget::mousePressEvent(QMouseEvent *event) {
-    int x          = 10;
-    int y          = 10;
-    int cardWidth  = 100;
-    int cardHeight = 150;
-    int spacing    = 10;
+        button->setGeometry(x, y, cardWidth, cardHeight);
+        button->setCheckable(true);
 
-    for (int i = 0; i < m_Cards.size(); ++i) {
-        QRect cardRect(x, y, cardWidth, cardHeight);
-        if (cardRect.contains(event->pos())) {
+        connect(button, &QPushButton::clicked, [this, i] {
             m_SelectedCardIndex = i;
 
-            emit CardSelected(m_Cards[m_SelectedCardIndex].GetValue());
-            std::cout << "Signal emitted from HandWidget for card index: " << m_SelectedCardIndex
-                      << std::endl;
+            emit CardSelected(m_Cards[i].GetValue());
 
-            update();
-            break;
-        }
+            for (int j = 0; j < m_Buttons.size(); ++j) {
+                m_Buttons[j]->setChecked(j == m_SelectedCardIndex);
+            }
+        });
+
+        m_Buttons.push_back(button);
         x += cardWidth + spacing;
     }
+
+    std::cout << '\n';
+
+    update();
 }

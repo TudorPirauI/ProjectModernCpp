@@ -7,8 +7,6 @@ Card::Card(const int value) {
         throw std::invalid_argument("Invalid card value");
     }
 
-    std::cout << "I was called\n";
-
     m_Value = value;
 }
 

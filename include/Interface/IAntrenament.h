@@ -12,12 +12,11 @@
 
 #include <pch.h>
 
-class IAntrenament final : public QObject {
+class IAntrenament final : public QWidget {
     Q_OBJECT
 
 public:
     IAntrenament(const std::string &nameOne, const std::string &nameTwo, QWidget *parent);
-    void StartGame();
 
 public slots:
     void OnCardSelected(int cardValue);
