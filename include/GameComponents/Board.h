@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include "GameComponents/Card.h"
+#include "Player.h"
 
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};
@@ -30,7 +31,7 @@ public:
     explicit Board(int maxBoardSize);
 
     [[nodiscard]] bool InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
-                                  const CardType &cardType = CardType::Normal);
+                                  const CardType &cardType = CardType::Normal, Player &player);
     [[nodiscard]] bool InsertIllusion(Card &card, const Position &pos);
     [[nodiscard]] bool InsertEter(Card &card, const Position &pos);
 

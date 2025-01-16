@@ -213,7 +213,7 @@ Board::Board(const int maxBoardSize) :
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
 bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
-                       const CardType &cardType) {
+                       const CardType &cardType, Player& player) {
     if (cardType == CardType::Granite and !m_Board[pos].empty())
         return false;
 

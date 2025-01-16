@@ -9,6 +9,7 @@ class Player final {
     std::string m_UserName;
     int         m_Score;
     int         m_NumberOfIllusion{1};
+    bool        m_HasIllusionInGame{false};
     Hand        m_Hand;
     Hand        m_RemovedCards;
 
@@ -32,6 +33,9 @@ public:
 
     int  GetIllusion();
     void SetIllusion(int value);
+
+    bool GetHasIllusionInGame() const;
+    void SetHasIllusionInGame(bool value);
 
     void AddToRemovedCards(const Card &card);
     Hand GetRemovedCards();

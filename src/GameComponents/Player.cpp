@@ -47,6 +47,9 @@ int Player::GetIllusion() { return m_NumberOfIllusion; }
 
 void Player::SetIllusion(const int value) { m_NumberOfIllusion = value; }
 
+bool Player::GetHasIllusionInGame() const { return m_HasIllusionInGame; }
+void Player::SetHasIllusionInGame(const bool value) { m_HasIllusionInGame = value; }
+
 void Player::AddToRemovedCards(const Card &card) {
     if (card.GetModifier() != 0) {
         auto modifiedCard = card;

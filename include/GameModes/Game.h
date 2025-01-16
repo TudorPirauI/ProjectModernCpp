@@ -67,7 +67,6 @@ public:
     bool CheckPlayerIllusion(Player &player);
 
 protected:
-    // todo: add last card played by the both players;
     Board      m_Board;
     Player     m_Player1;
     Player     m_Player2;
