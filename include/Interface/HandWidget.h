@@ -13,20 +13,16 @@ class HandWidget final : public QWidget {
 
 public:
     explicit HandWidget(QWidget *parent = nullptr);
-    void               SetCards(const std::vector<Card> &cards);
-    void               OnDraw();
-    [[nodiscard]] Card GetSelectedCard() const;
+
+    void SetCards(const std::vector<Card> &cards);
 
 signals:
     void CardSelected(int cardValue);
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-
 private:
-    std::vector<Card> m_Cards;
-    int               m_SelectedCardIndex;
+    std::vector<Card>          m_Cards;
+    std::vector<QPushButton *> m_Buttons;
+    int                        m_SelectedCardIndex;
 };
 
 #endif // ETER_HANDWIDGET_H

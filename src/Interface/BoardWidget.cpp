@@ -7,57 +7,61 @@
 #include "pch.h"
 
 BoardWidget::BoardWidget(QWidget *parent, const int size) :
-    QWidget(parent), m_Board(10), m_Size(size) {}
+    QWidget(parent), m_Board(size), m_Size(size) {}
 
 void BoardWidget::SetBoard(const Board &board) {
     m_Board = board;
-    update();
-}
 
-void BoardWidget::OnDraw() { update(); }
+    if (layout() != nullptr) {
+        QLayoutItem *item;
+        while ((item = layout()->takeAt(0)) != nullptr) {
+            delete item->widget();
+            delete item;
+        }
+        delete layout();
+    }
 
-void BoardWidget::paintEvent(QPaintEvent *event) {
-    Q_UNUSED(event);
+    auto [leftX, leftY]   = board.GetLeft();
+    auto [rightX, rightY] = board.GetRight();
+    auto [downX, downY]   = board.GetDown();
+    auto [upX, upY]       = board.GetUp();
 
-    QPainter      painter(this);
-    constexpr int cellSize = 50;
-    constexpr int xOffset  = 10;
-    constexpr int yOffset  = 10;
+    if (!board.IsBoardLocked()) {
+        ++rightX;
+        ++downY;
+        --leftX;
+        --upY;
+    }
+    auto *layout = new QGridLayout(this);
 
-    // todo: this is poorly built, why wasn't the old version used?????
+    layout->setHorizontalSpacing(0);
+    layout->setVerticalSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
-    for (int row = 0; row < m_Size; ++row) {
-        for (int col = 0; col < m_Size; ++col) {
-            const int x = xOffset + col * cellSize;
-            const int y = yOffset + row * cellSize;
+    const auto &gameBoard = m_Board.GetGameBoard();
 
-            // TODO: Just use buttons, why are we reinventing the wheel??
-            painter.drawRect(x, y, cellSize, cellSize);
+    for (int j = upY; j <= downY; ++j) {
+        for (int i = leftX; i <= rightX; ++i) {
+            const auto button = new QPushButton();
+            button->setFixedSize(150, 150);
 
-            Position pos{col, row};
-            if (m_Board.GetGameBoard().contains(pos) && !m_Board.GetGameBoard().at(pos).empty()) {
-                painter.drawText(x + 10, y + 20,
-                                 QString::number(m_Board.GetGameBoard().at(pos).top().GetValue()));
+            const auto placedCard = gameBoard.find({i, j});
+
+            if (placedCard == gameBoard.end()) {
+                if (!board.IsPositionValid({i, j}, Card(2))) {
+                    button->setEnabled(false);
+                }
+            } else {
+                button->setText(QString::number(placedCard->second.top().GetValue()));
             }
+
+            connect(button, &QPushButton::clicked, [this, i, j] { emit BoardSlotClicked(i, j); });
+
+            layout->addWidget(button, j - upY, i - leftX);
         }
     }
-}
 
-void BoardWidget::mousePressEvent(QMouseEvent *event) {
-    constexpr int cellSize = 50;
-    constexpr int xOffset  = 10;
-    constexpr int yOffset  = 10;
+    setLayout(layout);
 
-    const int col = (event->position().x() - xOffset) / cellSize;
-    const int row = (event->position().y() - yOffset) / cellSize;
-
-    std::cout << "Clicked on " << col << ", " << row << std::endl;
-    std::cout << "Board size: " << m_Size << std::endl;
-
-    if (col < 0 || col >= m_Size || row < 0 || row >= m_Size)
-        return;
-
-    emit BoardSlotClicked(row, col);
-    std::cout << "Signal emitted from BoardWidget for position: (" << row << ", " << col << ")"
-              << std::endl;
+    update();
 }
