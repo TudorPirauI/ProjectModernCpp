@@ -50,5 +50,8 @@ public:
 
     int  GetModifier() const;
     void SetModifier(int value);
+
+    friend void to_json(nlohmann::json &j, const Card &c);
+    friend void from_json(const nlohmann::json &j, Card &c);
 };
 #endif // CARD_H

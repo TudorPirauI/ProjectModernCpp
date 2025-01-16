@@ -793,6 +793,69 @@ bool Game::CheckPlayerIllusion(Player &player) {
 
     return false;
 }
+void Game::SaveDataInJson() {
+    nlohmann::json json;
+
+    // Serialize board
+    for (const auto &[position, stack] : m_Board.GetGameBoard()) {
+        std::vector<Card> cards;
+        auto              tempStack = stack;
+        while (!tempStack.empty()) {
+            cards.push_back(tempStack.top());
+            tempStack.pop();
+        }
+        json["board"][std::to_string(position.first) + "," + std::to_string(position.second)] =
+                cards;
+    }
+
+    // Serialize players
+    json["player1"] = m_Player1;
+    json["player2"] = m_Player2;
+
+    // Serialize other game state variables
+    json["playerTurn"]      = m_PlayerTurn;
+    json["gameState"]       = m_GameState;
+    json["scorePlayer1"]    = m_ScorePlayer1;
+    json["scorePlayer2"]    = m_ScorePlayer2;
+    json["rowPlayer1"]      = m_RowPlayer1;
+    json["rowPlayer2"]      = m_RowPlayer2;
+    json["illusionEnabled"] = m_IllusionEnabled;
+
+    std::ofstream file(m_jsonFileName);
+    file << json.dump(4); // Pretty print with 4 spaces
+}
+void Game::LoadDataInJson() {
+    std::ifstream  file(m_jsonFileName);
+    nlohmann::json json;
+    file >> json;
+
+    // Deserialize board
+    for (const auto &[key, value] : json["board"].items()) {
+        auto     pos = key.find(',');
+        int      x   = std::stoi(key.substr(0, pos));
+        int      y   = std::stoi(key.substr(pos + 1));
+        Position position{x, y};
+
+        std::stack<Card> stack;
+        for (const auto &card : value) {
+            stack.push(card);
+        }
+        m_Board.GetGameBoard()[position] = stack;
+    }
+
+    // Deserialize players
+    m_Player1 = json["player1"].get<Player>();
+    m_Player2 = json["player2"].get<Player>();
+
+    // Deserialize other game state variables
+    m_PlayerTurn      = json["playerTurn"].get<PlayerTurn>();
+    m_GameState       = json["gameState"].get<GameState>();
+    m_ScorePlayer1    = json["scorePlayer1"];
+    m_ScorePlayer2    = json["scorePlayer2"];
+    m_RowPlayer1      = json["rowPlayer1"];
+    m_RowPlayer2      = json["rowPlayer2"];
+    m_IllusionEnabled = json["illusionEnabled"];
+}
 
 CardType Game::GetCardType(const Card &card) {
     if (card.GetIsEter())
