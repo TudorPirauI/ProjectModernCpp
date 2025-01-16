@@ -243,9 +243,6 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
     }
 }
 
-// todo: make another gameboard to check if the cards are added correctly to the board
-// todo: after changes of the format of the board
-
 bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &firstPosition,
                                 const Position &secondPosition, const Card &card,
                                 const PlayerTurn playerTurn, int chosenNumber) {
@@ -300,9 +297,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             m_Board.UpdateDiagonals();
             return true;
         }
-            // todo: the methods are implemented they just need to be used in frontend
-            "Choose one of your own cards that was removed from the game and play it "
-            "immediately.";
         case ElementIndexPower::FromAshes: {
             return true;
         }

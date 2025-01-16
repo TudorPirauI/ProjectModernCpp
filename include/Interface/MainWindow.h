@@ -7,6 +7,11 @@
 
 #include <pch.h>
 
+// todo: the methods are implemented they just need to be used in frontend
+// "Choose one of your own cards that was removed from the game and play it "
+//         "immediately.";
+// power: FromAshes elemental_power
+
 class MainWindow final : public QMainWindow {
     Q_OBJECT
 
