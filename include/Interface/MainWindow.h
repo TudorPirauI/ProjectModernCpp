@@ -1,7 +1,3 @@
-//
-// Created by mavri on 05.12.2024.
-//
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -25,6 +21,9 @@ private slots:
     void OnBackClicked();
 
 private:
+    QMediaPlayer *m_MediaPlayer;
+    QAudioOutput *m_AudioOutput;
+
     enum class GameState { MainMenu, NewGame, InGame, ResumeGame, Options, Exit };
 
     GameState       m_CurrentState;

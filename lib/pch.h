@@ -16,6 +16,7 @@
 #include <vector>
 
 #include <QApplication>
+#include <QAudioOutput>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QColorDialog>
@@ -26,6 +27,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
+#include <QMediaPlayer>
 #include <QMouseEvent>
 #include <QObject>
 #include <QPainter>

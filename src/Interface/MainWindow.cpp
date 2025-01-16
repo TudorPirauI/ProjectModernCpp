@@ -3,6 +3,11 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {
     m_StackedWidget = new QStackedWidget(this);
+    // TODO: Add the music back
+    //  Play music
+    //      m_MediaPlayer   = new QMediaPlayer(this);
+    //      m_AudioOutput   = new QAudioOutput(this);
+    //      m_MediaPlayer->setAudioOutput(m_AudioOutput);
 
     const auto centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
@@ -283,6 +288,12 @@ QVBoxLayout *MainWindow::CreateLimitedLayout(QWidget *widget) {
 void MainWindow::OnNewGameClicked() {
     m_CurrentState = GameState::NewGame;
     DrawNewGame();
+
+    // TODO: Fix music playing
+    //  Play music
+    //      m_MediaPlayer->setSource(QUrl::fromLocalFile("path/to/your/media/file.mp3"));
+    //      m_AudioOutput->setVolume(m_MusicVolume / 100.0);
+    //      m_MediaPlayer->play();
 }
 
 void MainWindow::OnResumeGameClicked() {
