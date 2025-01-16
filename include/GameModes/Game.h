@@ -65,6 +65,8 @@ public:
     int GetRowPlayer2();
 
     bool CheckPlayerIllusion(Player &player);
+    void LoadDataInJson();
+    void SaveDataInJson();
 
 protected:
     Board      m_Board;
@@ -80,6 +82,8 @@ protected:
     Position   m_LastPositionPlayer2;
     int        m_ScoreToWin{};
     bool       m_IllusionEnabled{false};
+
+    static constexpr std::string m_jsonFileName = "reload.json";
 
     Board    RemadeGameBoard(Board board);
     void     CheckModifierCard(std::stack<Card> &stack);
