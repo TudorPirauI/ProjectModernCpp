@@ -17,13 +17,15 @@ void DuelulVrajitorilor::SetNewCards() {
     m_Player1.SetHand(CARDS_PLAYER1);
     m_Player2.SetHand(CARDS_PLAYER2);
 
-    Card card;
+    Card cardEter;
 
-    card.SetValue(1);
-    card.SetEter(true);
+    cardEter.SetValue(1);
+    cardEter.SetEter(true);
+    cardEter.SetPlacedBy(PlayerTurn::Player1);
 
-    m_Player1.GiveCard(card);
-    m_Player2.GiveCard(card);
+    m_Player1.GiveCard(cardEter);
+    cardEter.SetPlacedBy(PlayerTurn::Player2);
+    m_Player2.GiveCard(cardEter);
 
     m_Board.CleanUpBoard();
 }
@@ -40,11 +42,13 @@ DuelulVrajitorilor::DuelulVrajitorilor(const std::string &nameOne, const std::st
     m_AbilityPlayer1.ResetPowerForNewMatch();
     m_AbilityPlayer2.ResetPowerForNewMatch();
 
-    Card card;
+    Card cardEter;
 
-    card.SetValue(1);
-    card.SetEter(true);
+    cardEter.SetValue(1);
+    cardEter.SetEter(true);
+    cardEter.SetPlacedBy(PlayerTurn::Player1);
 
-    m_Player1.GiveCard(card);
-    m_Player2.GiveCard(card);
+    m_Player1.GiveCard(cardEter);
+    cardEter.SetPlacedBy(PlayerTurn::Player2);
+    m_Player2.GiveCard(cardEter);
 }
