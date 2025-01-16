@@ -1,7 +1,3 @@
-//
-// Created by edi on 21.11.2024.
-//
-
 #include "GameModes/Antrenament.h"
 
 // Modul antrenament: tabla este de 3x3; fiecare jucător are 7 cărți: 1, 1, 2, 2, 3, 3, 4; Format

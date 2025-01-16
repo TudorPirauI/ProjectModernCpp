@@ -87,10 +87,6 @@ bool Board::UpdateCorners(const Position &pos) {
 }
 
 void Board::CheckIsLocked() {
-    if (m_IsLocked) {
-        return;
-    }
-
     const auto &[leftX, leftY]   = GetLeft();
     const auto &[rightX, rightY] = GetRight();
     const auto &[downX, downY]   = GetDown();

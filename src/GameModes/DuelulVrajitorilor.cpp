@@ -1,11 +1,50 @@
-//
-// Created by Tudor on 11/28/2024.
-//
-
 #include "GameModes/DuelulVrajitorilor.h"
+
+// todo: move this to somewhere more permanent
+const auto CREATE_CARDS = [](const std::array<int, 9> &values, const PlayerTurn &player) {
+    std::vector<Card> cards;
+    for (int value : values) {
+        cards.emplace_back(value, player);
+    }
+    return cards;
+};
+
+constexpr std::array    CARD_VALUES{1, 1, 2, 2, 2, 3, 3, 3, 4};
+const std::vector<Card> CARDS_PLAYER1 = CREATE_CARDS(CARD_VALUES, PlayerTurn::Player1);
+const std::vector<Card> CARDS_PLAYER2 = CREATE_CARDS(CARD_VALUES, PlayerTurn::Player2);
+
+void DuelulVrajitorilor::SetNewCards() {
+    m_Player1.SetHand(CARDS_PLAYER1);
+    m_Player2.SetHand(CARDS_PLAYER2);
+
+    Card card;
+
+    card.SetValue(1);
+    card.SetEter(true);
+
+    m_Player1.GiveCard(card);
+    m_Player2.GiveCard(card);
+
+    m_Board.CleanUpBoard();
+}
 
 Wizard DuelulVrajitorilor::GetPlayerAbility1() { return m_AbilityPlayer1; }
 
 Wizard DuelulVrajitorilor::GetPlayerAbility2() { return m_AbilityPlayer2; }
 
-DuelulVrajitorilor::DuelulVrajitorilor() = default;
+DuelulVrajitorilor::DuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo) :
+    Game(4, 5, nameOne, nameTwo) {
+    m_Player1.SetHand(CARDS_PLAYER1);
+    m_Player2.SetHand(CARDS_PLAYER2);
+
+    m_AbilityPlayer1.ResetPowerForNewMatch();
+    m_AbilityPlayer2.ResetPowerForNewMatch();
+
+    Card card;
+
+    card.SetValue(1);
+    card.SetEter(true);
+
+    m_Player1.GiveCard(card);
+    m_Player2.GiveCard(card);
+}

@@ -14,6 +14,8 @@ class DuelulVrajitorilor : public Game {
     Wizard m_AbilityPlayer2;
 
 public:
+    void SetNewCards() override;
+
     Wizard GetPlayerAbility1();
     Wizard GetPlayerAbility2();
     DuelulVrajitorilor(const DuelulVrajitorilor &other)                = default;
@@ -21,7 +23,7 @@ public:
     DuelulVrajitorilor &operator=(const DuelulVrajitorilor &other)     = default;
     DuelulVrajitorilor &operator=(DuelulVrajitorilor &&other) noexcept = default;
 
-    DuelulVrajitorilor();
+    DuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo);
     ~DuelulVrajitorilor() override = default;
 };
 
