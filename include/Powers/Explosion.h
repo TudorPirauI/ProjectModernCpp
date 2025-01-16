@@ -10,6 +10,7 @@ public:
     enum class Effect { Nothing, Eliminate, Return, Hole };
 
     explicit Explosion(const std::vector<std::vector<Effect>> &effectMap);
+
     static Explosion Generate(int size, const Position &left, const Position &up,
                               const Position &down, const Position &right);
 

@@ -8,6 +8,7 @@
 #include "GameComponents/Board.h"
 #include "GameComponents/Player.h"
 #include "Powers/ElementPower.h"
+#include "Powers/Explosion.h"
 #include "Powers/Wizard.h"
 
 // todo: make another game mode using DuelulVrajitorilor and DuelulElementelor
@@ -68,6 +69,8 @@ public:
     void LoadDataInJson();
     void SaveDataInJson();
 
+    bool CheckExplosion();
+
 protected:
     Board      m_Board;
     Player     m_Player1;
@@ -83,7 +86,7 @@ protected:
     int        m_ScoreToWin{};
     bool       m_IllusionEnabled{false};
 
-    static constexpr std::string m_jsonFileName = "reload.json";
+    static constexpr std::string JSON_FILE_NAME = "reload.json";
 
     Board    RemadeGameBoard(Board board);
     void     CheckModifierCard(std::stack<Card> &stack);

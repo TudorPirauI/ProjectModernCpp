@@ -17,3 +17,5 @@ int main(int argc, char *argv[]) {
  * todo: duelulElementelor + duelulVrajitorilor (is a separated class with 1 wizard power and 1
  * todo: elemental power)
  */
+
+// todo: update every corners in all the functions :)

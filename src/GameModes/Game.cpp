@@ -821,11 +821,12 @@ void Game::SaveDataInJson() {
     json["rowPlayer2"]      = m_RowPlayer2;
     json["illusionEnabled"] = m_IllusionEnabled;
 
-    std::ofstream file(m_jsonFileName);
+    std::ofstream file(JSON_FILE_NAME);
     file << json.dump(4); // Pretty print with 4 spaces
 }
+
 void Game::LoadDataInJson() {
-    std::ifstream  file(m_jsonFileName);
+    std::ifstream  file(JSON_FILE_NAME);
     nlohmann::json json;
     file >> json;
 
@@ -881,4 +882,57 @@ Board Game::RemadeGameBoard(Board board) {
     }
 
     return board;
+}
+
+bool Game::CheckExplosion() {
+    if (const auto result = m_Board.CheckTwoLinesFull(); !result)
+        return false;
+
+    const auto &explosion =
+            Explosion::Generate(m_Board.GetMaxBoardSize(), m_Board.GetLeft(), m_Board.GetUp(),
+                                m_Board.GetDown(), m_Board.GetRight());
+
+    auto  newBoard     = RemadeGameBoard(m_Board);
+    auto &newGameBoard = newBoard.GetGameBoard();
+
+    for (const auto &[position, effect] : explosion.GetEffects()) {
+        switch (effect) {
+            case Explosion::Effect::Eliminate: {
+                if (auto &stack = newGameBoard[position]; !stack.empty()) {
+                    newGameBoard[position].pop();
+                }
+            } break;
+            case Explosion::Effect::Return: {
+                if (auto &stack = newGameBoard[position]; !stack.empty()) {
+                    const auto &card = newGameBoard[position].top();
+                    newGameBoard[position].pop();
+                }
+            } break;
+            case Explosion::Effect::Hole: {
+                auto &stack = newGameBoard[position];
+
+                while (!stack.empty()) {
+                    stack.pop();
+                }
+
+                Card hole{true};
+
+                stack.emplace(hole);
+            } break;
+            default: {
+
+            } break;
+        }
+    }
+
+    if (const auto &remadeNewBoard = RemadeGameBoard(newBoard);
+        remadeNewBoard.GetMaxBoardSize() != 0) {
+        m_Board = remadeNewBoard;
+        m_Board.UpdateDiagonals();
+        m_Board.CheckIsLocked();
+
+        return true;
+    }
+
+    return false;
 }
