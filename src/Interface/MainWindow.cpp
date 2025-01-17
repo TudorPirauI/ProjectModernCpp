@@ -323,9 +323,9 @@ void MainWindow::OnNewGameClicked() {
     //    m_MediaPlayer->play();
 
     // Check for errors
-    if (m_MediaPlayer->error() != QMediaPlayer::NoError) {
-        qDebug() << "Error playing music:" << m_MediaPlayer->errorString();
-    }
+    //    if (m_MediaPlayer->error() != QMediaPlayer::NoError) {
+    //        qDebug() << "Error playing music:" << m_MediaPlayer->errorString();
+    //    }
 }
 
 void MainWindow::OnResumeGameClicked() {
