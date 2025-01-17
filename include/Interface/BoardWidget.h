@@ -20,7 +20,6 @@ signals:
 
 private:
     Board m_Board;
-    int   m_Size;
 };
 
 #endif // ETER_BOARDWIDGET_H

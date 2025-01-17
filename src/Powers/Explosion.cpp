@@ -4,6 +4,10 @@
 Explosion::Explosion(const std::vector<std::pair<Position, Effect>> &effectMap) :
     m_Effects(effectMap) {}
 
+std::vector<std::pair<Position, Explosion::Effect>> Explosion::GetEffects() const {
+    return m_Effects;
+}
+
 Explosion Explosion::Generate(const int size, const Position &left, const Position &up,
                               const Position &down, const Position &right) {
     if (size < 3 or size > 4) {
@@ -34,7 +38,7 @@ Explosion Explosion::Generate(const int size, const Position &left, const Positi
         effects.emplace_back(pos, effect);
     }
 
-    return effects;
+    return Explosion{effects};
 }
 
 // todo: check if 2  rows are full of cards

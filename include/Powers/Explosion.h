@@ -9,14 +9,12 @@ class Explosion {
 public:
     enum class Effect { Nothing, Eliminate, Return, Hole };
 
-    explicit Explosion(const std::vector<std::vector<Effect>> &effectMap);
-
     static Explosion Generate(int size, const Position &left, const Position &up,
                               const Position &down, const Position &right);
 
-    Explosion(const std::vector<std::pair<Position, Effect>> &effectMap);
+    explicit Explosion(const std::vector<std::pair<Position, Effect>> &effectMap);
 
-    std::vector<std::pair<Position, Effect>> &GetEffects() const;
+    std::vector<std::pair<Position, Effect>> GetEffects() const;
 
     Explosion(const Explosion &other)                = default;
     ~Explosion()                                     = default;

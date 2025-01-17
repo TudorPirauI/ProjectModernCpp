@@ -5,8 +5,7 @@
 #include "Interface/BoardWidget.h"
 #include "GameComponents/Board.h"
 
-BoardWidget::BoardWidget(QWidget *parent, const int size) :
-    QWidget(parent), m_Board(size), m_Size(size) {}
+BoardWidget::BoardWidget(QWidget *parent, const int size) : QWidget(parent), m_Board(size) {}
 
 void BoardWidget::SetBoard(const Board &board) {
     m_Board = board;

@@ -15,6 +15,8 @@ public:
 
     void SetCards(const std::vector<Card> &cards);
 
+    [[nodiscard]] int GetIdealWidth() const;
+
 signals:
     void CardSelected(int cardValue);
 
@@ -22,6 +24,11 @@ private:
     std::vector<Card>          m_Cards;
     std::vector<QPushButton *> m_Buttons;
     int                        m_SelectedCardIndex;
+
+    static constexpr int m_YStart      = 10;
+    static constexpr int m_CardWidth   = 100;
+    static constexpr int m_CardHeight  = 150;
+    static constexpr int m_CardSpacing = 10;
 };
 
 #endif // ETER_HANDWIDGET_H

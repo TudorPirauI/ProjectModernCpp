@@ -3,8 +3,6 @@
 //
 
 #include "Interface/IAntrenament.h"
-// Q_DECLARE_METATYPE(Position)
-// Q_DECLARE_METATYPE(Card)
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
                            QWidget *parent) :
@@ -25,16 +23,13 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     mainLayout->addLayout(boardLayout);
 
-    // Center the hand widget
     m_HandWidget = new HandWidget(this);
-    m_HandWidget->setFixedSize(600, 200); // Set a fixed size for the hand widget
-    connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
     m_HandWidget->SetCards(m_CurrentGame.GetPlayer1().GetHand());
+    m_HandWidget->setFixedSize(m_HandWidget->GetIdealWidth(), 200);
+    connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
 
     auto *handLayout = new QHBoxLayout();
-    handLayout->addStretch();
     handLayout->addWidget(m_HandWidget);
-    handLayout->addStretch();
 
     mainLayout->addLayout(handLayout);
 
@@ -58,8 +53,8 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
         return;
     }
 
-    const auto success = m_CurrentGame.GetBoard().InsertCard(m_SelectedCard.value(), {x, y},
-                                                             m_CurrentPlayer, CardType::Normal);
+    const auto success = m_CurrentGame.GetBoard().InsertCard(
+            m_SelectedCard.value(), {x, y}, m_CurrentPlayer, CardType::Normal, m_CurrentGame);
 
     if (!success) {
         std::cout << "Could not place card on board\n";
@@ -85,12 +80,23 @@ void IAntrenament::SwitchTurn() {
     const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
                                                                       : m_CurrentGame.GetPlayer2();
 
-    m_HandWidget->SetCards(nextPlayer.GetHand());
-    m_HandWidget->show(); // Ensure the hand widget is visible
+    // m_HandWidget->SetCards(nextPlayer.GetHand());
+    // m_HandWidget->show(); // Ensure the hand widget is visible
+    // m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+    //
+    // m_HandWidget->update();
+    // m_BoardWidget->update();
+
     m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+    m_HandWidget->SetCards(nextPlayer.GetHand());
+    m_HandWidget->setVisible(true); // Ensure the hand widget is visible
 
     m_HandWidget->update();
     m_BoardWidget->update();
+
+    qDebug() << "HandWidget visibility:" << m_HandWidget->isVisible();
+    qDebug() << "HandWidget card count:" << nextPlayer.GetHand().size();
+    qDebug() << "width:" << m_HandWidget->width();
 
     qDebug() << "Switched to player:"
              << (m_CurrentPlayer == PlayerTurn::Player1 ? "Player1" : "Player2");

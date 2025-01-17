@@ -1,5 +1,6 @@
 #include "GameComponents/Board.h"
 #include "GameComponents/Player.h"
+#include "GameModes/Game.h"
 
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (const auto cardOnPosition = m_Board.find(pos);
@@ -213,7 +214,7 @@ Board::Board(const int maxBoardSize) :
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
 bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
-                       const CardType &cardType, Player &player1, Player &player2) {
+                       const CardType &cardType, Game &currentGame) {
     if (cardType == CardType::Granite and !m_Board[pos].empty())
         return false;
 
@@ -230,9 +231,9 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
             return false;
 
         if (playerTurn == PlayerTurn::Player1)
-            player1.SetHasIllusionInGame(true);
+            currentGame.GetPlayer1().SetHasIllusionInGame(true);
         else
-            player2.SetHasIllusionInGame(true);
+            currentGame.GetPlayer2().SetHasIllusionInGame(true);
     }
 
     if (cardType == CardType::Eter) {
@@ -264,9 +265,9 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
     if (m_Board[pos].top().GetIsIllusion()) {
         if (CoverIllusion(card, pos)) {
             if (playerTurn == PlayerTurn::Player1)
-                player2.SetHasIllusionInGame(false);
+                currentGame.GetPlayer2().SetHasIllusionInGame(false);
             else
-                player1.SetHasIllusionInGame(false);
+                currentGame.GetPlayer1().SetHasIllusionInGame(false);
         }
     }
 
