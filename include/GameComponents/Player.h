@@ -10,6 +10,7 @@ class Player final {
     int         m_Score;
     int         m_NumberOfIllusion{1};
     bool        m_HasIllusionInGame{false};
+    bool        m_HasExplosion{false};
     Hand        m_Hand;
     Hand        m_RemovedCards;
 
@@ -37,6 +38,9 @@ public:
 
     bool GetHasIllusionInGame() const;
     void SetHasIllusionInGame(bool value);
+
+    bool GetHasExplosion() const;
+    void SetHasExplosion(bool value);
 
     void AddToRemovedCards(const Card &card);
     Hand GetRemovedCards();

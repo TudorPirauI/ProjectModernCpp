@@ -53,7 +53,7 @@ void BoardWidget::SetBoard(const Board &board) {
             } else {
                 const int playerId =
                         placedCard->second.top().GetPlacedBy() == PlayerTurn::Player1 ? 1 : 2;
-                QString imagePath = QString(":/images/player%1/%2.png")
+                QString imagePath = QString(":/resources/images/player%1/%2.png")
                                             .arg(playerId)
                                             .arg(placedCard->second.top().GetValue());
                 QPixmap pixmap(imagePath);

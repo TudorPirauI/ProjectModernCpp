@@ -60,9 +60,6 @@ public:
     Position GetLastCardPlayer1();
     Position GetLastCardPlayer2();
 
-    void SetIllusionEnabled(bool value);
-    bool GetIllusionEnabled() const;
-
     int GetRowPlayer1();
     int GetRowPlayer2();
 
@@ -71,6 +68,10 @@ public:
     // void SaveDataInJson();
 
     bool CheckExplosion();
+
+    bool GetIllusionEnabled() const;
+    bool GetEterEnabled() const;
+    bool ExplosionEnabled() const;
 
 protected:
     Board      m_Board;

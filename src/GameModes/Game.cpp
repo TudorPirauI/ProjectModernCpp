@@ -10,6 +10,30 @@ Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne
     m_EterEnabled      = options[0];
     m_IllusionEnabled  = options[1];
     m_ExplosionEnabled = options[2];
+
+    if (m_EterEnabled) {
+        Card cardEter{1};
+
+        cardEter.SetEter(true);
+        cardEter.SetPlacedBy(PlayerTurn::Player1);
+
+        m_Player1.GiveCard(cardEter);
+        cardEter.SetPlacedBy(PlayerTurn::Player2);
+        m_Player2.GiveCard(cardEter);
+    }
+
+    int numberOfIllusions = 0;
+
+    if (m_IllusionEnabled)
+        numberOfIllusions = 1;
+
+    m_Player1.SetIllusion(numberOfIllusions);
+    m_Player2.SetIllusion(numberOfIllusions);
+
+    if (m_ExplosionEnabled) {
+        m_Player1.SetHasExplosion(true);
+        m_Player2.SetHasExplosion(true);
+    }
 }
 
 PlayerTurn Game::GetCurrentPlayer() const { return m_PlayerTurn; }
@@ -204,6 +228,9 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
             return false;
         }
         case WizardPower::GainEterCard: {
+            if (!m_EterEnabled)
+                return false;
+
             if (playerTurn == PlayerTurn::Player1) {
                 m_Player1.GiveEterCard(PlayerTurn::Player1);
             } else {
@@ -263,7 +290,12 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
     auto &board = m_Board.GetGameBoard();
 
     switch (power) {
-        case ElementIndexPower::ControlledExplosion:
+        case ElementIndexPower::ControlledExplosion: {
+            if (m_ExplosionEnabled)
+                return CheckExplosion();
+
+            return false;
+        }
             return "The board explodes!";
         case ElementIndexPower::Destruction: {
             if (playerTurn == PlayerTurn::Player1) {
@@ -794,9 +826,6 @@ void Game::CheckModifierCard(std::stack<Card> &stack) {
 Position Game::GetLastCardPlayer1() { return m_LastPositionPlayer1; }
 Position Game::GetLastCardPlayer2() { return m_LastPositionPlayer2; }
 
-void Game::SetIllusionEnabled(const bool value) { m_IllusionEnabled = value; }
-bool Game::GetIllusionEnabled() const { return m_IllusionEnabled; }
-
 int Game::GetRowPlayer1() { return m_RowPlayer1; }
 int Game::GetRowPlayer2() { return m_RowPlayer2; }
 
@@ -952,3 +981,7 @@ bool Game::CheckExplosion() {
 
     return false;
 }
+
+bool Game::GetIllusionEnabled() const { return m_IllusionEnabled; }
+bool Game::GetEterEnabled() const { return m_EterEnabled; }
+bool Game::ExplosionEnabled() const { return m_ExplosionEnabled; }
