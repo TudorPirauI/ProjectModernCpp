@@ -21,6 +21,7 @@
 #include <QCheckBox>
 #include <QColorDialog>
 #include <QComboBox>
+#include <QFile>
 #include <QFont>
 #include <QGraphicsBlurEffect>
 #include <QGroupBox>
