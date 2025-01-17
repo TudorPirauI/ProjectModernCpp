@@ -49,16 +49,39 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
         button->setIcon(buttonIcon);
         button->setIconSize(button->size());
 
-        connect(button, &QPushButton::clicked, [this, i] {
+        connect(button, &QPushButton::clicked, [this, i, button] {
+            if (m_SelectedCardIndex == i) {
+                return; // Do nothing if the same card is clicked again
+            }
+
+            if (m_SelectedCardIndex != -1) {
+                // Reset the position of the previously selected card
+                QPropertyAnimation *resetAnimation =
+                        new QPropertyAnimation(m_Buttons[m_SelectedCardIndex], "pos");
+                resetAnimation->setDuration(200);
+                resetAnimation->setStartValue(m_Buttons[m_SelectedCardIndex]->pos());
+                resetAnimation->setEndValue(m_Buttons[m_SelectedCardIndex]->pos() +
+                                            QPoint(0, 20)); // Lower the card back
+                resetAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+            }
+
             m_SelectedCardIndex = i;
             emit CardSelected(m_Cards[i].GetValue());
 
             for (int j = 0; j < m_Buttons.size(); ++j) {
                 m_Buttons[j]->setChecked(j == m_SelectedCardIndex);
             }
+
+            // Raise the newly selected card slightly
+            QPropertyAnimation *animation = new QPropertyAnimation(button, "pos");
+            animation->setDuration(200);
+            animation->setStartValue(button->pos());
+            animation->setEndValue(button->pos() - QPoint(0, 20)); // Raise the card slightly
+            animation->start(QAbstractAnimation::DeleteWhenStopped);
         });
 
         m_Buttons.push_back(button);
+
         layout()->addWidget(button);
     }
 

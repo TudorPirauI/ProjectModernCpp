@@ -78,6 +78,7 @@ void IAntrenament::SwitchTurn() {
     // When you select a card, it should be raised slightly
     // When you hover over the cards in your hands they should increase in size a bit and move
     // according to your cursor
+
     m_SelectedCard.reset();
 
     m_CurrentPlayer =
