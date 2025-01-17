@@ -6,8 +6,8 @@
 #include "Interface/AlertWidget.h"
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
-                           QWidget *parent) :
-    QWidget(parent), m_CurrentGame(nameOne, nameTwo), m_CurrentTurn(PlayerTurn::Player1),
+                           const std::array<bool, 3> &options, QWidget *parent) :
+    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_CurrentTurn(PlayerTurn::Player1),
     m_SelectedCard(std::nullopt), m_ParentWidget(parent) {
 
     const auto mainLayout = new QVBoxLayout(this);

@@ -23,7 +23,8 @@ public:
     };
 
     virtual ~Game() = default;
-    Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
+    Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo,
+         const std::array<bool, 3> &options);
     Game();
 
     [[nodiscard]] Board     &GetBoard();
@@ -85,6 +86,8 @@ protected:
     Position   m_LastPositionPlayer2;
     int        m_ScoreToWin{};
     bool       m_IllusionEnabled{false};
+    bool       m_EterEnabled{false};
+    bool       m_ExplosionEnabled{false};
 
     static constexpr std::string JSON_FILE_NAME = "reload.json";
 

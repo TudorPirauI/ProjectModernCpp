@@ -26,7 +26,8 @@ public:
     Wizard       GetWizardAbility();
     ElementPower GetElementalAbility();
 
-    DuelulCombinat(const std::string &nameOne, const std::string &nameTwo);
+    DuelulCombinat(const std::string &nameOne, const std::string &nameTwo,
+                   const std::array<bool, 3> &options);
     ~DuelulCombinat() override = default;
 };
 
