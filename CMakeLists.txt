@@ -100,6 +100,10 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 # Add this line to include the Qt resource file
 qt_add_resources(RESOURCES ./QResource.qrc)
 
+if (NOT RESOURCES)
+    message(FATAL_ERROR "No resources found. Please check the 'QResource.qrc' file.")
+endif ()
+
 # Make sure to link the resources to your target
 target_sources(${PROJECT_NAME} PRIVATE ${RESOURCES})
 
