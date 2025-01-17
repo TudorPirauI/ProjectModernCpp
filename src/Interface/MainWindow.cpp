@@ -1,4 +1,5 @@
 #include "Interface/MainWindow.h"
+#include <QListWidget>
 #include "Interface/IAntrenament.h"
 #include "Interface/IDuelulElementelor.h"
 
@@ -210,9 +211,58 @@ void MainWindow::DrawResumeGame() {
     const auto resumeGameWidget = new QWidget(this);
     const auto layout           = new QVBoxLayout(resumeGameWidget);
 
-    const auto label = new QLabel("Resume Game Screen", this);
+    const auto label     = new QLabel("Resume Game Screen", this);
+    QFont      labelFont = label->font();
+    labelFont.setPointSize(24);
+    label->setFont(labelFont);
     label->setAlignment(Qt::AlignCenter);
     layout->addWidget(label);
+
+    m_GameListWidget           = new QListWidget(this);
+    const QStringList gameList = {"Game 1", "Game 2", "Game 3", "Game 4", "Game 5"};
+    m_GameListWidget->addItems(gameList);
+    m_GameListWidget->setFixedSize(400, 300);
+    layout->addWidget(m_GameListWidget, 0, Qt::AlignCenter);
+
+    QFont listFont = m_GameListWidget->font();
+    listFont.setPointSize(18);
+    m_GameListWidget->setFont(listFont);
+
+    const auto buttonLayout = new QHBoxLayout();
+
+    const auto loadGameButton = new QPushButton("Load Game", this);
+    QFont      buttonFont     = loadGameButton->font();
+    buttonFont.setPointSize(18);
+    loadGameButton->setFont(buttonFont);
+    buttonLayout->addWidget(loadGameButton);
+
+    connect(loadGameButton, &QPushButton::clicked, this, [this] {
+        const auto selectedItem = m_GameListWidget->currentItem();
+        if (selectedItem) {
+            const QString selectedGame = selectedItem->text();
+            qDebug() << "Loading game:" << selectedGame;
+            // Add logic to load the selected game
+        } else {
+            qDebug() << "No game selected!";
+        }
+    });
+
+    const auto removeGameButton = new QPushButton("Remove Game", this);
+    removeGameButton->setFont(buttonFont);
+    buttonLayout->addWidget(removeGameButton);
+
+    connect(removeGameButton, &QPushButton::clicked, this, [this] {
+        const auto selectedItem = m_GameListWidget->currentItem();
+        if (selectedItem) {
+            const QString selectedGame = selectedItem->text();
+            delete m_GameListWidget->takeItem(m_GameListWidget->row(selectedItem));
+            qDebug() << "Removed game:" << selectedGame;
+        } else {
+            qDebug() << "No game selected!";
+        }
+    });
+
+    layout->addLayout(buttonLayout);
 
     AddBackButton(resumeGameWidget);
 
