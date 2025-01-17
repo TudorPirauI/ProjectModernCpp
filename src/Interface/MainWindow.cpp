@@ -107,17 +107,23 @@ void MainWindow::DrawNewGame() {
     const std::vector<std::string> gameModes   = {"Antrenament", "Duelul Vrajitorilor",
                                                   "Duelul Elementelor", "Turneu", "Rapid"};
 
+    const auto modeLayout = new QHBoxLayout();
+    const auto modeWidget = new QWidget(this);
+    modeWidget->setLayout(modeLayout);
+
+    const auto radioButtonsLayout = new QVBoxLayout();
     for (const auto &mode : gameModes) {
         const auto radioButton = new QRadioButton(QString::fromStdString(mode), this);
         buttonGroup->addButton(radioButton);
-        layout->addWidget(radioButton);
+        radioButtonsLayout->addWidget(radioButton);
     }
-
-    const auto optionsLabel = new QLabel("Option for the game:", this);
-    layout->addWidget(optionsLabel);
+    modeLayout->addLayout(radioButtonsLayout);
 
     const auto optionsLayout = new QVBoxLayout();
-    layout->addLayout(optionsLayout);
+    const auto optionsWidget = new QWidget(this);
+    optionsWidget->setLayout(optionsLayout);
+
+    CreateLabel("Gamemode Options", optionsWidget);
 
     const auto eterCheckBox = new QCheckBox("Eter", this);
     optionsLayout->addWidget(eterCheckBox);
@@ -127,6 +133,10 @@ void MainWindow::DrawNewGame() {
 
     const auto explosionCheckBox = new QCheckBox("Explosion", this);
     optionsLayout->addWidget(explosionCheckBox);
+
+    modeLayout->addWidget(optionsWidget);
+    layout->addWidget(modeWidget);
+
     const auto startGameButton = new QPushButton("Start Game", this);
     layout->addWidget(startGameButton);
 
@@ -155,7 +165,6 @@ void MainWindow::DrawNewGame() {
 
                 const auto gameWidget = new QWidget(this);
 
-                // TODO: Linux / Windows difference, we'll see what we can do about it
                 if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament") {
                     [[maybe_unused]]
                     const std::array<bool, 3> options = {eterResponse, illusionResponse,
@@ -171,23 +180,6 @@ void MainWindow::DrawNewGame() {
                 } else {
                     throw std::runtime_error("Invalid game mode selected");
                 }
-
-                // } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {
-                //     auto *duelulVrajitorilorGame = new IDuelulVrajitorilor(
-                //             player1Name.toStdString(), player2Name.toStdString(), gameWidget);
-                //
-                // } else if (m_CurrentGameMode == "Duelul Elementelor") {
-                //     auto *duelulElementelorGame = new IDuelulElementelor(
-                //             player1Name.toStdString(), player2Name.toStdString(), gameWidget);
-                //
-                // } else if (m_CurrentGameMode == "Turneu") {
-                //     auto *turneuGame = new ITurneu(player1Name.toStdString(),
-                //                                    player2Name.toStdString(), gameWidget);
-                //
-                // } else if (m_CurrentGameMode == "Rapid") {
-                //     auto *rapidGame = new IRapid(player1Name.toStdString(),
-                //                                  player2Name.toStdString(), gameWidget);
-                // }
 
                 m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
                 m_StackedWidget->addWidget(gameWidget);
