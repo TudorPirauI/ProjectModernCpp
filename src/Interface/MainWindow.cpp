@@ -1,5 +1,9 @@
 #include "Interface/MainWindow.h"
 #include "Interface/IAntrenament.h"
+#include "Interface/IDuelulElementelor.h"
+#include "Interface/IDuelulVrajitorilor.h"
+#include "Interface/IRapid.h"
+#include "Interface/ITurneu.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {
     m_StackedWidget = new QStackedWidget(this);
@@ -129,12 +133,26 @@ void MainWindow::DrawNewGame() {
 
                 const auto gameWidget = new QWidget(this);
 
-                // TODO: Re-Add the switch case that handled the multiple game modes
+                if (m_CurrentGameMode == "Antrenament") {
+                    auto *antrenamentGame = new IAntrenament(player1Name.toStdString(),
+                                                             player2Name.toStdString(), gameWidget);
 
-                // IT IS IMPERATIVE THAT THIS REMAINS A POINTER, OTHERWISE THE SLOTS AND SIGNALS
-                // WON'T WORK
-                auto *antrenamentGame = new IAntrenament(player1Name.toStdString(),
-                                                         player2Name.toStdString(), gameWidget);
+                } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {
+                    auto *duelulVrajitorilorGame = new IDuelulVrajitorilor(
+                            player1Name.toStdString(), player2Name.toStdString(), gameWidget);
+
+                } else if (m_CurrentGameMode == "Duelul Elementelor") {
+                    auto *duelulElementelorGame = new IDuelulElementelor(
+                            player1Name.toStdString(), player2Name.toStdString(), gameWidget);
+
+                } else if (m_CurrentGameMode == "Turneu") {
+                    auto *turneuGame = new ITurneu(player1Name.toStdString(),
+                                                   player2Name.toStdString(), gameWidget);
+
+                } else if (m_CurrentGameMode == "Rapid") {
+                    auto *rapidGame = new IRapid(player1Name.toStdString(),
+                                                 player2Name.toStdString(), gameWidget);
+                }
 
                 m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
                 m_StackedWidget->addWidget(gameWidget);

@@ -1,11 +1,11 @@
 //
-// Created by Tudor on 1/9/2025.
+// Created by Tudor on 1/17/2025.
 //
 
-#include "Interface/IDuelulVrajitorilor.h"
+#include "Interface/IDuelulElementelor.h"
 
-IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo,
-                                         QWidget *parent) :
+IDuelulElementelor::IDuelulElementelor(const std::string &nameOne, const std::string &nameTwo,
+                                       QWidget *parent) :
     QWidget(parent), m_CurrentGame(nameOne, nameTwo), m_CurrentPlayer(PlayerTurn::Player1),
     m_SelectedCard(std::nullopt), m_ParentWidget(parent) {
 
@@ -14,7 +14,7 @@ IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::
     m_BoardWidget = new BoardWidget(this, 3);
     m_BoardWidget->setFixedSize(600, 600);
     connect(m_BoardWidget, &BoardWidget::BoardSlotClicked, this,
-            &IDuelulVrajitorilor::OnPositionSelected);
+            &IDuelulElementelor::OnPositionSelected);
     m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
 
     auto *boardLayout = new QHBoxLayout();
@@ -27,7 +27,7 @@ IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::
     m_HandWidget = new HandWidget(this);
     m_HandWidget->SetCards(m_CurrentGame.GetPlayer1().GetHand());
     m_HandWidget->setFixedSize(m_HandWidget->GetIdealWidth(), 200);
-    connect(m_HandWidget, &HandWidget::CardSelected, this, &IDuelulVrajitorilor::OnCardSelected);
+    connect(m_HandWidget, &HandWidget::CardSelected, this, &IDuelulElementelor::OnCardSelected);
 
     auto *handLayout = new QHBoxLayout();
     handLayout->addWidget(m_HandWidget);
@@ -37,12 +37,12 @@ IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::
     parent->setLayout(mainLayout);
 }
 
-void IDuelulVrajitorilor::OnCardSelected(const int cardValue) {
+void IDuelulElementelor::OnCardSelected(const int cardValue) {
     m_SelectedCard = Card(cardValue);
     qDebug() << "[Slot] Card selected with value:" << m_SelectedCard.value().GetValue() << '\n';
 }
 
-void IDuelulVrajitorilor::OnPositionSelected(const int x, const int y) {
+void IDuelulElementelor::OnPositionSelected(const int x, const int y) {
     if (!m_SelectedCard.has_value()) {
         std::cout << "Please select a card first!\n";
         return;
@@ -72,7 +72,7 @@ void IDuelulVrajitorilor::OnPositionSelected(const int x, const int y) {
     SwitchTurn();
 }
 
-void IDuelulVrajitorilor::SwitchTurn() {
+void IDuelulElementelor::SwitchTurn() {
     m_SelectedCard.reset();
 
     m_CurrentPlayer =

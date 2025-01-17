@@ -1,20 +1,20 @@
 //
-// Created by Tudor on 1/9/2025.
+// Created by Tudor on 1/17/2025.
 //
 
-#ifndef ETER_IDUELULVRAJITORILOR_H
-#define ETER_IDUELULVRAJITORILOR_H
+#ifndef ETER_ITURNEU_H
+#define ETER_ITURNEU_H
 
 #include "GameComponents/Card.h"
 #include "GameModes/Antrenament.h"
 #include "Interface/BoardWidget.h"
 #include "Interface/HandWidget.h"
 
-class IDuelulVrajitorilor final : public QWidget {
+class ITurneu final : public QWidget {
     Q_OBJECT
 
 public:
-    IDuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo, QWidget *parent);
+    ITurneu(const std::string &nameOne, const std::string &nameTwo, QWidget *parent);
 
 public slots:
     void OnCardSelected(int cardValue);
@@ -32,4 +32,4 @@ private:
     HandWidget  *m_HandWidget;
 };
 
-#endif // ETER_IDUELULVRAJITORILOR_H
+#endif // ETER_ITURNEU_H
