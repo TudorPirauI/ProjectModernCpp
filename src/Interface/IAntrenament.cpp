@@ -3,7 +3,6 @@
 //
 
 #include "Interface/IAntrenament.h"
-
 #include "Interface/AlertWidget.h"
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
@@ -12,6 +11,11 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
     m_SelectedCard(std::nullopt), m_ParentWidget(parent) {
 
     const auto mainLayout = new QVBoxLayout(this);
+    
+    const auto backButton = new QPushButton("<", this);
+    backButton->setFixedSize(30, 30);
+    connect(backButton, &QPushButton::clicked, this, [this]() { emit GameFinished(); });
+    mainLayout->addWidget(backButton, 0, Qt::AlignLeft);
 
     m_BoardWidget = new BoardWidget(this, 3);
     m_BoardWidget->setFixedSize(800, 800);
