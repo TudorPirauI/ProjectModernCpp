@@ -203,15 +203,13 @@ Board::Board(const int maxBoardSize) :
 
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
-InsertOutputs Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
+InsertOutputs Board::InsertCard(Card card, Position pos, const PlayerTurn &playerTurn,
                                 const CardType &cardType, Game &currentGame) {
     if (cardType == CardType::Granite and !m_Board[pos].empty())
         return InsertOutputs::GraniteOccupied;
 
     if (m_Board.empty()) {
-        // ensure that we start in the middle regardless of where the first card is placed
-        m_Board[START_POSITION].emplace(card);
-        return InsertOutputs::Success;
+        pos = START_POSITION;
     }
 
     if (!IsPositionValid(pos, card)) {

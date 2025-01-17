@@ -35,9 +35,8 @@ class Board {
 public:
     explicit Board(int maxBoardSize);
 
-    [[nodiscard]] InsertOutputs InsertCard(Card card, const Position &pos,
-                                           const PlayerTurn &playerTurn, const CardType &cardType,
-                                           Game &currentGame);
+    [[nodiscard]] InsertOutputs InsertCard(Card card, Position pos, const PlayerTurn &playerTurn,
+                                           const CardType &cardType, Game &currentGame);
     [[nodiscard]] bool          InsertIllusion(Card &card, const Position &pos);
     [[nodiscard]] bool          InsertEter(Card &card, const Position &pos);
 

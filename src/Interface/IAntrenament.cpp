@@ -62,6 +62,21 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
         return;
     }
 
+    auto gameBoard = m_CurrentGame.GetBoard();
+    auto line      = gameBoard.GetLineAdvantage();
+    auto column    = gameBoard.GetColumnAdvantage();
+
+    auto printMap = [](const std::unordered_map<int, int> &map, const std::string &afisare) {
+        std::cout << afisare << '\n';
+        for (const auto &pair : map) {
+            std::cout << "Pozitie: " << pair.first << ' ' << pair.second
+                      << ", Value: " << pair.second << std::endl;
+        }
+    };
+
+    printMap(line, "line");
+    printMap(column, "columns");
+
     auto &currentPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
                                                                    : m_CurrentGame.GetPlayer2();
 
@@ -97,6 +112,7 @@ void IAntrenament::SwitchTurn() {
 
         m_HandWidget->update();
         m_BoardWidget->update();
+
         return;
     }
 
@@ -110,6 +126,7 @@ void IAntrenament::SwitchTurn() {
                                       : m_CurrentGame.GetPlayer2Score();
 
     std::cout << winner.GetUserName() << " has won the round!\n" << "Reason: ";
+
     switch (winningReason) {
         case Game::WinningCondition::LineWin:
             std::cout << "Line win";
