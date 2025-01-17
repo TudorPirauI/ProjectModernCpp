@@ -10,6 +10,30 @@ Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne
     m_EterEnabled      = options[0];
     m_IllusionEnabled  = options[1];
     m_ExplosionEnabled = options[2];
+
+    if (m_EterEnabled) {
+        Card cardEter{1};
+
+        cardEter.SetEter(true);
+        cardEter.SetPlacedBy(PlayerTurn::Player1);
+
+        m_Player1.GiveCard(cardEter);
+        cardEter.SetPlacedBy(PlayerTurn::Player2);
+        m_Player2.GiveCard(cardEter);
+    }
+
+    int numberOfIllusions = 0;
+
+    if (m_IllusionEnabled)
+        numberOfIllusions = 1;
+
+    m_Player1.SetIllusion(numberOfIllusions);
+    m_Player2.SetIllusion(numberOfIllusions);
+
+    if (m_ExplosionEnabled) {
+        m_Player1.SetHasExplosion(true);
+        m_Player2.SetHasExplosion(true);
+    }
 }
 
 PlayerTurn Game::GetCurrentPlayer() const { return m_PlayerTurn; }
