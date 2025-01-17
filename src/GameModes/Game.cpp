@@ -296,7 +296,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return false;
         }
-            return "The board explodes!";
         case ElementIndexPower::Destruction: {
             if (playerTurn == PlayerTurn::Player1) {
                 m_Player2.AddToRemovedCards(board[m_LastPositionPlayer2].top());
@@ -508,8 +507,8 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return false;
         }
         case ElementIndexPower::Storm: {
-            auto  newBoard     = RemadeGameBoard(m_Board);
-            auto &newGameBoard = newBoard.GetGameBoard();
+            auto newBoard = RemadeGameBoard(m_Board);
+            // auto &newGameBoard = newBoard.GetGameBoard();
 
             for (auto &stack : board | std::views::values) {
                 if (stack.size() >= 2) {
@@ -618,7 +617,7 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             return true;
         }
         case ElementIndexPower::Tsunami: {
-            auto hasEmptySpot = [&]() {
+            auto hasEmptySpot = [&] {
                 for (const auto &stack : board | std::views::values) {
                     if (stack.empty()) {
                         return true;
@@ -806,8 +805,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
         default:
             return "Unknown power.";
     }
-
-    return false;
 }
 
 void Game::SetLastCardPlayer1(const Position &position) { m_LastPositionPlayer1 = position; }
@@ -826,8 +823,8 @@ void Game::CheckModifierCard(std::stack<Card> &stack) {
 Position Game::GetLastCardPlayer1() { return m_LastPositionPlayer1; }
 Position Game::GetLastCardPlayer2() { return m_LastPositionPlayer2; }
 
-int Game::GetRowPlayer1() { return m_RowPlayer1; }
-int Game::GetRowPlayer2() { return m_RowPlayer2; }
+int Game::GetRowPlayer1() const { return m_RowPlayer1; }
+int Game::GetRowPlayer2() const { return m_RowPlayer2; }
 
 bool Game::CheckPlayerIllusion(Player &player) {
     if (player.GetIllusion() > 0) {
@@ -949,7 +946,7 @@ bool Game::CheckExplosion() {
             } break;
             case Explosion::Effect::Return: {
                 if (auto &stack = newGameBoard[position]; !stack.empty()) {
-                    const auto &card = newGameBoard[position].top();
+                    // const auto &card = newGameBoard[position].top();
                     newGameBoard[position].pop();
                 }
             } break;

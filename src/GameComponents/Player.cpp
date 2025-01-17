@@ -43,7 +43,7 @@ void Player::GiveEterCard(const PlayerTurn playerTurn) {
     m_Hand.emplace_back(card);
 }
 
-int Player::GetIllusion() { return m_NumberOfIllusion; }
+int Player::GetIllusion() const { return m_NumberOfIllusion; }
 
 void Player::SetIllusion(const int value) { m_NumberOfIllusion = value; }
 

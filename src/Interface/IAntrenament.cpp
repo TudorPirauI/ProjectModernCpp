@@ -14,7 +14,7 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     const auto backButton = new QPushButton("<", this);
     backButton->setFixedSize(30, 30);
-    connect(backButton, &QPushButton::clicked, this, [this]() { emit GameFinished(); });
+    connect(backButton, &QPushButton::clicked, this, [this] { emit GameFinished(); });
     mainLayout->addWidget(backButton, 0, Qt::AlignLeft);
 
     m_BoardWidget = new BoardWidget(this, 3);
@@ -66,8 +66,8 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
         return;
     }
 
-    auto &currentPlayer = (m_CurrentTurn == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
-                                                                 : m_CurrentGame.GetPlayer2();
+    auto &currentPlayer = m_CurrentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+                                                               : m_CurrentGame.GetPlayer2();
 
     currentPlayer.RemoveCard(m_SelectedCard.value());
 
@@ -85,11 +85,10 @@ void IAntrenament::SwitchTurn() {
 
     if (winningReason == Game::WinningCondition::NoWin) {
         m_CurrentTurn =
-                (m_CurrentTurn == PlayerTurn::Player1) ? PlayerTurn::Player2 : PlayerTurn::Player1;
+                m_CurrentTurn == PlayerTurn::Player1 ? PlayerTurn::Player2 : PlayerTurn::Player1;
 
-        const auto &nextPlayer = (m_CurrentTurn == PlayerTurn::Player1)
-                                         ? m_CurrentGame.GetPlayer1()
-                                         : m_CurrentGame.GetPlayer2();
+        const auto &nextPlayer = m_CurrentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+                                                                      : m_CurrentGame.GetPlayer2();
 
         m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
         m_HandWidget->SetCards(nextPlayer.GetHand());

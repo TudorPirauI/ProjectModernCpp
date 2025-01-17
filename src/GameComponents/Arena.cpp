@@ -5,7 +5,7 @@
 #include "../../include/GameComponents/Arena.h"
 
 Arena::Arena(const int size) :
-    Board(size), m_Size(size), m_Board(size, std::vector<PlayerPiece>(size, PlayerPiece::None)) {}
+    Board(size), m_Size(size), m_Board(size, std::vector(size, PlayerPiece::None)) {}
 
 void Arena::PlacePiece(const int x, const int y, const PlayerPiece &player) {
     if (x >= 0 && x < m_Size && y >= 0 && y < m_Size) {
@@ -43,7 +43,7 @@ bool Arena::CheckWin(const PlayerPiece &player) const {
 int Arena::CountPieces(const PlayerPiece &player) const {
     int count = 0;
     for (const auto &row : m_Board) {
-        count += std::count(row.begin(), row.end(), player);
+        count += std::ranges::count(row, player);
     }
     return count;
 }

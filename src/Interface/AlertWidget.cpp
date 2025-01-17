@@ -28,7 +28,7 @@ void AlertWidget::ShowAlert(const QString &message) {
 
     if (parentWidget()) {
         parentWidget()->setEnabled(false); // Disable parent widget
-        auto blurEffect = new QGraphicsBlurEffect(this);
+        const auto blurEffect = new QGraphicsBlurEffect(this);
         blurEffect->setBlurRadius(10);
         parentWidget()->setGraphicsEffect(blurEffect);
     }

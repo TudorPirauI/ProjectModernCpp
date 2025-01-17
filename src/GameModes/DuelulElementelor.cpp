@@ -39,9 +39,9 @@ void DuelulElementelor::SetNewCards() {
     m_Board.CleanUpBoard();
 }
 
-ElementPower DuelulElementelor::GetPlayerAbility1() { return m_AbilityPlayer1; }
+ElementPower DuelulElementelor::GetPlayerAbility1() const { return m_AbilityPlayer1; }
 
-ElementPower DuelulElementelor::GetPlayerAbility2() { return m_AbilityPlayer2; }
+ElementPower DuelulElementelor::GetPlayerAbility2() const { return m_AbilityPlayer2; }
 
 DuelulElementelor::DuelulElementelor(const std::string &nameOne, const std::string &nameTwo,
                                      const std::array<bool, 3> &options) :

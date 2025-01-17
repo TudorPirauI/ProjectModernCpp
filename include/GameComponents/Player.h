@@ -33,7 +33,7 @@ public:
     void RemoveCard(const Card &card);
     void GiveEterCard(PlayerTurn playerTurn);
 
-    int  GetIllusion();
+    int  GetIllusion() const;
     void SetIllusion(int value);
 
     bool GetHasIllusionInGame() const;

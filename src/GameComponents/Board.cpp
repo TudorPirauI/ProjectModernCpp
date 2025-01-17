@@ -246,8 +246,8 @@ InsertOutputs Board::InsertCard(Card card, Position pos, const PlayerTurn &playe
         compensateForPlacingOnTop = 2;
     }
 
-    m_Lines[pos.first] += (compensateForPlacingOnTop * playerVariation);
-    m_Columns[pos.second] += (compensateForPlacingOnTop * playerVariation);
+    m_Lines[pos.first] += compensateForPlacingOnTop * playerVariation;
+    m_Columns[pos.second] += compensateForPlacingOnTop * playerVariation;
 
     if (!m_Board[pos].empty() and m_Board[pos].top().GetModifier() != 0) {
         auto cardOnTop = m_Board[pos].top();

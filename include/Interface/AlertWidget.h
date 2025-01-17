@@ -7,7 +7,7 @@
 
 #include "pch.h"
 
-class AlertWidget : public QWidget {
+class AlertWidget final : public QWidget {
     Q_OBJECT
 
 public:

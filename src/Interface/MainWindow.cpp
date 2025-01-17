@@ -174,9 +174,8 @@ void MainWindow::DrawNewGame() {
 
                 if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament") {
                     [[maybe_unused]]
-                    const std::array<bool, 3> options = {eterResponse, illusionResponse,
-                                                         explosionResponse};
-                    auto                     *antrenamentGame =
+                    const std::array options = {eterResponse, illusionResponse, explosionResponse};
+                    const auto      *antrenamentGame =
                             new IAntrenament(player1Name.toStdString(), player2Name.toStdString(),
                                              options, gameWidget);
 

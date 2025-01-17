@@ -9,7 +9,7 @@
 #include "../Powers/Wizard.h"
 #include "Game.h"
 
-class DuelulCombinat : public Game {
+class DuelulCombinat final : public Game {
     int          m_ScoreWinning{5};
     Wizard       m_WizardAbility1;
     ElementPower m_ElementalAbility1;
@@ -23,8 +23,8 @@ public:
 
     void SetNewCards() override;
 
-    Wizard       GetWizardAbility();
-    ElementPower GetElementalAbility();
+    Wizard       GetWizardAbility() const;
+    ElementPower GetElementalAbility() const;
 
     DuelulCombinat(const std::string &nameOne, const std::string &nameTwo,
                    const std::array<bool, 3> &options);

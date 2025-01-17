@@ -60,10 +60,10 @@ public:
     Position GetLastCardPlayer1();
     Position GetLastCardPlayer2();
 
-    int GetRowPlayer1();
-    int GetRowPlayer2();
+    int GetRowPlayer1() const;
+    int GetRowPlayer2() const;
 
-    bool CheckPlayerIllusion(Player &player);
+    static bool CheckPlayerIllusion(Player &player);
     // void LoadDataInJson();
     // void SaveDataInJson();
 
@@ -92,9 +92,9 @@ protected:
 
     static constexpr std::string JSON_FILE_NAME = "reload.json";
 
-    Board    RemadeGameBoard(Board board);
-    void     CheckModifierCard(std::stack<Card> &stack);
-    CardType GetCardType(const Card &card);
+    Board           RemadeGameBoard(Board board);
+    static void     CheckModifierCard(std::stack<Card> &stack);
+    static CardType GetCardType(const Card &card);
 };
 
 #endif // GAME_H

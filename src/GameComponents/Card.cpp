@@ -57,6 +57,11 @@ std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn) {
         case PlayerTurn::Player2:
             os << "Player2";
             break;
+        case PlayerTurn::Granite:
+            os << "Granite";
+            break;
+        default:
+            os << "Unknown";
     }
     return os;
 }

@@ -28,9 +28,9 @@ void DuelulVrajitorilor::SetNewCards() {
     m_Board.CleanUpBoard();
 }
 
-Wizard DuelulVrajitorilor::GetPlayerAbility1() { return m_AbilityPlayer1; }
+Wizard DuelulVrajitorilor::GetPlayerAbility1() const { return m_AbilityPlayer1; }
 
-Wizard DuelulVrajitorilor::GetPlayerAbility2() { return m_AbilityPlayer2; }
+Wizard DuelulVrajitorilor::GetPlayerAbility2() const { return m_AbilityPlayer2; }
 
 DuelulVrajitorilor::DuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo,
                                        const std::array<bool, 3> &options) :

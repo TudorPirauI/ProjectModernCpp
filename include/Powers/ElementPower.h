@@ -48,8 +48,8 @@ public:
 
     ElementPower &operator=(ElementPower &&other) noexcept = default;
 
-    void        RandomPower();
-    std::string GetElementPowerDescription(ElementIndexPower power);
+    void               RandomPower();
+    static std::string GetElementPowerDescription(ElementIndexPower power);
 
     ~ElementPower() = default;
 

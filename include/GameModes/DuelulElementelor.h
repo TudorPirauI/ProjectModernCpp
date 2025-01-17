@@ -2,13 +2,13 @@
 // Created by Miruna on 1/16/2025.
 //
 
-#include "Game.h" // Calea către Game.h
-#include "Powers/ElementPower.h" // Calea către ElementPower.h
-
 #ifndef DUELULELEMENTELOR_H
 #define DUELULELEMENTELOR_H
 
-class DuelulElementelor : public Game {
+#include "Game.h"
+#include "Powers/ElementPower.h"
+
+class DuelulElementelor final : public Game {
 public:
     DuelulElementelor(const DuelulElementelor &other)     = default;
     DuelulElementelor(DuelulElementelor &&other) noexcept = default;
@@ -21,8 +21,8 @@ private:
 
 public:
     void         SetNewCards() override;
-    ElementPower GetPlayerAbility1();
-    ElementPower GetPlayerAbility2();
+    ElementPower GetPlayerAbility1() const;
+    ElementPower GetPlayerAbility2() const;
 
     explicit DuelulElementelor(const std::string &nameOne, const std::string &nameTwo,
                                const std::array<bool, 3> &options);

@@ -8,7 +8,7 @@
 #include "GameModes/Game.h"
 #include "Powers/Wizard.h"
 
-class DuelulVrajitorilor : public Game {
+class DuelulVrajitorilor final : public Game {
     int    m_ScoreWinning{5};
     Wizard m_AbilityPlayer1;
     Wizard m_AbilityPlayer2;
@@ -16,8 +16,8 @@ class DuelulVrajitorilor : public Game {
 public:
     void SetNewCards() override;
 
-    Wizard GetPlayerAbility1();
-    Wizard GetPlayerAbility2();
+    Wizard GetPlayerAbility1() const;
+    Wizard GetPlayerAbility2() const;
     DuelulVrajitorilor(const DuelulVrajitorilor &other)                = default;
     DuelulVrajitorilor(DuelulVrajitorilor &&other) noexcept            = default;
     DuelulVrajitorilor &operator=(const DuelulVrajitorilor &other)     = default;
