@@ -32,6 +32,7 @@ void Card::SetValue(const int value) { m_Value = value; }
 int  Card::GetValue() const { return m_Value - m_OnModifier; }
 
 void Card::SetIllusion(const bool isIllusion) { m_IsIllusion = isIllusion; }
+
 bool Card::GetIsIllusion() const { return m_IsIllusion; }
 
 void Card::SetEter(const bool isEter) { m_IsEter = isEter; }

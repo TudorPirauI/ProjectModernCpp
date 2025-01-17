@@ -262,12 +262,14 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
         m_Board[pos].emplace(cardOnTop);
     }
 
-    if (m_Board[pos].top().GetIsIllusion()) {
-        if (CoverIllusion(card, pos)) {
-            if (playerTurn == PlayerTurn::Player1)
-                currentGame.GetPlayer2().SetHasIllusionInGame(false);
-            else
-                currentGame.GetPlayer1().SetHasIllusionInGame(false);
+    if (!m_Board[pos].empty()) {
+        if (m_Board[pos].top().GetIsIllusion()) {
+            if (CoverIllusion(card, pos)) {
+                if (playerTurn == PlayerTurn::Player1)
+                    currentGame.GetPlayer2().SetHasIllusionInGame(false);
+                else
+                    currentGame.GetPlayer1().SetHasIllusionInGame(false);
+            }
         }
     }
 

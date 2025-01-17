@@ -13,6 +13,7 @@ public:
     void                                SetGameMode(std::unique_ptr<Game> game);
     [[nodiscard]] std::unique_ptr<Game> GetGameMode();
 
+    Turneu();
     Turneu(const Turneu &other)     = default;
     Turneu(Turneu &&other) noexcept = default;
     Turneu &operator=(Turneu other);
