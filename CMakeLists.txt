@@ -10,11 +10,9 @@ include(CheckCXXCompilerFlag)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic)
-
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Building in Release mode with all optimisations")
-    add_compile_options(-Ofast)
+    message(STATUS "Building in Release mode with optimisations")
+    add_compile_options(-Wall -Wextra -Wpedantic -Ofast)
 
     check_cxx_compiler_flag("-flto" COMPILER_SUPPORTS_FLTO)
     if (COMPILER_SUPPORTS_FLTO)
@@ -24,7 +22,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
     endif ()
 elseif (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Building in Debug mode")
-    add_compile_options(-Og)
+
+    add_compile_options(-g1)
 else ()
     message(WARNING "Unknown build type (${CMAKE_BUILD_TYPE}). Not applying any extra optimisations.")
 endif ()
@@ -86,42 +85,33 @@ find_package(Qt6 COMPONENTS
         Gui
         Widgets
         Multimedia
+        CONFIG
         REQUIRED
 )
 
-find_package(nlohmann_json QUIET)
+#find_package(nlohmann_json QUIET)
+#
+#if (nlohmann_json_FOUND)
+#    message(STATUS "Found nlohmann_json")
+#else ()
+#    message(STATUS "Fetching nlohmann_json")
+#
+#    FetchContent_Declare(
+#            nlohmann_json
+#            GIT_REPOSITORY https://github.com/nlohmann/json.git
+#            GIT_TAG v3.11.3
+#    )
+#
+#    FetchContent_MakeAvailable(nlohmann_json)
+#
+#endif ()
 
-if (nlohmann_json_FOUND)
-    message(STATUS "Found nlohmann_json")
-else ()
-    message(STATUS "Fetching nlohmann_json")
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
-    FetchContent_Declare(
-            nlohmann_json
-            GIT_REPOSITORY https://github.com/nlohmann/json.git
-            GIT_TAG v3.11.3
-    )
+set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ON)
 
-    FetchContent_MakeAvailable(nlohmann_json)
-
-endif ()
-
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS}
-        src/GameModes/DuelulElementelor.cpp
-        include/GameModes/DuelulElementelor.h
-        src/GameModes/DuelulCombinat.cpp
-        include/GameModes/DuelulCombinat.h
-        src/GameComponents/Arena.cpp
-        include/GameComponents/Arena.h)
-
-# Add this line to include the Qt resource file
 qt_add_resources(RESOURCES ./QResource.qrc)
 
-if (NOT RESOURCES)
-    message(FATAL_ERROR "No resources found. Please check the 'QResource.qrc' file.")
-endif ()
-
-# Make sure to link the resources to your target
 target_sources(${PROJECT_NAME} PRIVATE ${RESOURCES})
 
 # This is mostly useless, but it helps on certain setups (obviously windows is to blame)
@@ -161,5 +151,5 @@ target_link_libraries(Eter PRIVATE
         Qt6::Gui
         Qt6::Widgets
         Qt6::Multimedia
-        nlohmann_json::nlohmann_json
+        #        nlohmann_json::nlohmann_json
 )
