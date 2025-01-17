@@ -51,8 +51,7 @@ void BoardWidget::SetBoard(const Board &board) {
                     button->setEnabled(false);
                 }
             } else {
-
-                int playerId =
+                const int playerId =
                         placedCard->second.top().GetPlacedBy() == PlayerTurn::Player1 ? 1 : 2;
                 QString imagePath = QString(":/images/player%1/%2.png")
                                             .arg(playerId)

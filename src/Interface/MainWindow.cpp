@@ -146,9 +146,9 @@ void MainWindow::DrawNewGame() {
                     return;
                 }
 
-                const bool eterSelected      = eterCheckBox->isChecked();
-                const bool illusionSelected  = illusionCheckBox->isChecked();
-                const bool explosionSelected = explosionCheckBox->isChecked();
+                const bool eterResponse      = eterCheckBox->isChecked();
+                const bool illusionResponse  = illusionCheckBox->isChecked();
+                const bool explosionResponse = explosionCheckBox->isChecked();
 
                 m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
                 std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
@@ -156,16 +156,19 @@ void MainWindow::DrawNewGame() {
                 const auto gameWidget = new QWidget(this);
 
                 // TODO: Linux / Windows difference, we'll see what we can do about it
-                if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament")
-                        [[maybe_unused]] {
-                    std::array<bool, 3> options;
-                    auto               *antrenamentGame =
+                if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament") {
+                    [[maybe_unused]]
+                    const std::array<bool, 3> options = {eterResponse, illusionResponse,
+                                                         explosionResponse};
+                    auto                     *antrenamentGame =
                             new IAntrenament(player1Name.toStdString(), player2Name.toStdString(),
                                              options, gameWidget);
-                }
 
-                else {
-                    // throw an error
+                    std::cout << "Found antrenament game\n";
+
+                    connect(antrenamentGame, &IAntrenament::GameFinished, this,
+                            &MainWindow::OnGameFinished);
+                } else {
                     throw std::runtime_error("Invalid game mode selected");
                 }
 
@@ -349,6 +352,11 @@ void MainWindow::OnNewGameClicked() {
     //    if (m_MediaPlayer->error() != QMediaPlayer::NoError) {
     //        qDebug() << "Error playing music:" << m_MediaPlayer->errorString();
     //    }
+}
+
+void MainWindow::OnGameFinished() {
+    m_CurrentState = GameState::MainMenu;
+    DrawMenu();
 }
 
 void MainWindow::OnResumeGameClicked() {

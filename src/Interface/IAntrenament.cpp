@@ -8,7 +8,7 @@
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
                            const std::array<bool, 3> &options, QWidget *parent) :
-    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_CurrentPlayer(PlayerTurn::Player1),
+    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_CurrentTurn(PlayerTurn::Player1),
     m_SelectedCard(std::nullopt), m_ParentWidget(parent) {
 
     const auto mainLayout = new QVBoxLayout(this);
@@ -40,7 +40,7 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
 void IAntrenament::OnCardSelected(const int cardValue) {
     m_SelectedCard = Card(cardValue);
-    m_SelectedCard->SetPlacedBy(m_CurrentPlayer);
+    m_SelectedCard->SetPlacedBy(m_CurrentTurn);
 }
 
 void IAntrenament::OnPositionSelected(const int x, const int y) {
@@ -55,30 +55,15 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
     }
 
     const auto success = m_CurrentGame.GetBoard().InsertCard(
-            m_SelectedCard.value(), {x, y}, m_CurrentPlayer, CardType::Normal, m_CurrentGame);
+            m_SelectedCard.value(), {x, y}, m_CurrentTurn, CardType::Normal, m_CurrentGame);
 
     if (success != InsertOutputs::Success) {
         std::cerr << "Could not place card on board\n";
         return;
     }
 
-    auto gameBoard = m_CurrentGame.GetBoard();
-    auto line      = gameBoard.GetLineAdvantage();
-    auto column    = gameBoard.GetColumnAdvantage();
-
-    auto printMap = [](const std::unordered_map<int, int> &map, const std::string &afisare) {
-        std::cout << afisare << '\n';
-        for (const auto &pair : map) {
-            std::cout << "Pozitie: " << pair.first << ' ' << pair.second
-                      << ", Value: " << pair.second << std::endl;
-        }
-    };
-
-    printMap(line, "line");
-    printMap(column, "columns");
-
-    auto &currentPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
-                                                                   : m_CurrentGame.GetPlayer2();
+    auto &currentPlayer = (m_CurrentTurn == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
+                                                                 : m_CurrentGame.GetPlayer2();
 
     currentPlayer.RemoveCard(m_SelectedCard.value());
 
@@ -87,10 +72,6 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
 
 void IAntrenament::SwitchTurn() {
     // TODO: Pretty up the hand and the board
-    // The board should have consistent spacings between the slots
-    // The cards should be held like a bridge hand, slightly circular
-    // When you hover over the cards in your hands they should increase in size a bit and move
-    // according to your cursor
 
     // TODO: Add Eter, Illusion and explosion (also pop up for this) options
 
@@ -99,11 +80,10 @@ void IAntrenament::SwitchTurn() {
     const auto winningReason = m_CurrentGame.CheckWinningConditions();
 
     if (winningReason == Game::WinningCondition::NoWin) {
+        m_CurrentTurn =
+                (m_CurrentTurn == PlayerTurn::Player1) ? PlayerTurn::Player2 : PlayerTurn::Player1;
 
-        m_CurrentPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? PlayerTurn::Player2
-                                                                   : PlayerTurn::Player1;
-
-        const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1)
+        const auto &nextPlayer = (m_CurrentTurn == PlayerTurn::Player1)
                                          ? m_CurrentGame.GetPlayer1()
                                          : m_CurrentGame.GetPlayer2();
 
@@ -116,12 +96,12 @@ void IAntrenament::SwitchTurn() {
         return;
     }
 
-    const auto &winner = m_CurrentPlayer == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
-                                                                : m_CurrentGame.GetPlayer2();
+    const auto &winner = m_CurrentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+                                                              : m_CurrentGame.GetPlayer2();
 
-    m_CurrentGame.IncreasePlayerScore(m_CurrentPlayer);
+    m_CurrentGame.IncreasePlayerScore(m_CurrentTurn);
 
-    const auto currentScore = m_CurrentPlayer == PlayerTurn::Player1
+    const auto currentScore = m_CurrentTurn == PlayerTurn::Player1
                                       ? m_CurrentGame.GetPlayer1Score()
                                       : m_CurrentGame.GetPlayer2Score();
 
@@ -151,9 +131,7 @@ void IAntrenament::SwitchTurn() {
     if (currentScore >= m_CurrentGame.GetScoreToWin()) {
         alertWidget->ShowAlert(QString::fromStdString(winner.GetUserName() + " has won the game!"));
 
-        if (m_ParentWidget) {
-            m_ParentWidget->close();
-        }
+        QTimer::singleShot(1500, this, &IAntrenament::GameFinished);
     } else {
         const auto playerOneStats = m_CurrentGame.GetPlayer1().GetUserName() + " - " +
                                     std::to_string(m_CurrentGame.GetPlayer1Score());
@@ -163,13 +141,10 @@ void IAntrenament::SwitchTurn() {
                 QString::fromStdString(winner.GetUserName() + " has won the round!\n\n" +
                                        "Current score\n" + playerOneStats + "\n" + playerTwoStats));
 
+        m_CurrentTurn = PlayerTurn::Player1;
         m_CurrentGame.SetNewCards();
         m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
-
-        const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1)
-                                         ? m_CurrentGame.GetPlayer2()
-                                         : m_CurrentGame.GetPlayer1();
-        m_HandWidget->SetCards(nextPlayer.GetHand());
+        m_HandWidget->SetCards(m_CurrentGame.GetPlayer1().GetHand());
 
         m_HandWidget->update();
         m_BoardWidget->update();

@@ -19,6 +19,7 @@ private slots:
     void OnOptionsClicked();
     void OnExitClicked();
     void OnBackClicked();
+    void OnGameFinished();
 
 private:
     QMediaPlayer *m_MediaPlayer;
@@ -32,7 +33,7 @@ private:
     // TODO: We should load the settings from a file and only fall back to these defaults if the
     // file is missing or corrupted
     QString m_GameResolution{"1920x1080"};
-    bool    m_FullScreen{false};
+    bool    m_FullScreen{true};
     QColor  m_Player1Color{QColor(173, 216, 230)};
     QColor  m_Player2Color{QColor(255, 105, 97)};
     int     m_MasterVolume{20};
