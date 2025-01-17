@@ -68,17 +68,18 @@ void Player::RemoveFromRemovedCards(const Card &card) {
         m_RemovedCards.erase(it);
     }
 }
-void to_json(nlohmann::json &j, const Player &p) {
-    j = nlohmann::json{{"name", p.GetUserName()},
-                       {"score", p.GetScore()},
-                       {"hand", p.GetHand()},
-                       {"removedCards", p.m_RemovedCards},
-                       {"illusion", p.m_NumberOfIllusion}};
-}
-void from_json(const nlohmann::json &j, Player &p) {
-    j.at("name").get_to(p.m_UserName);
-    j.at("score").get_to(p.m_Score);
-    j.at("hand").get_to(p.m_Hand);
-    j.at("removedCards").get_to(p.m_RemovedCards);
-    j.at("illusion").get_to(p.m_NumberOfIllusion);
-}
+
+// void to_json(nlohmann::json &j, const Player &p) {
+//     j = nlohmann::json{{"name", p.GetUserName()},
+//                        {"score", p.GetScore()},
+//                        {"hand", p.GetHand()},
+//                        {"removedCards", p.m_RemovedCards},
+//                        {"illusion", p.m_NumberOfIllusion}};
+// }
+// void from_json(const nlohmann::json &j, Player &p) {
+//     j.at("name").get_to(p.m_UserName);
+//     j.at("score").get_to(p.m_Score);
+//     j.at("hand").get_to(p.m_Hand);
+//     j.at("removedCards").get_to(p.m_RemovedCards);
+//     j.at("illusion").get_to(p.m_NumberOfIllusion);
+// }

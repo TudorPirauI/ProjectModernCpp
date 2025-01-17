@@ -66,8 +66,8 @@ public:
     int GetRowPlayer2();
 
     bool CheckPlayerIllusion(Player &player);
-    void LoadDataInJson();
-    void SaveDataInJson();
+    // void LoadDataInJson();
+    // void SaveDataInJson();
 
     bool CheckExplosion();
 

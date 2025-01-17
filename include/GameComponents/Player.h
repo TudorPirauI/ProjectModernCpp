@@ -42,8 +42,8 @@ public:
     Hand GetRemovedCards();
     void RemoveFromRemovedCards(const Card &card);
 
-    friend void to_json(nlohmann::json &j, const Player &p);
-    friend void from_json(const nlohmann::json &j, Player &p);
+    // friend void to_json(nlohmann::json &j, const Player &p);
+    // friend void from_json(const nlohmann::json &j, Player &p);
 };
 
 #endif // PLAYER_H
