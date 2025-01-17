@@ -4,48 +4,45 @@
 
 #include "../../include/GameComponents/Arena.h"
 
-Arena::Arena(int size) :
-    Board(size), size_(size), board_(size, std::vector<Player>(size, Player::None)) {}
+Arena::Arena(const int size) :
+    Board(size), m_Size(size), m_Board(size, std::vector<PlayerPiece>(size, PlayerPiece::None)) {}
 
-void Arena::PlacePiece(int x, int y, Player player) {
-    if (x >= 0 && x < size_ && y >= 0 && y < size_) {
-        if (board_[x][y] == Player::None) {
-            board_[x][y] = player;
-        } else if (board_[x][y] != player) {
-            board_[x][y] = player;
-        }
+void Arena::PlacePiece(const int x, const int y, const PlayerPiece &player) {
+    if (x >= 0 && x < m_Size && y >= 0 && y < m_Size) {
+        m_Board[x][y] = player;
     }
 }
 
-bool Arena::CheckWin(Player player) const {
-    for (int i = 0; i < size_; ++i) {
-        if (std::all_of(board_[i].begin(), board_[i].end(),
-                        [player](Player p) { return p == player; })) {
+// todo: use getleft, getright, getdown, getup to use the actual board corners
+bool Arena::CheckWin(const PlayerPiece &player) const {
+    for (int i = 0; i < m_Size; ++i) {
+        if (std::ranges::all_of(m_Board[i],
+                                [player](const PlayerPiece &p) { return p == player; })) {
             return true;
         }
-        if (std::all_of(board_.begin(), board_.end(),
-                        [i, player](const std::vector<Player> &row) { return row[i] == player; })) {
+        if (std::ranges::all_of(m_Board, [i, player](const std::vector<PlayerPiece> &row) {
+                return row[i] == player;
+            })) {
             return true;
         }
     }
-    if (std::all_of(board_.begin(), board_.end(),
-                    [n = 0, player](const std::vector<Player> &row) mutable {
-                        return row[n++] == player;
-                    })) {
+    if (std::ranges::all_of(m_Board, [n = 0, player](const std::vector<PlayerPiece> &row) mutable {
+            return row[n++] == player;
+        })) {
         return true;
     }
-    if (std::all_of(board_.begin(), board_.end(),
-                    [n = size_ - 1, player](const std::vector<Player> &row) mutable {
-                        return row[n--] == player;
-                    })) {
+    if (std::ranges::all_of(m_Board,
+                            [n = m_Size - 1, player](const std::vector<PlayerPiece> &row) mutable {
+                                return row[n--] == player;
+                            })) {
         return true;
     }
     return false;
 }
 
-int Arena::CountPieces(Player player) const {
+int Arena::CountPieces(const PlayerPiece &player) const {
     int count = 0;
-    for (const auto &row : board_) {
+    for (const auto &row : m_Board) {
         count += std::count(row.begin(), row.end(), player);
     }
     return count;
