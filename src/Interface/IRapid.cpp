@@ -55,7 +55,7 @@ void IRapid::OnPositionSelected(const int x, const int y) {
     const auto success = m_CurrentGame.GetBoard().InsertCard(
             m_SelectedCard.value(), {x, y}, m_CurrentPlayer, CardType::Normal, m_CurrentGame);
 
-    if (!success) {
+    if (success != InsertOutputs::Success) {
         std::cout << "Could not place card on board\n";
         return;
     }
