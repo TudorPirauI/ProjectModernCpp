@@ -16,9 +16,6 @@ public:
     void SetCards(const std::vector<Card> &cards);
 
     [[nodiscard]] int GetIdealWidth() const;
-
-    bool eventFilter(QObject *watched, QEvent *event) override;
-
 signals:
     void CardSelected(int cardValue);
 

@@ -14,60 +14,13 @@ int HandWidget::GetIdealWidth() const {
     return handSize * m_CardWidth + handSize * m_CardSpacing;
 }
 
-#include <QDebug>
-#include <QEvent>
-#include <QGraphicsEffect>
-#include <QGraphicsProxyWidget>
-#include <QGraphicsRotation>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QMouseEvent>
-#include <QPushButton>
-#include <QtMath>
-
-bool HandWidget::eventFilter(QObject *watched, QEvent *event) {
-    if (auto *button = qobject_cast<QPushButton *>(watched)) {
-        static QGraphicsRotation *rotationX = new QGraphicsRotation;
-        static QGraphicsRotation *rotationY = new QGraphicsRotation;
-        static QGraphicsScale    *scale     = new QGraphicsScale;
-        static QGraphicsEffect   *effect    = new QGraphicsEffect;
-
-        if (event->type() == QEvent::Enter) {
-            button->setGraphicsEffect(effect);
-            scale->setXScale(1.1);
-            scale->setYScale(1.1);
-        } else if (event->type() == QEvent::Leave) {
-            button->setGraphicsEffect(nullptr); // Eliminarea efectului
-        } else if (event->type() == QEvent::MouseMove) {
-            auto   *mouseEvent = static_cast<QMouseEvent *>(event);
-            QPointF pos        = mouseEvent->pos();
-            QSize   size       = button->size();
-
-            // Calcularea unghiurilor de rotație pe baza poziției cursorului
-            qreal angleX = ((pos.y() / size.height()) - 0.5) * 30; // Între -15 și +15 grade
-            qreal angleY = ((pos.x() / size.width()) - 0.5) * -30;
-
-            rotationX->setAxis(Qt::XAxis);
-            rotationX->setAngle(angleX);
-
-            rotationY->setAxis(Qt::YAxis);
-            rotationY->setAngle(angleY);
-
-            // Aplicarea transformărilor
-            button->setGraphicsEffect(effect);
-            button->graphicsEffect().setTransformations({rotationX, rotationY, scale});
-        }
-    }
-    return QWidget::eventFilter(watched, event);
-}
-
 void HandWidget::SetCards(const std::vector<Card> &cards) {
     m_Cards = cards;
 
     m_SelectedCardIndex = -1;
 
     if (layout() == nullptr) {
-        auto layout = new QHBoxLayout(this);
+        const auto layout = new QHBoxLayout(this);
         setLayout(layout);
     } else {
         QLayoutItem *item;
@@ -93,21 +46,17 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
         button->setIcon(buttonIcon);
         button->setIconSize(button->size());
 
-        button->installEventFilter(this);
-
         connect(button, &QPushButton::clicked, [this, i, button] {
             if (m_SelectedCardIndex == i) {
-                return; // Do nothing if the same card is clicked again
+                return;
             }
 
             if (m_SelectedCardIndex != -1) {
-                // Reset the position of the previously selected card
-                QPropertyAnimation *resetAnimation =
+                const auto resetAnimation =
                         new QPropertyAnimation(m_Buttons[m_SelectedCardIndex], "pos");
                 resetAnimation->setDuration(200);
                 resetAnimation->setStartValue(m_Buttons[m_SelectedCardIndex]->pos());
-                resetAnimation->setEndValue(m_Buttons[m_SelectedCardIndex]->pos() +
-                                            QPoint(0, 20)); // Lower the card back
+                resetAnimation->setEndValue(m_Buttons[m_SelectedCardIndex]->pos() + QPoint(0, 20));
                 resetAnimation->start(QAbstractAnimation::DeleteWhenStopped);
             }
 
@@ -118,11 +67,10 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
                 m_Buttons[j]->setChecked(j == m_SelectedCardIndex);
             }
 
-            // Raise the newly selected card slightly
-            QPropertyAnimation *animation = new QPropertyAnimation(button, "pos");
-            animation->setDuration(200);
+            const auto animation = new QPropertyAnimation(button, "pos");
+            animation->setDuration(100);
             animation->setStartValue(button->pos());
-            animation->setEndValue(button->pos() - QPoint(0, 20)); // Raise the card slightly
+            animation->setEndValue(button->pos() - QPoint(0, 20));
             animation->start(QAbstractAnimation::DeleteWhenStopped);
         });
 
