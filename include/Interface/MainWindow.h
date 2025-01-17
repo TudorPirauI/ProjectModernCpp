@@ -14,6 +14,7 @@ public:
     void AddBackButton(const QWidget *widget);
 
 private slots:
+    void OnResolutionChanged(const QString &resolution);
     void OnNewGameClicked();
     void OnResumeGameClicked();
     void OnOptionsClicked();

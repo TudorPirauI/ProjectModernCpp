@@ -24,7 +24,7 @@ public:
     ElementPower GetPlayerAbility1();
     ElementPower GetPlayerAbility2();
 
-    explicit DuelulElementelor(const std::string &nameOne, const std::string &nameTwo);
+    explicit DuelulElementelor(const std::string &nameOne, const std::string &nameTwo, const std::array<bool, 3> &options);
     ~DuelulElementelor() override = default;
 };
 

@@ -32,8 +32,9 @@ Wizard DuelulVrajitorilor::GetPlayerAbility1() { return m_AbilityPlayer1; }
 
 Wizard DuelulVrajitorilor::GetPlayerAbility2() { return m_AbilityPlayer2; }
 
-DuelulVrajitorilor::DuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo) :
-    Game(4, 5, nameOne, nameTwo) {
+DuelulVrajitorilor::DuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo,
+                                       const std::array<bool, 3> &options) :
+    Game(4, 5, nameOne, nameTwo, options) {
     m_Player1.SetHand(CARDS_PLAYER1);
     m_Player2.SetHand(CARDS_PLAYER2);
 

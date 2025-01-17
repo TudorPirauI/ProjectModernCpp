@@ -107,17 +107,42 @@ void MainWindow::DrawNewGame() {
     const std::vector<std::string> gameModes   = {"Antrenament", "Duelul Vrajitorilor",
                                                   "Duelul Elementelor", "Turneu", "Rapid"};
 
+    const auto modeLayout = new QHBoxLayout();
+    const auto modeWidget = new QWidget(this);
+    modeWidget->setLayout(modeLayout);
+
+    const auto radioButtonsLayout = new QVBoxLayout();
     for (const auto &mode : gameModes) {
         const auto radioButton = new QRadioButton(QString::fromStdString(mode), this);
         buttonGroup->addButton(radioButton);
-        layout->addWidget(radioButton);
+        radioButtonsLayout->addWidget(radioButton);
     }
+    modeLayout->addLayout(radioButtonsLayout);
+
+    const auto optionsLayout = new QVBoxLayout();
+    const auto optionsWidget = new QWidget(this);
+    optionsWidget->setLayout(optionsLayout);
+
+    CreateLabel("Gamemode Options", optionsWidget);
+
+    const auto eterCheckBox = new QCheckBox("Eter", this);
+    optionsLayout->addWidget(eterCheckBox);
+
+    const auto illusionCheckBox = new QCheckBox("Illusion", this);
+    optionsLayout->addWidget(illusionCheckBox);
+
+    const auto explosionCheckBox = new QCheckBox("Explosion", this);
+    optionsLayout->addWidget(explosionCheckBox);
+
+    modeLayout->addWidget(optionsWidget);
+    layout->addWidget(modeWidget);
 
     const auto startGameButton = new QPushButton("Start Game", this);
     layout->addWidget(startGameButton);
 
     connect(startGameButton, &QPushButton::clicked, this,
-            [this, player1Input, player2Input, buttonGroup] {
+            [this, player1Input, player2Input, buttonGroup, eterCheckBox, illusionCheckBox,
+             explosionCheckBox] {
                 const auto player1Name = player1Input->text();
                 const auto player2Name = player2Input->text();
 
@@ -131,39 +156,30 @@ void MainWindow::DrawNewGame() {
                     return;
                 }
 
+                const bool eterResponse      = eterCheckBox->isChecked();
+                const bool illusionResponse  = illusionCheckBox->isChecked();
+                const bool explosionResponse = explosionCheckBox->isChecked();
+
                 m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
                 std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
 
                 const auto gameWidget = new QWidget(this);
 
-                // TODO: Linux / Windows difference, we'll see what we can do about it
                 if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament") {
                     [[maybe_unused]]
-                    auto *antrenamentGame = new IAntrenament(player1Name.toStdString(),
-                                                             player2Name.toStdString(), gameWidget);
+                    const std::array<bool, 3> options = {eterResponse, illusionResponse,
+                                                         explosionResponse};
+                    auto                     *antrenamentGame =
+                            new IAntrenament(player1Name.toStdString(), player2Name.toStdString(),
+                                             options, gameWidget);
+
                     std::cout << "Found antrenament game\n";
+
                     connect(antrenamentGame, &IAntrenament::GameFinished, this,
                             &MainWindow::OnGameFinished);
                 } else {
                     throw std::runtime_error("Invalid game mode selected");
                 }
-
-                // } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {
-                //     auto *duelulVrajitorilorGame = new IDuelulVrajitorilor(
-                //             player1Name.toStdString(), player2Name.toStdString(), gameWidget);
-                //
-                // } else if (m_CurrentGameMode == "Duelul Elementelor") {
-                //     auto *duelulElementelorGame = new IDuelulElementelor(
-                //             player1Name.toStdString(), player2Name.toStdString(), gameWidget);
-                //
-                // } else if (m_CurrentGameMode == "Turneu") {
-                //     auto *turneuGame = new ITurneu(player1Name.toStdString(),
-                //                                    player2Name.toStdString(), gameWidget);
-                //
-                // } else if (m_CurrentGameMode == "Rapid") {
-                //     auto *rapidGame = new IRapid(player1Name.toStdString(),
-                //                                  player2Name.toStdString(), gameWidget);
-                // }
 
                 m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
                 m_StackedWidget->addWidget(gameWidget);
@@ -196,6 +212,15 @@ void MainWindow::DrawResumeGame() {
     m_StackedWidget->setCurrentWidget(resumeGameWidget);
 }
 
+void MainWindow::OnResolutionChanged(const QString &resolution) {
+    const QStringList dimensions = resolution.split('x');
+    if (dimensions.size() == 2) {
+        const int width  = dimensions[0].toInt();
+        const int height = dimensions[1].toInt();
+        setFixedSize(width, height);
+    }
+}
+
 void MainWindow::DrawOptions() {
     const auto optionsWidget = new QWidget(this);
     const auto layout        = new QVBoxLayout(optionsWidget);
@@ -210,7 +235,7 @@ void MainWindow::DrawOptions() {
     resolutionComboBox->setCurrentText(m_GameResolution.isEmpty() ? "1920x1080" : m_GameResolution);
     layout->addWidget(resolutionComboBox);
     connect(resolutionComboBox, &QComboBox::currentTextChanged, this,
-            [this](const QString &text) { m_GameResolution = text; });
+            &MainWindow::OnResolutionChanged);
 
     CreateLabel("Full Screen:", optionsWidget);
     const auto fullScreenCheckBox = new QCheckBox("Full Screen", this);
