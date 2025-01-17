@@ -100,7 +100,10 @@ void Board::CheckIsLocked() {
 }
 
 bool Board::CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn) {
-    return m_Board[pos].empty() || m_Board[pos].top().GetPlacedBy() == playerTurn;
+    if (!m_Board[pos].empty() and m_Board[pos].top().GetPlacedBy() != playerTurn)
+        return true;
+
+    return false;
 }
 
 bool Board::CheckTwoLinesFull() {
@@ -241,12 +244,12 @@ InsertOutputs Board::InsertCard(Card card, const Position &pos, const PlayerTurn
         playerVariation = 1;
     }
 
-    if (!CheckPlacedCard(pos, playerTurn)) {
+    if (CheckPlacedCard(pos, playerTurn)) {
         compensateForPlacingOnTop = 2;
     }
 
-    m_Lines[pos.first] += compensateForPlacingOnTop * playerVariation;
-    m_Columns[pos.second] += compensateForPlacingOnTop * playerVariation;
+    m_Lines[pos.first] += (compensateForPlacingOnTop * playerVariation);
+    m_Columns[pos.second] += (compensateForPlacingOnTop * playerVariation);
 
     if (!m_Board[pos].empty() and m_Board[pos].top().GetModifier() != 0) {
         auto cardOnTop = m_Board[pos].top();
