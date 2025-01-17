@@ -220,6 +220,15 @@ void MainWindow::DrawResumeGame() {
     m_StackedWidget->setCurrentWidget(resumeGameWidget);
 }
 
+void MainWindow::OnResolutionChanged(const QString &resolution) {
+    const QStringList dimensions = resolution.split('x');
+    if (dimensions.size() == 2) {
+        const int width  = dimensions[0].toInt();
+        const int height = dimensions[1].toInt();
+        setFixedSize(width, height);
+    }
+}
+
 void MainWindow::DrawOptions() {
     const auto optionsWidget = new QWidget(this);
     const auto layout        = new QVBoxLayout(optionsWidget);
@@ -234,7 +243,7 @@ void MainWindow::DrawOptions() {
     resolutionComboBox->setCurrentText(m_GameResolution.isEmpty() ? "1920x1080" : m_GameResolution);
     layout->addWidget(resolutionComboBox);
     connect(resolutionComboBox, &QComboBox::currentTextChanged, this,
-            [this](const QString &text) { m_GameResolution = text; });
+            &MainWindow::OnResolutionChanged);
 
     CreateLabel("Full Screen:", optionsWidget);
     const auto fullScreenCheckBox = new QCheckBox("Full Screen", this);
