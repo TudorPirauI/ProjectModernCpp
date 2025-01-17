@@ -97,6 +97,12 @@ endif ()
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
+# Add this line to include the Qt resource file
+qt_add_resources(RESOURCES ./QResource.qrc)
+
+# Make sure to link the resources to your target
+target_sources(${PROJECT_NAME} PRIVATE ${RESOURCES})
+
 # This is mostly useless, but it helps on certain setups (obviously windows is to blame)
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(DEBUG_SUFFIX)
