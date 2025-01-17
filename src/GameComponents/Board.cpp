@@ -220,7 +220,7 @@ InsertOutputs Board::InsertCard(Card card, Position pos, const PlayerTurn &playe
     if (cardType == CardType::Granite)
         return InsertOutputs::Success;
 
-    if (cardType == CardType::Illusion) {
+    if (cardType == CardType::Illusion and currentGame.GetIllusionEnabled()) {
         if (!InsertIllusion(card, pos))
             return InsertOutputs::IllusionOccupied;
 
@@ -230,7 +230,7 @@ InsertOutputs Board::InsertCard(Card card, Position pos, const PlayerTurn &playe
             currentGame.GetPlayer2().SetHasIllusionInGame(true);
     }
 
-    if (cardType == CardType::Eter) {
+    if (cardType == CardType::Eter and currentGame.GetEterEnabled()) {
         if (!InsertEter(card, pos))
             return InsertOutputs::EterOccupied;
     }
