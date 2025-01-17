@@ -23,9 +23,6 @@ private slots:
     void OnGameFinished();
 
 private:
-    QMediaPlayer *m_MediaPlayer;
-    QAudioOutput *m_AudioOutput;
-
     enum class GameState { MainMenu, NewGame, InGame, ResumeGame, Options, Exit };
 
     GameState       m_CurrentState;
@@ -37,9 +34,12 @@ private:
     bool    m_FullScreen{true};
     QColor  m_Player1Color{QColor(173, 216, 230)};
     QColor  m_Player2Color{QColor(255, 105, 97)};
-    int     m_MasterVolume{20};
-    int     m_MusicVolume{20};
-    int     m_SfxVolume{20};
+    int     m_MasterVolume{100};
+    int     m_MusicVolume{100};
+    int     m_SfxVolume{100};
+
+    QMediaPlayer *m_MediaPlayer;
+    QAudioOutput *m_AudioOutput;
 
     void DrawMenu();
     void DrawNewGame();

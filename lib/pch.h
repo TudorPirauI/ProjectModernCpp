@@ -16,6 +16,7 @@
 #include <vector>
 
 #include <QApplication>
+#include <QAudioDevice>
 #include <QAudioOutput>
 #include <QButtonGroup>
 #include <QCheckBox>

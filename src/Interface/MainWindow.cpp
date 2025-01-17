@@ -5,17 +5,6 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {
     m_StackedWidget = new QStackedWidget(this);
 
-    // Initialize media player and audio output
-    //    m_MediaPlayer = new QMediaPlayer(this);
-    //    m_AudioOutput = new QAudioOutput(this);
-    //    m_MediaPlayer->setAudioOutput(m_AudioOutput);
-    //
-    //    // Play background music
-    //    const QString musicFilePath = ":/background_music.mp3";
-    //    m_MediaPlayer->setSource(QUrl(musicFilePath));
-    //    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
-    //    m_MediaPlayer->play();
-
     const auto centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
 
@@ -29,6 +18,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(Ga
     } else {
         showNormal();
     }
+
+    m_MediaPlayer = new QMediaPlayer(this);
+    m_AudioOutput = new QAudioOutput(this);
+
+    m_MediaPlayer->setAudioOutput(m_AudioOutput);
+    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
+
+    const QString musicFilePath = ":/resources/sounds/background_music.wav";
+    if (!QFile::exists(musicFilePath)) {
+        qDebug() << "Music file not found:" << musicFilePath << '\n';
+    } else {
+        m_MediaPlayer->setSource(QUrl::fromLocalFile(musicFilePath));
+        m_MediaPlayer->setLoops(QMediaPlayer::Infinite);
+        std::cout << "Playing music\n";
+    }
+
+    m_MediaPlayer->play();
 
     DrawMenu();
 }

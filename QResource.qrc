@@ -11,6 +11,6 @@
         <file>resources/images/player2/4.png</file>
 
         <!--SFX, Music etc.-->
-        <file>resources/sounds/background_music.mp3</file>
+        <file>resources/sounds/background_music.wav</file>
     </qresource>
 </RCC>
