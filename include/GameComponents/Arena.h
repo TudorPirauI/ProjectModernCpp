@@ -14,9 +14,9 @@ class Arena : public Board {
 public:
     explicit Arena(int size);
 
-    void PlacePiece(int x, int y, const PlayerPiece &player);
-    bool CheckWin(const PlayerPiece &player) const;
-    int  CountPieces(const PlayerPiece &player) const;
+    void               PlacePiece(int x, int y, const PlayerPiece &player);
+    [[nodiscard]] bool CheckWin(const PlayerPiece &player) const;
+    [[nodiscard]] int  CountPieces(const PlayerPiece &player) const;
 
 private:
     int          m_Size;

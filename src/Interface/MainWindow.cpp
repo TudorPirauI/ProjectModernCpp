@@ -179,8 +179,6 @@ void MainWindow::DrawNewGame() {
                             new IAntrenament(player1Name.toStdString(), player2Name.toStdString(),
                                              options, gameWidget);
 
-                    std::cout << "Found antrenament game\n";
-
                     connect(antrenamentGame, &IAntrenament::GameFinished, this,
                             &MainWindow::OnGameFinished);
                 } else {

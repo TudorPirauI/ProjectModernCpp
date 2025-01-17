@@ -48,8 +48,8 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Card &card);
     bool                 operator==(const Card &other) const;
 
-    int  GetModifier() const;
-    void SetModifier(int value);
+    [[nodiscard]] int GetModifier() const;
+    void              SetModifier(int value);
 
     // friend void to_json(nlohmann::json &j, const Card &c);
     // friend void from_json(const nlohmann::json &j, Card &c);

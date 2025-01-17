@@ -30,12 +30,12 @@ public:
     [[nodiscard]] Board     &GetBoard();
     [[nodiscard]] Player    &GetPlayer1();
     [[nodiscard]] Player    &GetPlayer2();
-    void                     SwitchPlayerTurn();
     [[nodiscard]] int        GetPlayer1Score() const;
     [[nodiscard]] int        GetPlayer2Score() const;
     [[nodiscard]] int        GetScoreToWin() const;
     [[nodiscard]] PlayerTurn GetCurrentPlayer() const;
     WinningCondition         CheckWinningConditions();
+    void                     SwitchPlayerTurn();
     void                     SetGameState(GameState gameState);
     void                     IncreasePlayerScore(PlayerTurn turn);
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
@@ -64,14 +64,15 @@ public:
     int GetRowPlayer2() const;
 
     static bool CheckPlayerIllusion(Player &player);
-    // void LoadDataInJson();
-    // void SaveDataInJson();
 
     bool CheckExplosion();
 
-    bool GetIllusionEnabled() const;
-    bool GetEterEnabled() const;
-    bool ExplosionEnabled() const;
+    [[nodiscard]] bool GetIllusionEnabled() const;
+    [[nodiscard]] bool GetEterEnabled() const;
+    [[nodiscard]] bool ExplosionEnabled() const;
+
+    // void LoadDataInJson();
+    // void SaveDataInJson();
 
 protected:
     Board      m_Board;

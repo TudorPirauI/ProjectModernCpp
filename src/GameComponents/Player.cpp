@@ -3,8 +3,6 @@
 Player::Player(std::string name, Hand hand) :
     m_UserName{std::move(name)}, m_Score{0}, m_Hand{std::move(hand)} {}
 
-Player::~Player() = default;
-
 const Hand &Player::GetHand() const { return m_Hand; }
 
 const std::string &Player::GetUserName() const { return m_UserName; }
@@ -64,7 +62,7 @@ void Player::AddToRemovedCards(const Card &card) {
     m_RemovedCards.emplace_back(card);
 }
 
-Hand Player::GetRemovedCards() { return m_RemovedCards; }
+Hand Player::GetRemovedCards() const { return m_RemovedCards; }
 
 void Player::RemoveFromRemovedCards(const Card &card) {
     if (const auto it = std::ranges::find(m_RemovedCards, card); it != m_RemovedCards.end()) {

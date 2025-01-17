@@ -15,13 +15,14 @@ class Player final {
     Hand        m_RemovedCards;
 
 public:
-    Player() = default;
     Player(std::string name, Hand hand);
+
+    Player()                                   = default;
     Player(const Player &other)                = default;
     Player(Player &&other) noexcept            = default;
     Player &operator=(const Player &other)     = default;
     Player &operator=(Player &&other) noexcept = default;
-    ~Player();
+    ~Player()                                  = default;
 
     [[nodiscard]] const Hand        &GetHand() const;
     [[nodiscard]] const std::string &GetUserName() const;
@@ -33,18 +34,18 @@ public:
     void RemoveCard(const Card &card);
     void GiveEterCard(PlayerTurn playerTurn);
 
-    int  GetIllusion() const;
-    void SetIllusion(int value);
+    [[nodiscard]] int GetIllusion() const;
+    void              SetIllusion(int value);
 
-    bool GetHasIllusionInGame() const;
-    void SetHasIllusionInGame(bool value);
+    [[nodiscard]] bool GetHasIllusionInGame() const;
+    void               SetHasIllusionInGame(bool value);
 
-    bool GetHasExplosion() const;
-    void SetHasExplosion(bool value);
+    [[nodiscard]] bool GetHasExplosion() const;
+    void               SetHasExplosion(bool value);
 
-    void AddToRemovedCards(const Card &card);
-    Hand GetRemovedCards();
-    void RemoveFromRemovedCards(const Card &card);
+    [[nodiscard]] Hand GetRemovedCards() const;
+    void               AddToRemovedCards(const Card &card);
+    void               RemoveFromRemovedCards(const Card &card);
 
     // friend void to_json(nlohmann::json &j, const Player &p);
     // friend void from_json(const nlohmann::json &j, Player &p);
