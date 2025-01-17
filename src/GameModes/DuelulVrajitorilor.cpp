@@ -1,6 +1,5 @@
 #include "GameModes/DuelulVrajitorilor.h"
 
-// todo: move this to somewhere more permanent
 const auto CREATE_CARDS = [](const std::array<int, 9> &values, const PlayerTurn &player) {
     std::vector<Card> cards;
     for (int value : values) {

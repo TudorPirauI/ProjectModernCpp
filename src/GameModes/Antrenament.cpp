@@ -3,7 +3,6 @@
 // Modul antrenament: tabla este de 3x3; fiecare jucător are 7 cărți: 1, 1, 2, 2, 3, 3, 4; Format
 // meci: 2/3;
 
-// todo: move this to somewhere more permanent
 const auto CREATE_CARDS = [](const std::array<int, 7> &values, const PlayerTurn &player) {
     std::vector<Card> cards;
     for (int value : values) {

@@ -491,7 +491,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return false;
         }
-        // todo: a player can't have 2 illusion on board
         case ElementIndexPower::Fog: {
             if (!m_IllusionEnabled)
                 return false;
@@ -592,7 +591,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             return true;
         }
-        // todo: fix this method:)
         case ElementIndexPower::Waterfall: {
             const auto &[leftX, leftY]   = m_Board.GetLeft();
             const auto &[rightX, rightY] = m_Board.GetRight();

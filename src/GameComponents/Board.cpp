@@ -315,7 +315,6 @@ std::unordered_map<int, int> &Board::GetPrincipalDiagonalAdvantage() { return m_
 std::unordered_map<int, int> &Board::GetSecondaryDiagonalAdvantage() { return m_SecondaryDiagonal; }
 
 bool Board::CoverIllusion(const Card &cardOpponent, const Position &pos) {
-    // todo: this should also be merged with InsertCard imo
     m_Board[pos].top().SetIsFlipped(true);
     if (cardOpponent.GetValue() <= m_Board[pos].top().GetValue()) {
         std::cout << "The card of the player who has the illusion has a "

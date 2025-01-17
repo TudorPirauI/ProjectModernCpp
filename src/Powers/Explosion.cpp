@@ -41,8 +41,6 @@ Explosion Explosion::Generate(const int size, const Position &left, const Positi
     return Explosion{effects};
 }
 
-// todo: check if 2  rows are full of cards
-
 Explosion::Effect Explosion::GenerateRandomEffect() {
     const int roll = RandomInt(1, 100);
     if (roll <= 45)

@@ -4,7 +4,6 @@
 #include "../include/GameComponents/Card.h"
 #include "pch.h"
 
-// todo: make the explosion work well
 class Explosion {
 public:
     enum class Effect { Nothing, Eliminate, Return, Hole };

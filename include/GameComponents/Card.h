@@ -10,7 +10,7 @@ std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn);
 class Card {
     int        m_Value;
     int        m_OnModifier{0};
-    PlayerTurn m_PlacedBy : 2; // todo: potentially make this a std::optional?
+    PlayerTurn m_PlacedBy : 2;
     bool       m_IsIllusion : 1 {false};
     bool       m_IsEter : 1 {false};
     bool       m_IsFlipped : 1 {false};
