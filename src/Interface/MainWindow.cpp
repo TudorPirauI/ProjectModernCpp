@@ -133,26 +133,30 @@ void MainWindow::DrawNewGame() {
 
                 const auto gameWidget = new QWidget(this);
 
-                if (m_CurrentGameMode == "Antrenament") {
+                // TODO: Linux / Windows difference, we'll see what we can do about it
+                if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament")
                     auto *antrenamentGame = new IAntrenament(player1Name.toStdString(),
                                                              player2Name.toStdString(), gameWidget);
-
-                } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {
-                    auto *duelulVrajitorilorGame = new IDuelulVrajitorilor(
-                            player1Name.toStdString(), player2Name.toStdString(), gameWidget);
-
-                } else if (m_CurrentGameMode == "Duelul Elementelor") {
-                    auto *duelulElementelorGame = new IDuelulElementelor(
-                            player1Name.toStdString(), player2Name.toStdString(), gameWidget);
-
-                } else if (m_CurrentGameMode == "Turneu") {
-                    auto *turneuGame = new ITurneu(player1Name.toStdString(),
-                                                   player2Name.toStdString(), gameWidget);
-
-                } else if (m_CurrentGameMode == "Rapid") {
-                    auto *rapidGame = new IRapid(player1Name.toStdString(),
-                                                 player2Name.toStdString(), gameWidget);
+                else {
+                    throw "Not implemented";
                 }
+
+                // } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {
+                //     auto *duelulVrajitorilorGame = new IDuelulVrajitorilor(
+                //             player1Name.toStdString(), player2Name.toStdString(), gameWidget);
+                //
+                // } else if (m_CurrentGameMode == "Duelul Elementelor") {
+                //     auto *duelulElementelorGame = new IDuelulElementelor(
+                //             player1Name.toStdString(), player2Name.toStdString(), gameWidget);
+                //
+                // } else if (m_CurrentGameMode == "Turneu") {
+                //     auto *turneuGame = new ITurneu(player1Name.toStdString(),
+                //                                    player2Name.toStdString(), gameWidget);
+                //
+                // } else if (m_CurrentGameMode == "Rapid") {
+                //     auto *rapidGame = new IRapid(player1Name.toStdString(),
+                //                                  player2Name.toStdString(), gameWidget);
+                // }
 
                 m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
                 m_StackedWidget->addWidget(gameWidget);
