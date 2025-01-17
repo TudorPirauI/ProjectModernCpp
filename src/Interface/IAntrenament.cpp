@@ -82,7 +82,7 @@ void IAntrenament::SwitchTurn() {
 
     m_SelectedCard.reset();
 
-    if (m_CurrentGame.CheckWinningConditions()) {
+    if (m_CurrentGame.CheckWinningConditions() == Game::WinningCondition::NoWin) {
         const auto &winner = m_CurrentPlayer == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
                                                                     : m_CurrentGame.GetPlayer2();
 

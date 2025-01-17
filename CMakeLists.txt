@@ -66,8 +66,19 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 if (WIN32)
-    set(CMAKE_PREFIX_PATH "C:\\Qt\\6.8.1\\mingw_64")
-    set(Qt6_DIR "C:\\Qt\\6.8.1\\mingw_64\\lib\\cmake\\Qt6")
+    set(QT_VERSIONS "6.8.0" "6.8.1")
+    set(QT_FOUND FALSE)
+    foreach (QT_VERSION ${QT_VERSIONS})
+        set(CMAKE_PREFIX_PATH "C:\\Qt\\${QT_VERSION}\\mingw_64")
+        set(Qt6_DIR "C:\\Qt\\${QT_VERSION}\\mingw_64\\lib\\cmake\\Qt6")
+        if (EXISTS "${CMAKE_PREFIX_PATH}")
+            set(QT_FOUND TRUE)
+            break()
+        endif ()
+    endforeach ()
+    if (NOT QT_FOUND)
+        message(FATAL_ERROR "Qt 6.8.0 or 6.8.1 not found.")
+    endif ()
 endif ()
 
 find_package(Qt6 COMPONENTS
@@ -95,7 +106,11 @@ else ()
 
 endif ()
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS}
+        src/GameModes/DuelulElementelor.cpp
+        include/GameModes/DuelulElementelor.h
+        src/GameModes/DuelulCombinat.cpp
+        include/GameModes/DuelulCombinat.h)
 
 # Add this line to include the Qt resource file
 qt_add_resources(RESOURCES ./QResource.qrc)
