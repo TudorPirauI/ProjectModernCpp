@@ -17,6 +17,10 @@ class DuelulCombinat : public Game {
     ElementPower m_ElementalAbility2;
 
 public:
+    DuelulCombinat(const DuelulCombinat &other)     = default;
+    DuelulCombinat(DuelulCombinat &&other) noexcept = default;
+    DuelulCombinat &operator=(DuelulCombinat other);
+
     void SetNewCards() override;
 
     Wizard       GetWizardAbility();

@@ -11,11 +11,10 @@ int main(int argc, char *argv[]) {
 }
 
 /*
- *
  * facut: load reload json
  * todo: duelulElementelor (-+ same with duelulVrajitorilor), turneu, rapid
  * todo: duelulElementelor + duelulVrajitorilor (is a separated class with 1 wizard power and 1
  * todo: elemental power) -+ same with duelulVrajitorilor
  */
 
-// todo: update every corners in all the functions :)
+// todo: verify wizard power and elemental power:)

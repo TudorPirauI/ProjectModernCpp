@@ -19,6 +19,12 @@ constexpr std::array    CARD_VALUES{1, 1, 2, 2, 2, 3, 3, 3, 4};
 const std::vector<Card> CARDS_PLAYER1 = CREATE_CARDS(CARD_VALUES, PlayerTurn::Player1);
 const std::vector<Card> CARDS_PLAYER2 = CREATE_CARDS(CARD_VALUES, PlayerTurn::Player2);
 
+DuelulCombinat &DuelulCombinat::operator=(DuelulCombinat other) {
+    using std::swap;
+    swap(*this, other);
+    return *this;w
+}
+
 void DuelulCombinat::SetNewCards() {
     m_Player1.SetHand(CARDS_PLAYER1);
     m_Player2.SetHand(CARDS_PLAYER2);
