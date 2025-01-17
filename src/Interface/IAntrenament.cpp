@@ -4,6 +4,8 @@
 
 #include "Interface/IAntrenament.h"
 
+#include "Interface/AlertWidget.h"
+
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
                            QWidget *parent) :
     QWidget(parent), m_CurrentGame(nameOne, nameTwo), m_CurrentPlayer(PlayerTurn::Player1),
@@ -12,7 +14,7 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
     const auto mainLayout = new QVBoxLayout(this);
 
     m_BoardWidget = new BoardWidget(this, 3);
-    m_BoardWidget->setFixedSize(600, 600);
+    m_BoardWidget->setFixedSize(800, 800);
     connect(m_BoardWidget, &BoardWidget::BoardSlotClicked, this, &IAntrenament::OnPositionSelected);
     m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
 
@@ -81,6 +83,44 @@ void IAntrenament::SwitchTurn() {
     // according to your cursor
 
     m_SelectedCard.reset();
+
+    if (m_CurrentGame.CheckWinningConditions()) {
+        auto &winner       = m_CurrentPlayer == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+                                                                    : m_CurrentGame.GetPlayer2();
+        auto  currentScore = m_CurrentPlayer == PlayerTurn::Player1
+                                     ? m_CurrentGame.GetPlayer1Score()
+                                     : m_CurrentGame.GetPlayer2Score();
+
+        m_CurrentGame.IncreasePlayerScore(m_CurrentPlayer);
+
+        auto alertWidget = new AlertWidget(m_ParentWidget);
+
+        if (currentScore >= m_CurrentGame.GetScoreToWin()) {
+            alertWidget->ShowAlert(
+                    QString::fromStdString(winner.GetUserName() + " has won the game!"));
+
+            if (m_ParentWidget) {
+                m_ParentWidget->close();
+            }
+        } else {
+            alertWidget->ShowAlert(QString::fromStdString(
+                    winner.GetUserName() + " has won the round!\n\n" + "Current score " +
+                    std::to_string(m_CurrentGame.GetPlayer1Score()) + " - " +
+                    std::to_string(m_CurrentGame.GetPlayer2Score())));
+
+            m_CurrentGame.SetNewCards();
+            m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+
+            const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1)
+                                             ? m_CurrentGame.GetPlayer2()
+                                             : m_CurrentGame.GetPlayer1();
+            m_HandWidget->SetCards(nextPlayer.GetHand());
+
+            m_HandWidget->update();
+            m_BoardWidget->update();
+        }
+        return;
+    }
 
     m_CurrentPlayer =
             (m_CurrentPlayer == PlayerTurn::Player1) ? PlayerTurn::Player2 : PlayerTurn::Player1;

@@ -114,7 +114,7 @@ bool Board::CheckTwoLinesFull() {
 
     int counter = 0;
 
-    for (const auto &[row, numberOfCards] : numberOfCardsPerLines) {
+    for (const auto &numberOfCards : numberOfCardsPerLines | std::views::values) {
         if (numberOfCards == m_MaxBoardSize)
             ++counter;
     }
@@ -143,7 +143,7 @@ void Board::SetRight(const Position &position) { m_Corners[1] = position; }
 void Board::SetUp(const Position &position) { m_Corners[2] = position; }
 void Board::SetDown(const Position &position) { m_Corners[3] = position; }
 
-bool Board::IsWithinBorderRestrictions(const Position &position) {
+bool Board::IsWithinBorderRestrictions(const Position &position) const {
     if (!m_IsLocked) {
         return false;
     }
@@ -162,7 +162,6 @@ bool Board::UpdateDiagonals() {
     m_SecondaryDiagonal.clear();
 
     const auto &[leftX, leftY] = GetLeft();
-    // const auto &[rightX, rightY] = GetRight(); // this is unused, again?
     const auto &[downX, downY] = GetDown();
     const auto &[upX, upY]     = GetUp();
 
@@ -170,10 +169,6 @@ bool Board::UpdateDiagonals() {
         for (const auto &position : m_Board | std::views::keys) {
             if (!condition(position))
                 continue;
-            std::cout << '\n';
-            std::cout << position.first << ' ' << position.second << ' ';
-            std::cout << (m_Board[position].top().GetPlacedBy() == PlayerTurn::Player1 ? 1 : -1);
-            std::cout << '\n';
             if (m_Board[position].top().GetPlacedBy() == PlayerTurn::Player1) {
                 diagonal[position.first] = 1;
             } else if (m_Board[position].top().GetPlacedBy() == PlayerTurn::Player2) {
@@ -190,9 +185,7 @@ bool Board::UpdateDiagonals() {
         return pos.first + pos.second == leftX + downY;
     };
 
-    std::cout << "Diagonala Principala:\n";
     updateDiagonal(m_PrincipalDiagonal, isOnPrincipalDiagonal);
-    std::cout << "Diagonala Secundara:\n";
     updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal);
 
     return true; // TODO: This was missing a return, see if this was the right value lol

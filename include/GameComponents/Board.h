@@ -67,7 +67,7 @@ public:
 
     void CheckIsLocked();
 
-    bool IsWithinBorderRestrictions(const Position &position);
+    bool IsWithinBorderRestrictions(const Position &position) const;
 
     bool UpdateDiagonals();
 
