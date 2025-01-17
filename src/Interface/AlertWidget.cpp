@@ -22,21 +22,21 @@ AlertWidget::AlertWidget(QWidget *parent) : QWidget(parent) {
     m_CloseTimer = new QTimer(this);
     connect(m_CloseTimer, &QTimer::timeout, this, &AlertWidget::close);
 }
-
 void AlertWidget::ShowAlert(const QString &message) {
     m_MessageLabel->setText(message);
-    m_CloseTimer->start(3000);
+    m_CloseTimer->start(1500);
 
     if (parentWidget()) {
+        parentWidget()->setEnabled(false); // Disable parent widget
         auto blurEffect = new QGraphicsBlurEffect(this);
         blurEffect->setBlurRadius(10);
         parentWidget()->setGraphicsEffect(blurEffect);
     }
 
-    m_CloseTimer->start(3000);
     connect(m_CloseTimer, &QTimer::timeout, this, [this] {
         if (parentWidget()) {
             parentWidget()->setGraphicsEffect(nullptr);
+            parentWidget()->setEnabled(true); // Re-enable parent widget
         }
         close();
     });
