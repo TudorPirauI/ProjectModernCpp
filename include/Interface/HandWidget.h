@@ -17,6 +17,8 @@ public:
 
     [[nodiscard]] int GetIdealWidth() const;
 
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 signals:
     void CardSelected(int cardValue);
 

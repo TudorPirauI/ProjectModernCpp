@@ -74,7 +74,6 @@ void IAntrenament::SwitchTurn() {
     // TODO: Pretty up the hand and the board
     // The board should have consistent spacings between the slots
     // The cards should be held like a bridge hand, slightly circular
-    // When you select a card, it should be raised slightly
     // When you hover over the cards in your hands they should increase in size a bit and move
     // according to your cursor
 
