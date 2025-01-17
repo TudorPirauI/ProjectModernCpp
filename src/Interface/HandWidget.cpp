@@ -29,9 +29,23 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
     m_Buttons.clear();
 
     for (int i = 0; i < m_Cards.size(); ++i) {
-        auto button = new QPushButton(QString::number(m_Cards[i].GetValue()), this);
+        auto button = new QPushButton(this);
         button->setCheckable(true);
         button->setFixedSize(100, 100);
+
+        // Set the card image using QResource
+        QString imagePath = QString(":/images/%1_1.jpg").arg(m_Cards[i].GetValue());
+        QPixmap pixmap(imagePath);
+
+        if (pixmap.isNull()) {
+            qDebug() << "Failed to load image:" << imagePath;
+        } else {
+            qDebug() << "Successfully loaded image:" << imagePath;
+        }
+
+        QIcon buttonIcon(pixmap);
+        button->setIcon(buttonIcon);
+        button->setIconSize(button->size());
 
         connect(button, &QPushButton::clicked, [this, i] {
             m_SelectedCardIndex = i;
