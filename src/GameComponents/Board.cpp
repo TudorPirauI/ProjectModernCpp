@@ -208,28 +208,28 @@ Board::Board(const int maxBoardSize) :
 
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
-bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
-                       const CardType &cardType, Game &currentGame) {
+InsertOutputs Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerTurn,
+                                const CardType &cardType, Game &currentGame) {
     if (cardType == CardType::Granite and !m_Board[pos].empty())
-        return false;
+        return InsertOutputs::GraniteOccupied;
 
     if (m_Board.empty()) {
         // ensure that we start in the middle regardless of where the first card is placed
         m_Board[START_POSITION].emplace(card);
-        return true;
+        return InsertOutputs::Success;
     }
 
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";
-        return false;
+        return InsertOutputs::PositionInvalid;
     }
 
     if (cardType == CardType::Granite)
-        return true;
+        return InsertOutputs::Success;
 
     if (cardType == CardType::Illusion) {
         if (!InsertIllusion(card, pos))
-            return false;
+            return InsertOutputs::IllusionOccupied;
 
         if (playerTurn == PlayerTurn::Player1)
             currentGame.GetPlayer1().SetHasIllusionInGame(true);
@@ -239,7 +239,7 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
 
     if (cardType == CardType::Eter) {
         if (!InsertEter(card, pos))
-            return false;
+            return InsertOutputs::EterOccupied;
     }
 
     int compensateForPlacingOnTop = 1;
@@ -280,7 +280,7 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
     CheckIsLocked();
     UpdateDiagonals();
 
-    return true;
+    return InsertOutputs::Success;
 }
 
 bool Board::InsertIllusion(Card &card, const Position &pos) {

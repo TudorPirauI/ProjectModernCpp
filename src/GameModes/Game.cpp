@@ -147,7 +147,7 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
                     const auto  result    = newBoard.InsertCard(
                             cardOnTop, position, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
 
-                    if (result == false)
+                    if (result != InsertOutputs::Success)
                         return false;
                 }
 
@@ -173,7 +173,7 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
                     const auto  result    = newBoard.InsertCard(
                             cardOnTop, position, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
 
-                    if (result == false)
+                    if (result != InsertOutputs::Success)
                         return false;
                 }
 
@@ -311,7 +311,7 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             board[firstPosition].pop();
 
             if (m_Board.InsertCard(cardForPower, secondPosition, playerTurn, GetCardType(card),
-                                   *this)) {
+                                   *this) == InsertOutputs::Success) {
                 board[firstPosition].emplace(cardOnTop);
                 return true;
             }
@@ -681,8 +681,8 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
 
             graniteCard.SetIsGranite(true);
 
-            if (!newBoard.InsertCard(card, firstPosition, PlayerTurn::Granite, CardType::Granite,
-                                     *this))
+            if (newBoard.InsertCard(card, firstPosition, PlayerTurn::Granite, CardType::Granite,
+                                    *this) != InsertOutputs::Success)
                 return false;
 
             newBoard.CheckIsLocked();
@@ -875,8 +875,8 @@ Board Game::RemadeGameBoard(Board board) {
             const auto &card = stack.top();
             stack.pop();
 
-            if (!modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card),
-                                          *this)) {
+            if (modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card),
+                                         *this) != InsertOutputs::Success) {
                 return Board{0};
             }
         }
