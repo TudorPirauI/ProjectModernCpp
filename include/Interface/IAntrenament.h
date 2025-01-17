@@ -20,11 +20,14 @@ public slots:
     void OnCardSelected(int cardValue);
     void OnPositionSelected(int x, int y);
 
+signals:
+    void GameFinished();
+
 private:
     void SwitchTurn();
 
     Antrenament         m_CurrentGame;
-    PlayerTurn          m_CurrentPlayer;
+    PlayerTurn          m_CurrentTurn;
     std::optional<Card> m_SelectedCard;
 
     QWidget     *m_ParentWidget;

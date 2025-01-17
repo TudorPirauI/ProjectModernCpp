@@ -137,12 +137,14 @@ void MainWindow::DrawNewGame() {
                 const auto gameWidget = new QWidget(this);
 
                 // TODO: Linux / Windows difference, we'll see what we can do about it
-                if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament")
-                        [[maybe_unused]]
+                if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament") {
+                    [[maybe_unused]]
                     auto *antrenamentGame = new IAntrenament(player1Name.toStdString(),
                                                              player2Name.toStdString(), gameWidget);
-                else {
-                    // throw an error
+                    std::cout << "Found antrenament game\n";
+                    connect(antrenamentGame, &IAntrenament::GameFinished, this,
+                            &MainWindow::OnGameFinished);
+                } else {
                     throw std::runtime_error("Invalid game mode selected");
                 }
 
@@ -326,6 +328,11 @@ void MainWindow::OnNewGameClicked() {
     //    if (m_MediaPlayer->error() != QMediaPlayer::NoError) {
     //        qDebug() << "Error playing music:" << m_MediaPlayer->errorString();
     //    }
+}
+
+void MainWindow::OnGameFinished() {
+    m_CurrentState = GameState::MainMenu;
+    DrawMenu();
 }
 
 void MainWindow::OnResumeGameClicked() {
