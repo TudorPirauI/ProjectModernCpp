@@ -9,7 +9,8 @@
 
 class Antrenament final : public Game {
 public:
-    Antrenament(const std::string &nameOne, const std::string &nameTwo);
+    Antrenament(const std::string &nameOne, const std::string &nameTwo,
+                const std::array<bool, 3> &options);
 
     void SetNewCards() override;
 

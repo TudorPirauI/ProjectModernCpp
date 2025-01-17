@@ -43,8 +43,9 @@ Wizard DuelulCombinat::GetWizardAbility() { return m_WizardAbility1; }
 
 ElementPower DuelulCombinat::GetElementalAbility() { return m_ElementalAbility1; }
 
-DuelulCombinat::DuelulCombinat(const std::string &nameOne, const std::string &nameTwo) :
-    Game(4, 5, nameOne, nameTwo), m_WizardAbility1(), m_ElementalAbility1() {
+DuelulCombinat::DuelulCombinat(const std::string &nameOne, const std::string &nameTwo,
+                               const std::array<bool, 3> &options) :
+    Game(4, 5, nameOne, nameTwo, options), m_WizardAbility1(), m_ElementalAbility1() {
 
     m_Player1.SetHand(CARDS_PLAYER1);
     m_Player2.SetHand(CARDS_PLAYER2);

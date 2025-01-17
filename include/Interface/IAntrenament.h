@@ -14,7 +14,8 @@ class IAntrenament final : public QWidget {
     Q_OBJECT
 
 public:
-    IAntrenament(const std::string &nameOne, const std::string &nameTwo, QWidget *parent);
+    IAntrenament(const std::string &nameOne, const std::string &nameTwo,
+                 const std::array<bool, 3> &options, QWidget *parent);
 
 public slots:
     void OnCardSelected(int cardValue);

@@ -23,7 +23,8 @@ public:
     DuelulVrajitorilor &operator=(const DuelulVrajitorilor &other)     = default;
     DuelulVrajitorilor &operator=(DuelulVrajitorilor &&other) noexcept = default;
 
-    DuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo);
+    DuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo,
+                       const std::array<bool, 3> &options);
     ~DuelulVrajitorilor() override = default;
 };
 

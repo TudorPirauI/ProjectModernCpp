@@ -113,11 +113,26 @@ void MainWindow::DrawNewGame() {
         layout->addWidget(radioButton);
     }
 
+    const auto optionsLabel = new QLabel("Option for the game:", this);
+    layout->addWidget(optionsLabel);
+
+    const auto optionsLayout = new QVBoxLayout();
+    layout->addLayout(optionsLayout);
+
+    const auto eterCheckBox = new QCheckBox("Eter", this);
+    optionsLayout->addWidget(eterCheckBox);
+
+    const auto illusionCheckBox = new QCheckBox("Illusion", this);
+    optionsLayout->addWidget(illusionCheckBox);
+
+    const auto explosionCheckBox = new QCheckBox("Explosion", this);
+    optionsLayout->addWidget(explosionCheckBox);
     const auto startGameButton = new QPushButton("Start Game", this);
     layout->addWidget(startGameButton);
 
     connect(startGameButton, &QPushButton::clicked, this,
-            [this, player1Input, player2Input, buttonGroup] {
+            [this, player1Input, player2Input, buttonGroup, eterCheckBox, illusionCheckBox,
+             explosionCheckBox] {
                 const auto player1Name = player1Input->text();
                 const auto player2Name = player2Input->text();
 
@@ -131,6 +146,10 @@ void MainWindow::DrawNewGame() {
                     return;
                 }
 
+                const bool eterSelected      = eterCheckBox->isChecked();
+                const bool illusionSelected  = illusionCheckBox->isChecked();
+                const bool explosionSelected = explosionCheckBox->isChecked();
+
                 m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
                 std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
 
@@ -138,9 +157,13 @@ void MainWindow::DrawNewGame() {
 
                 // TODO: Linux / Windows difference, we'll see what we can do about it
                 if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament")
-                        [[maybe_unused]]
-                    auto *antrenamentGame = new IAntrenament(player1Name.toStdString(),
-                                                             player2Name.toStdString(), gameWidget);
+                        [[maybe_unused]] {
+                    std::array<bool, 3> options;
+                    auto               *antrenamentGame =
+                            new IAntrenament(player1Name.toStdString(), player2Name.toStdString(),
+                                             options, gameWidget);
+                }
+
                 else {
                     // throw an error
                     throw std::runtime_error("Invalid game mode selected");

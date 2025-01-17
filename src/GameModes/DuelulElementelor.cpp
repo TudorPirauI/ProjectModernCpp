@@ -43,8 +43,9 @@ ElementPower DuelulElementelor::GetPlayerAbility1() { return m_AbilityPlayer1; }
 
 ElementPower DuelulElementelor::GetPlayerAbility2() { return m_AbilityPlayer2; }
 
-DuelulElementelor::DuelulElementelor(const std::string &nameOne, const std::string &nameTwo) :
-    Game(4, 5, nameOne, nameTwo), m_AbilityPlayer1(), m_AbilityPlayer2() {
+DuelulElementelor::DuelulElementelor(const std::string &nameOne, const std::string &nameTwo,
+                                     const std::array<bool, 3> &options) :
+    Game(4, 5, nameOne, nameTwo, options), m_AbilityPlayer1(), m_AbilityPlayer2() {
 
     m_Player1.SetHand(CARDS_PLAYER1);
     m_Player2.SetHand(CARDS_PLAYER2);
