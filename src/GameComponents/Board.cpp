@@ -94,7 +94,6 @@ void Board::CheckIsLocked() {
     if (std::abs(leftX - rightX) == m_MaxBoardSize - 1 &&
         std::abs(upY - downY) == m_MaxBoardSize - 1) {
         m_IsLocked = true;
-        std::cout << "Board is locked\n";
     } else {
         m_IsLocked = false;
     }

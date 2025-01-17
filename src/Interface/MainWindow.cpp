@@ -1,9 +1,6 @@
 #include "Interface/MainWindow.h"
 #include "Interface/IAntrenament.h"
 #include "Interface/IDuelulElementelor.h"
-#include "Interface/IDuelulVrajitorilor.h"
-#include "Interface/IRapid.h"
-#include "Interface/ITurneu.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {
     m_StackedWidget = new QStackedWidget(this);
@@ -135,10 +132,12 @@ void MainWindow::DrawNewGame() {
 
                 // TODO: Linux / Windows difference, we'll see what we can do about it
                 if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament")
+                        [[maybe_unused]]
                     auto *antrenamentGame = new IAntrenament(player1Name.toStdString(),
                                                              player2Name.toStdString(), gameWidget);
                 else {
-                    throw "Not implemented";
+                    // throw an error
+                    throw std::runtime_error("Invalid game mode selected");
                 }
 
                 // } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {

@@ -9,8 +9,8 @@ AlertWidget::AlertWidget(QWidget *parent) : QWidget(parent) {
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_ShowWithoutActivating);
 
-    auto layout    = new QVBoxLayout(this);
-    m_MessageLabel = new QLabel(this);
+    const auto layout = new QVBoxLayout(this);
+    m_MessageLabel    = new QLabel(this);
     m_MessageLabel->setAlignment(Qt::AlignCenter);
     m_MessageLabel->setStyleSheet(
             "background-color: white; padding: 10px; border-radius: 5px; font-size: 18px; "

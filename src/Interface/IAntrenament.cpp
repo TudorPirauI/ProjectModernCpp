@@ -41,17 +41,16 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 void IAntrenament::OnCardSelected(const int cardValue) {
     m_SelectedCard = Card(cardValue);
     m_SelectedCard->SetPlacedBy(m_CurrentPlayer);
-    qDebug() << "[Slot] Card selected with value:" << m_SelectedCard.value().GetValue() << '\n';
 }
 
 void IAntrenament::OnPositionSelected(const int x, const int y) {
     if (!m_SelectedCard.has_value()) {
-        std::cout << "Please select a card first!\n";
+        std::cerr << "Please select a card first!\n";
         return;
     }
 
     if (!m_CurrentGame.GetBoard().IsPositionValid({x, y}, m_SelectedCard.value())) {
-        std::cout << "You cannot place a card there!";
+        std::cerr << "You cannot place a card there!";
         return;
     }
 
@@ -59,7 +58,7 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
             m_SelectedCard.value(), {x, y}, m_CurrentPlayer, CardType::Normal, m_CurrentGame);
 
     if (success != InsertOutputs::Success) {
-        std::cout << "Could not place card on board\n";
+        std::cerr << "Could not place card on board\n";
         return;
     }
 
@@ -72,27 +71,27 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
 }
 
 void IAntrenament::SwitchTurn() {
-    // TODO: Check for game end
-    // TODO: Use the AlertWidget here to handle the above
-    // TODO: Handle the best out of 3 games
     // TODO: Pretty up the hand and the board
     // The board should have consistent spacings between the slots
     // The cards should be held like a bridge hand, slightly circular
     // When you hover over the cards in your hands they should increase in size a bit and move
     // according to your cursor
 
+    // TODO: Add Eter, Illusion and explosion (also pop up for this) options
+
     m_SelectedCard.reset();
 
     if (m_CurrentGame.CheckWinningConditions()) {
-        auto &winner       = m_CurrentPlayer == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+        const auto &winner = m_CurrentPlayer == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
                                                                     : m_CurrentGame.GetPlayer2();
-        auto  currentScore = m_CurrentPlayer == PlayerTurn::Player1
-                                     ? m_CurrentGame.GetPlayer1Score()
-                                     : m_CurrentGame.GetPlayer2Score();
 
         m_CurrentGame.IncreasePlayerScore(m_CurrentPlayer);
 
-        auto alertWidget = new AlertWidget(m_ParentWidget);
+        const auto currentScore = m_CurrentPlayer == PlayerTurn::Player1
+                                          ? m_CurrentGame.GetPlayer1Score()
+                                          : m_CurrentGame.GetPlayer2Score();
+
+        const auto alertWidget = new AlertWidget(m_ParentWidget);
 
         if (currentScore >= m_CurrentGame.GetScoreToWin()) {
             alertWidget->ShowAlert(
@@ -102,10 +101,13 @@ void IAntrenament::SwitchTurn() {
                 m_ParentWidget->close();
             }
         } else {
+            const auto playerOneStats = m_CurrentGame.GetPlayer1().GetUserName() + " - " +
+                                        std::to_string(m_CurrentGame.GetPlayer1Score());
+            const auto playerTwoStats = m_CurrentGame.GetPlayer2().GetUserName() + " - " +
+                                        std::to_string(m_CurrentGame.GetPlayer2Score());
             alertWidget->ShowAlert(QString::fromStdString(
-                    winner.GetUserName() + " has won the round!\n\n" + "Current score " +
-                    std::to_string(m_CurrentGame.GetPlayer1Score()) + " - " +
-                    std::to_string(m_CurrentGame.GetPlayer2Score())));
+                    winner.GetUserName() + " has won the round!\n\n" + "Current score\n" +
+                    playerOneStats + "\n" + playerTwoStats));
 
             m_CurrentGame.SetNewCards();
             m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());

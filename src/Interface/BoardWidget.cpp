@@ -54,16 +54,10 @@ void BoardWidget::SetBoard(const Board &board) {
 
                 int playerId =
                         placedCard->second.top().GetPlacedBy() == PlayerTurn::Player1 ? 1 : 2;
-                std::cout << "Player ID: " << playerId << std::endl;
                 QString imagePath = QString(":/images/player%1/%2.png")
                                             .arg(playerId)
                                             .arg(placedCard->second.top().GetValue());
                 QPixmap pixmap(imagePath);
-                if (pixmap.isNull()) {
-                    qDebug() << "Failed to load image:" << imagePath;
-                } else {
-                    qDebug() << "Successfully loaded image:" << imagePath;
-                }
 
                 QIcon buttonIcon(pixmap);
                 button->setIcon(buttonIcon);

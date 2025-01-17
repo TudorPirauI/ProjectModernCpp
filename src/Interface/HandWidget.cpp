@@ -84,16 +84,10 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
         button->setCheckable(true);
         button->setFixedSize(100, 100);
 
-        int     playerId = static_cast<int>(m_Cards[i].GetPlacedBy()) + 1;
-        QString imagePath =
+        const int playerId = static_cast<int>(m_Cards[i].GetPlacedBy()) + 1;
+        QString   imagePath =
                 QString(":/images/player%1/%2.png").arg(playerId).arg(m_Cards[i].GetValue());
         QPixmap pixmap(imagePath);
-
-        if (pixmap.isNull()) {
-            qDebug() << "Failed to load image:" << imagePath;
-        } else {
-            qDebug() << "Successfully loaded image:" << imagePath;
-        }
 
         QIcon buttonIcon(pixmap);
         button->setIcon(buttonIcon);

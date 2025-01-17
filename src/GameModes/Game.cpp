@@ -26,12 +26,10 @@ bool Game::CheckWinningConditions() {
     };
 
     if (hasWinning(lines) || hasWinning(columns)) {
-        std::cout << "Lines or columns\n";
         return true;
     }
 
     if (!m_Board.IsBoardLocked()) {
-        std::cout << "Board not locked\n";
         return false;
     }
 
@@ -44,9 +42,6 @@ bool Game::CheckWinningConditions() {
     const auto size         = m_Board.GetMaxBoardSize();
     const auto principalSum = sumValues(principalDiagonal);
     const auto secondarySum = sumValues(secondaryDiagonal);
-
-    std::cout << std::format("Principal sum: {}\n", principalSum);
-    std::cout << std::format("Secondary sum: {}\n", secondarySum);
 
     return principalSum == abs(size) || secondarySum == abs(size);
 }
