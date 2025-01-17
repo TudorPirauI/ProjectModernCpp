@@ -22,7 +22,7 @@ const std::vector<Card> CARDS_PLAYER2 = CREATE_CARDS(CARD_VALUES, PlayerTurn::Pl
 DuelulCombinat &DuelulCombinat::operator=(DuelulCombinat other) {
     using std::swap;
     swap(*this, other);
-    return *this;w
+    return *this;
 }
 
 void DuelulCombinat::SetNewCards() {
