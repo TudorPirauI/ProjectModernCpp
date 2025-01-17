@@ -1,14 +1,16 @@
 <RCC>
     <qresource prefix="/">
-        <file>images/player1/1.png</file>
-        <file>images/player1/2.png</file>
-        <file>images/player1/3.png</file>
-        <file>images/player1/4.png</file>
-        <file>images/player2/1.png</file>
-        <file>images/player2/2.png</file>
-        <file>images/player2/3.png</file>
-        <file>images/player2/4.png</file>
-        <!-- Add other images as needed -->
-        <file>background_music.mp3</file> <!-- Add this line -->
+        <!--Images-->
+        <file>resources/images/player1/1.png</file>
+        <file>resources/images/player1/2.png</file>
+        <file>resources/images/player1/3.png</file>
+        <file>resources/images/player1/4.png</file>
+        <file>resources/images/player2/1.png</file>
+        <file>resources/images/player2/2.png</file>
+        <file>resources/images/player2/3.png</file>
+        <file>resources/images/player2/4.png</file>
+
+        <!--SFX, Music etc.-->
+        <file>resources/sounds/background_music.mp3</file>
     </qresource>
 </RCC>
