@@ -4,6 +4,7 @@
 
 #include "Interface/BoardWidget.h"
 #include "GameComponents/Board.h"
+#include "GameComponents/Card.h"
 
 BoardWidget::BoardWidget(QWidget *parent, const int size) : QWidget(parent), m_Board(size) {}
 
@@ -50,7 +51,23 @@ void BoardWidget::SetBoard(const Board &board) {
                     button->setEnabled(false);
                 }
             } else {
-                button->setText(QString::number(placedCard->second.top().GetValue()));
+
+                int playerId =
+                        placedCard->second.top().GetPlacedBy() == PlayerTurn::Player1 ? 1 : 2;
+                std::cout << "Player ID: " << playerId << std::endl;
+                QString imagePath = QString(":/images/player%1/%2.png")
+                                            .arg(playerId)
+                                            .arg(placedCard->second.top().GetValue());
+                QPixmap pixmap(imagePath);
+                if (pixmap.isNull()) {
+                    qDebug() << "Failed to load image:" << imagePath;
+                } else {
+                    qDebug() << "Successfully loaded image:" << imagePath;
+                }
+
+                QIcon buttonIcon(pixmap);
+                button->setIcon(buttonIcon);
+                button->setIconSize(button->size());
             }
 
             connect(button, &QPushButton::clicked, [this, i, j] { emit BoardSlotClicked(i, j); });

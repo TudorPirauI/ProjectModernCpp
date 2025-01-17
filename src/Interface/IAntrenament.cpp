@@ -38,6 +38,7 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
 void IAntrenament::OnCardSelected(const int cardValue) {
     m_SelectedCard = Card(cardValue);
+    m_SelectedCard->SetPlacedBy(m_CurrentPlayer);
     qDebug() << "[Slot] Card selected with value:" << m_SelectedCard.value().GetValue() << '\n';
 }
 
