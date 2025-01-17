@@ -6,15 +6,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(Ga
     m_StackedWidget = new QStackedWidget(this);
 
     // Initialize media player and audio output
-    m_MediaPlayer = new QMediaPlayer(this);
-    m_AudioOutput = new QAudioOutput(this);
-    m_MediaPlayer->setAudioOutput(m_AudioOutput);
-
-    // Play background music
-    const QString musicFilePath = ":/background_music.mp3";
-    m_MediaPlayer->setSource(QUrl(musicFilePath));
-    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
-    m_MediaPlayer->play();
+    //    m_MediaPlayer = new QMediaPlayer(this);
+    //    m_AudioOutput = new QAudioOutput(this);
+    //    m_MediaPlayer->setAudioOutput(m_AudioOutput);
+    //
+    //    // Play background music
+    //    const QString musicFilePath = ":/background_music.mp3";
+    //    m_MediaPlayer->setSource(QUrl(musicFilePath));
+    //    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
+    //    m_MediaPlayer->play();
 
     const auto centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
@@ -317,10 +317,10 @@ void MainWindow::OnNewGameClicked() {
     DrawNewGame();
 
     // Use the resource path
-    const QString musicFilePath = ":/background_music.mp3";
-    m_MediaPlayer->setSource(QUrl(musicFilePath));
-    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
-    m_MediaPlayer->play();
+    //    const QString musicFilePath = ":/background_music.mp3";
+    //    m_MediaPlayer->setSource(QUrl(musicFilePath));
+    //    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
+    //    m_MediaPlayer->play();
 
     // Check for errors
     if (m_MediaPlayer->error() != QMediaPlayer::NoError) {
