@@ -69,6 +69,15 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
 }
 
 void IAntrenament::SwitchTurn() {
+    // TODO: Check for game end
+    // TODO: Use the AlertWidget here to handle the above
+    // TODO: Handle the best out of 3 games
+    // TODO: Pretty up the hand and the board
+    // The board should have consistent spacings between the slots
+    // The cards should be held like a bridge hand, slightly circular
+    // When you select a card, it should be raised slightly
+    // When you hover over the cards in your hands they should increase in size a bit and move
+    // according to your cursor
     m_SelectedCard.reset();
 
     m_CurrentPlayer =
