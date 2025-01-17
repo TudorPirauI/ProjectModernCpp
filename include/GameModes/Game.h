@@ -14,6 +14,14 @@
 class Game {
 public:
     enum class GameState { NotFinished, NormalWin, FinishedCards };
+    enum class WinningCondition {
+        NoWin,
+        LineWin,
+        ColumnWin,
+        DiagonalPrincipalWin,
+        DiagonalSecondaryWin,
+        BoardNotLocked
+    };
 
     virtual ~Game() = default;
     Game(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo);
@@ -27,7 +35,7 @@ public:
     [[nodiscard]] int        GetPlayer2Score() const;
     [[nodiscard]] int        GetScoreToWin() const;
     [[nodiscard]] PlayerTurn GetCurrentPlayer() const;
-    bool                     CheckWinningConditions();
+    WinningCondition         CheckWinningConditions();
     void                     SetGameState(GameState gameState);
     void                     IncreasePlayerScore(PlayerTurn turn);
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);

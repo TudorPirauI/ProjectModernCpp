@@ -12,7 +12,7 @@ PlayerTurn Game::GetCurrentPlayer() const { return m_PlayerTurn; }
 
 Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
 
-bool Game::CheckWinningConditions() {
+Game::WinningCondition Game::CheckWinningConditions() {
     const auto &lines             = m_Board.GetLineAdvantage();
     const auto &columns           = m_Board.GetColumnAdvantage();
     const auto &principalDiagonal = m_Board.GetPrincipalDiagonalAdvantage();
@@ -25,12 +25,19 @@ bool Game::CheckWinningConditions() {
                                    [&](const auto &value) { return abs(value) == targetValue; });
     };
 
-    if (hasWinning(lines) || hasWinning(columns)) {
-        return true;
+    if (hasWinning(lines)) {
+        std::cout << "Lines\n";
+        return WinningCondition::LineWin;
+    }
+
+    if (hasWinning(columns)) {
+        std::cout << "Columns\n";
+        return WinningCondition::ColumnWin;
     }
 
     if (!m_Board.IsBoardLocked()) {
-        return false;
+        std::cout << "Board not locked\n";
+        return WinningCondition::BoardNotLocked;
     }
 
     auto sumValues = [&](const auto &data) {
@@ -43,7 +50,16 @@ bool Game::CheckWinningConditions() {
     const auto principalSum = sumValues(principalDiagonal);
     const auto secondarySum = sumValues(secondaryDiagonal);
 
-    return principalSum == abs(size) || secondarySum == abs(size);
+    std::cout << std::format("Principal sum: {}\n", principalSum);
+    std::cout << std::format("Secondary sum: {}\n", secondarySum);
+
+    if (principalSum == abs(size))
+        return WinningCondition::DiagonalPrincipalWin;
+
+    if (secondarySum == abs(size))
+        return WinningCondition::DiagonalSecondaryWin;
+
+    return WinningCondition::NoWin;
 }
 
 void Game::SetGameState(const GameState gameState) { m_GameState = gameState; }
