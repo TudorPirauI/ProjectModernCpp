@@ -5,7 +5,6 @@
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (const auto cardOnPosition = m_Board.find(pos);
         card.GetIsGranite() or cardOnPosition != m_Board.end()) {
-        printf("ma-ta2\n");
 
         const auto cardOnTop = cardOnPosition->second.top();
 
@@ -134,11 +133,7 @@ void Board::CleanUpBoard() {
     m_Columns.clear();
 }
 
-const Position &Board::GetLeft() const {
-    std::cout << "\nGetLeft called, returning: " << m_Corners[0].first << ", "
-              << m_Corners[0].second << '\n';
-    return m_Corners[0];
-}
+const Position &Board::GetLeft() const { return m_Corners[0]; }
 const Position &Board::GetRight() const { return m_Corners[1]; }
 const Position &Board::GetUp() const { return m_Corners[2]; }
 const Position &Board::GetDown() const { return m_Corners[3]; }
@@ -217,6 +212,12 @@ bool Board::InsertCard(Card card, const Position &pos, const PlayerTurn &playerT
                        const CardType &cardType, Game &currentGame) {
     if (cardType == CardType::Granite and !m_Board[pos].empty())
         return false;
+
+    if (m_Board.empty()) {
+        // ensure that we start in the middle regardless of where the first card is placed
+        m_Board[START_POSITION].emplace(card);
+        return true;
+    }
 
     if (!IsPositionValid(pos, card)) {
         std::cout << "Invalid position\n";

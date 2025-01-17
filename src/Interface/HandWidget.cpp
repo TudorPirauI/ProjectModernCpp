@@ -15,20 +15,26 @@ int HandWidget::GetIdealWidth() const {
 void HandWidget::SetCards(const std::vector<Card> &cards) {
     m_Cards = cards;
 
-    qDeleteAll(m_Buttons);
+    if (layout() == nullptr) {
+        auto layout = new QHBoxLayout(this);
+        setLayout(layout);
+    } else {
+        QLayoutItem *item;
+        while ((item = layout()->takeAt(0)) != nullptr) {
+            delete item->widget();
+            delete item;
+        }
+    }
+
     m_Buttons.clear();
 
-    int x = 10;
     for (int i = 0; i < m_Cards.size(); ++i) {
-        std::cout << m_Cards[i].GetValue() << ' ';
         auto button = new QPushButton(QString::number(m_Cards[i].GetValue()), this);
-
-        button->setGeometry(x, m_YStart, m_CardWidth, m_CardHeight);
         button->setCheckable(true);
+        button->setFixedSize(100, 100);
 
         connect(button, &QPushButton::clicked, [this, i] {
             m_SelectedCardIndex = i;
-
             emit CardSelected(m_Cards[i].GetValue());
 
             for (int j = 0; j < m_Buttons.size(); ++j) {
@@ -37,10 +43,8 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
         });
 
         m_Buttons.push_back(button);
-        x += m_CardWidth + m_CardSpacing;
+        layout()->addWidget(button);
     }
-
-    std::cout << '\n';
 
     update();
 }

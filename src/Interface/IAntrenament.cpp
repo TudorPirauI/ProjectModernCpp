@@ -49,7 +49,6 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
 
     if (!m_CurrentGame.GetBoard().IsPositionValid({x, y}, m_SelectedCard.value())) {
         std::cout << "You cannot place a card there!";
-        // TODO: make the invalid positions unclickable in BoardWidget
         return;
     }
 
@@ -60,8 +59,6 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
         std::cout << "Could not place card on board\n";
         return;
     }
-
-    // remove the player's card from their hand
 
     auto &currentPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
                                                                    : m_CurrentGame.GetPlayer2();
@@ -80,24 +77,9 @@ void IAntrenament::SwitchTurn() {
     const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
                                                                       : m_CurrentGame.GetPlayer2();
 
-    // m_HandWidget->SetCards(nextPlayer.GetHand());
-    // m_HandWidget->show(); // Ensure the hand widget is visible
-    // m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
-    //
-    // m_HandWidget->update();
-    // m_BoardWidget->update();
-
     m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
     m_HandWidget->SetCards(nextPlayer.GetHand());
-    m_HandWidget->setVisible(true); // Ensure the hand widget is visible
 
     m_HandWidget->update();
     m_BoardWidget->update();
-
-    qDebug() << "HandWidget visibility:" << m_HandWidget->isVisible();
-    qDebug() << "HandWidget card count:" << nextPlayer.GetHand().size();
-    qDebug() << "width:" << m_HandWidget->width();
-
-    qDebug() << "Switched to player:"
-             << (m_CurrentPlayer == PlayerTurn::Player1 ? "Player1" : "Player2");
 }
