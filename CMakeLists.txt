@@ -110,7 +110,9 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS}
         src/GameModes/DuelulElementelor.cpp
         include/GameModes/DuelulElementelor.h
         src/GameModes/DuelulCombinat.cpp
-        include/GameModes/DuelulCombinat.h)
+        include/GameModes/DuelulCombinat.h
+        src/GameComponents/Arena.cpp
+        include/GameComponents/Arena.h)
 
 # Add this line to include the Qt resource file
 qt_add_resources(RESOURCES ./QResource.qrc)

@@ -6,6 +6,7 @@
 //         "immediately.";
 // power: FromAshes elemental_power
 
+#include <QListWidget>
 class MainWindow final : public QMainWindow {
     Q_OBJECT
 
@@ -51,6 +52,7 @@ private:
     void                CreateSlider(int &value, QWidget *parent);
     void                CreateColorPicker(const QString &labelText, QColor &color, QWidget *parent);
     static QVBoxLayout *CreateLimitedLayout(QWidget *widget);
+    QListWidget        *m_GameListWidget;
 
     std::string m_CurrentGameMode;
 };
