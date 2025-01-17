@@ -33,8 +33,10 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
         button->setCheckable(true);
         button->setFixedSize(100, 100);
 
-        // Set the card image using QResource
-        QString imagePath = QString(":/images/%1_1.png").arg(m_Cards[i].GetValue());
+        // Set the card image using QResource and GetPlacedBy
+        int     playerId = static_cast<int>(m_Cards[i].GetPlacedBy()) + 1;
+        QString imagePath =
+                QString(":/images/player%1/%2.png").arg(playerId).arg(m_Cards[i].GetValue());
         QPixmap pixmap(imagePath);
 
         if (pixmap.isNull()) {
