@@ -81,57 +81,80 @@ void IAntrenament::SwitchTurn() {
 
     m_SelectedCard.reset();
 
-    if (m_CurrentGame.CheckWinningConditions() == Game::WinningCondition::NoWin) {
-        const auto &winner = m_CurrentPlayer == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
-                                                                    : m_CurrentGame.GetPlayer2();
+    const auto winningReason = m_CurrentGame.CheckWinningConditions();
 
-        m_CurrentGame.IncreasePlayerScore(m_CurrentPlayer);
+    if (winningReason == Game::WinningCondition::NoWin) {
 
-        const auto currentScore = m_CurrentPlayer == PlayerTurn::Player1
-                                          ? m_CurrentGame.GetPlayer1Score()
-                                          : m_CurrentGame.GetPlayer2Score();
+        m_CurrentPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? PlayerTurn::Player2
+                                                                   : PlayerTurn::Player1;
 
-        const auto alertWidget = new AlertWidget(m_ParentWidget);
+        const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1)
+                                         ? m_CurrentGame.GetPlayer1()
+                                         : m_CurrentGame.GetPlayer2();
 
-        if (currentScore >= m_CurrentGame.GetScoreToWin()) {
-            alertWidget->ShowAlert(
-                    QString::fromStdString(winner.GetUserName() + " has won the game!"));
+        m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+        m_HandWidget->SetCards(nextPlayer.GetHand());
 
-            if (m_ParentWidget) {
-                m_ParentWidget->close();
-            }
-        } else {
-            const auto playerOneStats = m_CurrentGame.GetPlayer1().GetUserName() + " - " +
-                                        std::to_string(m_CurrentGame.GetPlayer1Score());
-            const auto playerTwoStats = m_CurrentGame.GetPlayer2().GetUserName() + " - " +
-                                        std::to_string(m_CurrentGame.GetPlayer2Score());
-            alertWidget->ShowAlert(QString::fromStdString(
-                    winner.GetUserName() + " has won the round!\n\n" + "Current score\n" +
-                    playerOneStats + "\n" + playerTwoStats));
-
-            m_CurrentGame.SetNewCards();
-            m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
-
-            const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1)
-                                             ? m_CurrentGame.GetPlayer2()
-                                             : m_CurrentGame.GetPlayer1();
-            m_HandWidget->SetCards(nextPlayer.GetHand());
-
-            m_HandWidget->update();
-            m_BoardWidget->update();
-        }
+        m_HandWidget->update();
+        m_BoardWidget->update();
         return;
     }
 
-    m_CurrentPlayer =
-            (m_CurrentPlayer == PlayerTurn::Player1) ? PlayerTurn::Player2 : PlayerTurn::Player1;
+    const auto &winner = m_CurrentPlayer == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+                                                                : m_CurrentGame.GetPlayer2();
 
-    const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1) ? m_CurrentGame.GetPlayer1()
-                                                                      : m_CurrentGame.GetPlayer2();
+    m_CurrentGame.IncreasePlayerScore(m_CurrentPlayer);
 
-    m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
-    m_HandWidget->SetCards(nextPlayer.GetHand());
+    const auto currentScore = m_CurrentPlayer == PlayerTurn::Player1
+                                      ? m_CurrentGame.GetPlayer1Score()
+                                      : m_CurrentGame.GetPlayer2Score();
 
-    m_HandWidget->update();
-    m_BoardWidget->update();
+    std::cout << winner.GetUserName() << " has won the round!\n" << "Reason: ";
+    switch (winningReason) {
+        case Game::WinningCondition::LineWin:
+            std::cout << "Line win";
+            break;
+        case Game::WinningCondition::ColumnWin:
+            std::cout << "Column win";
+            break;
+        case Game::WinningCondition::DiagonalPrincipalWin:
+            std::cout << "Diagonal principal win";
+            break;
+        case Game::WinningCondition::DiagonalSecondaryWin:
+            std::cout << "Diagonal secondary win";
+            break;
+        default:
+            std::cout << "Bruh";
+    }
+
+    std::cout << '\n';
+
+    const auto alertWidget = new AlertWidget(m_ParentWidget);
+
+    if (currentScore >= m_CurrentGame.GetScoreToWin()) {
+        alertWidget->ShowAlert(QString::fromStdString(winner.GetUserName() + " has won the game!"));
+
+        if (m_ParentWidget) {
+            m_ParentWidget->close();
+        }
+    } else {
+        const auto playerOneStats = m_CurrentGame.GetPlayer1().GetUserName() + " - " +
+                                    std::to_string(m_CurrentGame.GetPlayer1Score());
+        const auto playerTwoStats = m_CurrentGame.GetPlayer2().GetUserName() + " - " +
+                                    std::to_string(m_CurrentGame.GetPlayer2Score());
+        alertWidget->ShowAlert(
+                QString::fromStdString(winner.GetUserName() + " has won the round!\n\n" +
+                                       "Current score\n" + playerOneStats + "\n" + playerTwoStats));
+
+        m_CurrentGame.SetNewCards();
+        m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+
+        const auto &nextPlayer = (m_CurrentPlayer == PlayerTurn::Player1)
+                                         ? m_CurrentGame.GetPlayer2()
+                                         : m_CurrentGame.GetPlayer1();
+        m_HandWidget->SetCards(nextPlayer.GetHand());
+
+        m_HandWidget->update();
+        m_BoardWidget->update();
+    }
 }

@@ -37,7 +37,7 @@ Game::WinningCondition Game::CheckWinningConditions() {
 
     if (!m_Board.IsBoardLocked()) {
         std::cout << "Board not locked\n";
-        return WinningCondition::BoardNotLocked;
+        return WinningCondition::NoWin;
     }
 
     auto sumValues = [&](const auto &data) {

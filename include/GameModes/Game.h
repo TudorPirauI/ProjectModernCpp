@@ -20,7 +20,6 @@ public:
         ColumnWin,
         DiagonalPrincipalWin,
         DiagonalSecondaryWin,
-        BoardNotLocked
     };
 
     virtual ~Game() = default;
