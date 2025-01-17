@@ -15,6 +15,8 @@ int HandWidget::GetIdealWidth() const {
 void HandWidget::SetCards(const std::vector<Card> &cards) {
     m_Cards = cards;
 
+    m_SelectedCardIndex = -1;
+
     if (layout() == nullptr) {
         auto layout = new QHBoxLayout(this);
         setLayout(layout);
