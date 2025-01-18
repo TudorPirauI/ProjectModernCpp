@@ -137,6 +137,7 @@ void IAntrenament::OnModifierSelected(const int modifier) {
             const auto currentPlayer = m_CurrentTurn == PlayerTurn::Player1
                                                ? m_CurrentGame.GetPlayer1()
                                                : m_CurrentGame.GetPlayer2();
+            m_CurrentGame.GetCurrentPlayer();
 
             if (!currentPlayer.GetHasIllusionInGame()) {
                 m_IsIllusionSelected = !m_IsIllusionSelected;
@@ -154,9 +155,7 @@ void IAntrenament::OnModifierSelected(const int modifier) {
 }
 
 void IAntrenament::SwitchTurn() {
-    // TODO: Pretty up the hand and the board
-
-    // TODO: Add Eter, Illusion and explosion (also pop up for this) options
+    m_IsIllusionSelected = false;
 
     m_SelectedCard.reset();
 

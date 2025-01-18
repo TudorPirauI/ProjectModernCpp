@@ -30,9 +30,8 @@ void Player::GiveCard(const Card &card) {
 }
 
 void Player::RemoveCard(const Card &card) {
-    if (const auto it = std::ranges::find(m_Hand.rbegin(), m_Hand.rend(), card);
-        it != m_Hand.rend()) {
-        m_Hand.erase(std::next(it).base());
+    if (const auto it = std::ranges::find(m_Hand, card); it != m_Hand.end()) {
+        m_Hand.erase(it);
     }
 }
 

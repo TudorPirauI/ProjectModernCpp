@@ -21,7 +21,12 @@ void       Card::SetPlacedBy(const PlayerTurn placedBy) { m_PlacedBy = placedBy;
 bool Card::GetIsGranite() const { return m_IsGranite; }
 void Card::SetIsGranite(const bool isGranite) { m_IsGranite = isGranite; }
 
-bool Card::operator==(const Card &other) const { return this->m_Value == other.m_Value; }
+bool Card::operator==(const Card &other) const {
+    return this->m_Value == other.m_Value && m_IsEter == other.m_IsEter &&
+           m_IsIllusion == other.m_IsIllusion && m_IsGranite == other.m_IsGranite &&
+           m_IsFlipped == other.m_IsFlipped && m_OnModifier == other.m_OnModifier &&
+           m_PlacedBy == other.m_PlacedBy;
+}
 
 int Card::GetModifier() const { return m_OnModifier; }
 
