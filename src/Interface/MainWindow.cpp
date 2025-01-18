@@ -3,6 +3,9 @@
 #include "Interface/IAntrenament.h"
 #include "Interface/IDuelulElementelor.h"
 
+QColor MainWindow::m_Player1Color{QColor(173, 216, 230)};
+QColor MainWindow::m_Player2Color{QColor(255, 105, 97)};
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(GameState::MainMenu) {
     m_StackedWidget = new QStackedWidget(this);
 

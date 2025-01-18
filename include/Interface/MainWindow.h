@@ -20,6 +20,9 @@ public:
     QColor GetPlayer2Color() const;
     void   SetPlayer2Color(const QColor &color);
 
+    static QColor m_Player1Color;
+    static QColor m_Player2Color;
+
 private slots:
     void OnResolutionChanged(const QString &resolution);
     void OnNewGameClicked();
@@ -39,8 +42,6 @@ private:
     // file is missing or corrupted
     QString m_GameResolution{"1920x1080"};
     bool    m_FullScreen{true};
-    QColor  m_Player1Color{QColor(173, 216, 230)};
-    QColor  m_Player2Color{QColor(255, 105, 97)};
     int     m_MasterVolume{100};
     int     m_MusicVolume{100};
     int     m_SfxVolume{100};
