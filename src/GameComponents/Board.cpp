@@ -330,6 +330,11 @@ InsertOutputs Board::InsertCard(Card card, Position pos, const PlayerTurn &playe
     CheckTwoColumns(pos, playerTurn);
     CheckTwoLinesFull(pos, playerTurn);
 
+    if (m_Cross or m_TwoColumns or m_TwoLines) {
+        auto &getCurrentPlayer = currentGame.GetCurrentPlayer();
+        getCurrentPlayer.SetHasExplosion(true);
+    }
+
     UpdateCorners(pos);
     CheckIsLocked();
     UpdateDiagonals();
