@@ -73,6 +73,8 @@ public:
     void CleanUpBoard();
 
     bool CheckTwoLinesFull();
+
+
 };
 
 #endif // BOARD_H

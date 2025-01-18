@@ -39,7 +39,7 @@ public:
     void                     SetGameState(GameState gameState);
     void                     IncreasePlayerScore(PlayerTurn turn);
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
-    virtual void             SetNewCards() = 0;
+    virtual void             SetNewCards();
 
     bool VerifyWizardPower(const WizardPower &power, const Position &position,
                            const Position &posStack, const Card &card,
@@ -70,6 +70,8 @@ public:
     [[nodiscard]] bool GetIllusionEnabled() const;
     [[nodiscard]] bool GetEterEnabled() const;
     [[nodiscard]] bool ExplosionEnabled() const;
+    void               SetRowPlayer1(int row);
+    void               SetRowPlayer2(int row);
 
     // void LoadDataInJson();
     // void SaveDataInJson();
