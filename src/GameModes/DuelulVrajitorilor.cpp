@@ -65,7 +65,7 @@ void to_json(nlohmann::json &j, DuelulVrajitorilor &duelulVrajitorilor) {
             {"options",
              {duelulVrajitorilor.GetEterEnabled(), duelulVrajitorilor.GetIllusionEnabled(),
               duelulVrajitorilor.ExplosionEnabled()}},
-            {"currentPlayer", duelulVrajitorilor.GetCurrentPlayer()},
+            {"currentPlayer", duelulVrajitorilor.GetCurrentPlayerTurn()},
             {"scorePlayer1", duelulVrajitorilor.GetPlayer1Score()},
             {"scorePlayer2", duelulVrajitorilor.GetPlayer2Score()},
             {"lastPositionPlayer1", duelulVrajitorilor.GetLastCardPlayer1()},

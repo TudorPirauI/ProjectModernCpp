@@ -108,10 +108,6 @@ endif ()
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
-if (UNIX AND NOT APPLE)
-    set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ON)
-endif ()
-
 qt_add_resources(RESOURCES ./QResource.qrc)
 
 target_sources(${PROJECT_NAME} PRIVATE ${RESOURCES})

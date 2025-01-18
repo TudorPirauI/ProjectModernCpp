@@ -33,13 +33,16 @@ public:
     [[nodiscard]] int        GetPlayer1Score() const;
     [[nodiscard]] int        GetPlayer2Score() const;
     [[nodiscard]] int        GetScoreToWin() const;
-    [[nodiscard]] PlayerTurn GetCurrentPlayer() const;
+    [[nodiscard]] PlayerTurn GetCurrentPlayerTurn() const;
+    Player                  &GetCurrentPlayer();
     WinningCondition         CheckWinningConditions();
     void                     SwitchPlayerTurn();
     void                     SetGameState(GameState gameState);
     void                     IncreasePlayerScore(PlayerTurn turn);
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
     virtual void             SetNewCards();
+
+    void SetPlayerTurn(const PlayerTurn &playerTurn);
 
     bool VerifyWizardPower(const WizardPower &power, const Position &position,
                            const Position &posStack, const Card &card,
@@ -76,6 +79,16 @@ public:
     // void LoadDataInJson();
     // void SaveDataInJson();
 
+    std::pair<Position, Card> RecommendMove();
+
+    // TODO: Simple recomandation system
+    // Takes in -> Current board, current players, current hand of each players
+    // first check: can we win in the next move? if yes, do it (override another card and make a
+    // straight line, column or diagonal / just by placing a card)
+    // second check: can the opponent win in the next move? if yes, block it
+    // if we can't do either, priortize placing cards that would make another card win in the next
+    // if we can't do the above, try prioritizing having as many face cards up as possible (placing
+    // cards over the opponent's)
 protected:
     Board      m_Board;
     Player     m_Player1;

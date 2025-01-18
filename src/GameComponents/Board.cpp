@@ -340,7 +340,6 @@ void from_json(const nlohmann::json &j, std::stack<Card> &stack) {
     }
 }
 
-// Implementarea funcțiilor pentru GameBoard
 void to_json(nlohmann::json &j, const GameBoard &gameBoard) {
     j = nlohmann::json::object();
     for (const auto &pair : gameBoard) {

@@ -36,7 +36,14 @@ Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne
     }
 }
 
-PlayerTurn Game::GetCurrentPlayer() const { return m_PlayerTurn; }
+PlayerTurn Game::GetCurrentPlayerTurn() const { return m_PlayerTurn; }
+
+Player &Game::GetCurrentPlayer() {
+    if (m_PlayerTurn == PlayerTurn::Player1)
+        return m_Player1;
+
+    return m_Player2;
+}
 
 Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
 
@@ -103,6 +110,8 @@ void Game::IncreasePlayerScore(const PlayerTurn turn) {
 void Game::SetNextPlayerTurn(const PlayerTurn playerTurn) { m_PlayerTurn = playerTurn; }
 
 void Game::SetNewCards() {}
+
+void Game::SetPlayerTurn(const PlayerTurn &playerTurn) { m_PlayerTurn = playerTurn; }
 
 Board &Game::GetBoard() { return m_Board; }
 
@@ -925,6 +934,17 @@ void Game::SetRowPlayer1(const int row) { m_RowPlayer1 = row; }
 
 void Game::SetRowPlayer2(const int row) { m_RowPlayer2 = row; }
 
+std::pair<Position, Card> Game::RecommendMove() {
+    // TODO: Simple recomandation system
+    // Takes in -> Current board, current players, current hand of each players
+    // first check: can we win in the next move? if yes, do it (override another card and make a
+    // straight line, column or diagonal / just by placing a card)
+    // second check: can the opponent win in the next move? if yes, block it
+    // if we can't do either, priortize placing cards that would make another card win in the next
+    // if we can't do the above, try prioritizing having as many face cards up as possible (placing
+    // cards over the opponent's)
+}
+
 void to_json(nlohmann::json &j, Game &game) {
     j = nlohmann::json{
             {"boardSize", game.GetBoard().GetMaxBoardSize()},
@@ -933,7 +953,7 @@ void to_json(nlohmann::json &j, Game &game) {
             {"player2", game.GetPlayer2()},
             {"options",
              {game.GetEterEnabled(), game.GetIllusionEnabled(), game.ExplosionEnabled()}},
-            {"currentPlayer", game.GetCurrentPlayer()},
+            {"currentPlayer", game.GetCurrentPlayerTurn()},
             {"scorePlayer1", game.GetPlayer1Score()},
             {"scorePlayer2", game.GetPlayer2Score()},
             {"lastPositionPlayer1", game.GetLastCardPlayer1()},

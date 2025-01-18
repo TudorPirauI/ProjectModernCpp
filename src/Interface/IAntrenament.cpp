@@ -40,15 +40,6 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
     m_HandWidget->setFixedSize(m_HandWidget->GetIdealWidth(), 200);
     connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
 
-    // TODO: Simple recomandation system
-    // Takes in -> Current board, current players, current hand of each players
-    // first check: can we win in the next move? if yes, do it (override another card and make a
-    // straight line, column or diagonal / just by placing a card)
-    // second check: can the opponent win in the next move? if yes, block it
-    // if we can't do either, priortize placing cards that would make another card win in the next
-    // if we can't do the above, try prioritizing having as many face cards up as possible (placing
-    // cards over the opponent's)
-
     auto *handLayout = new QHBoxLayout();
     handLayout->addWidget(m_HandWidget);
 

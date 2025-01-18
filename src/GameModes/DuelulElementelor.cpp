@@ -78,7 +78,7 @@ void to_json(nlohmann::json &j, DuelulElementelor &duelulElementelor) {
                        {"options",
                         {duelulElementelor.GetEterEnabled(), duelulElementelor.GetIllusionEnabled(),
                          duelulElementelor.ExplosionEnabled()}},
-                       {"currentPlayer", duelulElementelor.GetCurrentPlayer()},
+                       {"currentPlayer", duelulElementelor.GetCurrentPlayerTurn()},
                        {"scorePlayer1", duelulElementelor.GetPlayer1Score()},
                        {"scorePlayer2", duelulElementelor.GetPlayer2Score()},
                        {"lastPositionPlayer1", duelulElementelor.GetLastCardPlayer1()},

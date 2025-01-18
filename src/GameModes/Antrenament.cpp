@@ -37,7 +37,7 @@ void to_json(nlohmann::json &j, Antrenament &antrenament) {
                        {"options",
                         {antrenament.GetEterEnabled(), antrenament.GetIllusionEnabled(),
                          antrenament.ExplosionEnabled()}},
-                       {"currentPlayer", antrenament.GetCurrentPlayer()},
+                       {"currentPlayer", antrenament.GetCurrentPlayerTurn()},
                        {"scorePlayer1", antrenament.GetPlayer1Score()},
                        {"scorePlayer2", antrenament.GetPlayer2Score()},
                        {"lastPositionPlayer1", antrenament.GetLastCardPlayer1()},
