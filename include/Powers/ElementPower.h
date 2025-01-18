@@ -35,6 +35,8 @@ enum class ElementIndexPower {
 class ElementPower {
     ElementIndexPower m_Power;
 
+    bool m_HasUsedPowerInMatch{false};
+
 public:
     explicit ElementPower(ElementIndexPower power);
 
@@ -56,6 +58,12 @@ public:
     [[nodiscard]] ElementIndexPower GetPower() const;
 
     void SetPower(const ElementIndexPower &newPower);
+
+    bool GetUsedPowerInMatch() const;
+    void SetUsedPowerInMatch(bool value);
+
+    friend void to_json(nlohmann::json &j, const ElementPower &wizard);
+    friend void from_json(const nlohmann::json &j, ElementPower &wizard);
 };
 
 #endif // ELEMENTPOWER_H
