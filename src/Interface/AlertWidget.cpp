@@ -27,7 +27,7 @@ void AlertWidget::ShowAlert(const QString &message) {
     m_CloseTimer->start(1500);
 
     if (parentWidget()) {
-        parentWidget()->setEnabled(false); // Disable parent widget
+        parentWidget()->setEnabled(false);
         const auto blurEffect = new QGraphicsBlurEffect(this);
         blurEffect->setBlurRadius(10);
         parentWidget()->setGraphicsEffect(blurEffect);
@@ -36,7 +36,7 @@ void AlertWidget::ShowAlert(const QString &message) {
     connect(m_CloseTimer, &QTimer::timeout, this, [this] {
         if (parentWidget()) {
             parentWidget()->setGraphicsEffect(nullptr);
-            parentWidget()->setEnabled(true); // Re-enable parent widget
+            parentWidget()->setEnabled(true);
         }
         close();
     });

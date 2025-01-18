@@ -58,6 +58,9 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     m_SpecialOptions->SetPowers(options[0], options[1], options[2]);
 
+    connect(m_SpecialOptions, &SpecialOptions::OptionSelected, this,
+            &IAntrenament::OnModifierSelected);
+
     mainLayout->addWidget(m_SpecialOptions);
 
     parent->setLayout(mainLayout);
@@ -92,8 +95,14 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
         return;
     }
 
+    auto cardType = CardType::Normal;
+
+    if (m_IsIllusionSelected) {
+        cardType = CardType::Illusion;
+    }
+
     const auto success = m_CurrentGame.GetBoard().InsertCard(
-            m_SelectedCard.value(), {x, y}, m_CurrentTurn, CardType::Normal, m_CurrentGame);
+            m_SelectedCard.value(), {x, y}, m_CurrentTurn, cardType, m_CurrentGame);
 
     auto &currentPlayer = m_CurrentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
                                                                : m_CurrentGame.GetPlayer2();
@@ -127,6 +136,30 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
     currentPlayer.RemoveCard(m_SelectedCard.value());
 
     SwitchTurn();
+}
+
+void IAntrenament::OnModifierSelected(int modifier) {
+    // 1 -> Illusion
+    // 2 -> Explosion (should be triggered instantly)
+    switch (modifier) {
+        case 1: {
+            const auto currentPlayer = m_CurrentTurn == PlayerTurn::Player1
+                                               ? m_CurrentGame.GetPlayer1()
+                                               : m_CurrentGame.GetPlayer2();
+
+            if (!currentPlayer.GetHasIllusionInGame()) {
+                m_IsIllusionSelected = !m_IsIllusionSelected;
+            }
+            break;
+        }
+        case 2: {
+            // just explode the board I guess. also check if it's a valid call}
+            break;
+        }
+        default: {
+            std::cerr << "Invalid modifier selected: " << modifier << '\n';
+        }
+    }
 }
 
 void IAntrenament::SwitchTurn() {

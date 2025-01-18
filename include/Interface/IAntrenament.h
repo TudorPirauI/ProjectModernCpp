@@ -21,6 +21,7 @@ public:
 public slots:
     void OnCardSelected(int cardIndex);
     void OnPositionSelected(int x, int y);
+    void OnModifierSelected(int modifier);
 
 signals:
     void GameFinished();
@@ -31,6 +32,8 @@ private:
     Antrenament         m_CurrentGame;
     PlayerTurn          m_CurrentTurn;
     std::optional<Card> m_SelectedCard;
+
+    bool m_IsIllusionSelected{false};
 
     QWidget        *m_ParentWidget;
     BoardWidget    *m_BoardWidget;
