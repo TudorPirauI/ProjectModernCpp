@@ -15,6 +15,9 @@ Card::Card(const int value, const PlayerTurn playerTurn) : m_Value(value), m_Pla
 bool Card::GetIsFlipped() const { return m_IsFlipped; }
 void Card::SetIsFlipped(const bool isFlipped) { m_IsFlipped = isFlipped; }
 
+bool Card::GetIsHole() const { return m_IsHole; }
+void Card::SetIsHole(const bool isHole) { m_IsHole = isHole; }
+
 PlayerTurn Card::GetPlacedBy() const { return m_PlacedBy; }
 void       Card::SetPlacedBy(const PlayerTurn placedBy) { m_PlacedBy = placedBy; }
 
@@ -71,35 +74,35 @@ std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn) {
     return os;
 }
 
-void to_json(nlohmann::json &j, const Card &c) {
-    j = nlohmann::json{{"value", c.m_Value},          {"placedBy", c.m_PlacedBy},
-                       {"isFlipped", c.m_IsFlipped},  {"isGranite", c.m_IsGranite},
-                       {"isEter", c.m_IsEter},        {"isIllusion", c.m_IsIllusion},
-                       {"onModifier", c.m_OnModifier}};
-}
-
-void from_json(const nlohmann::json &j, Card &c) {
-    j.at("value").get_to(c.m_Value);
-
-    PlayerTurn placedBy;
-    j.at("placedBy").get_to(placedBy);
-    c.m_PlacedBy = placedBy;
-
-    bool isFlipped;
-    j.at("isFlipped").get_to(isFlipped);
-    c.m_IsFlipped = isFlipped;
-
-    bool isGranite;
-    j.at("isGranite").get_to(isGranite);
-    c.m_IsGranite = isGranite;
-
-    bool isEter;
-    j.at("isEter").get_to(isEter);
-    c.m_IsEter = isEter;
-
-    bool isIllusion;
-    j.at("isIllusion").get_to(isIllusion);
-    c.m_IsIllusion = isIllusion;
-
-    j.at("onModifier").get_to(c.m_OnModifier);
-}
+// void Card::to_json(nlohmann::json &j, const Card &c) {
+//     j = nlohmann::json{{"value", c.m_Value},          {"placedBy", c.m_PlacedBy},
+//                        {"isFlipped", c.m_IsFlipped},  {"isGranite", c.m_IsGranite},
+//                        {"isEter", c.m_IsEter},        {"isIllusion", c.m_IsIllusion},
+//                        {"onModifier", c.m_OnModifier}};
+// }
+//
+// void Card::from_json(const nlohmann::json &j, Card &c) {
+//     j.at("value").get_to(c.m_Value);
+//
+//     PlayerTurn placedBy;
+//     j.at("placedBy").get_to(placedBy);
+//     c.m_PlacedBy = placedBy;
+//
+//     bool isFlipped;
+//     j.at("isFlipped").get_to(isFlipped);
+//     c.m_IsFlipped = isFlipped;
+//
+//     bool isGranite;
+//     j.at("isGranite").get_to(isGranite);
+//     c.m_IsGranite = isGranite;
+//
+//     bool isEter;
+//     j.at("isEter").get_to(isEter);
+//     c.m_IsEter = isEter;
+//
+//     bool isIllusion;
+//     j.at("isIllusion").get_to(isIllusion);
+//     c.m_IsIllusion = isIllusion;
+//
+//     j.at("onModifier").get_to(c.m_OnModifier);
+// }

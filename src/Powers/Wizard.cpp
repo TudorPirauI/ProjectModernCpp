@@ -52,14 +52,14 @@ WizardPower Wizard::ActivatePower() {
 
 void Wizard::ResetPowerForNewMatch() { m_HasUsedPowerInMatch = false; }
 
-void to_json(nlohmann::json &j, const Wizard &wizard) {
-    j = nlohmann::json{{"type", static_cast<int>(wizard.m_Type)},
-                       {"hasUsedPowerInMatch", wizard.m_HasUsedPowerInMatch}};
-}
-
-void from_json(const nlohmann::json &j, Wizard &wizard) {
-    int type;
-    j.at("type").get_to(type);
-    wizard.m_Type = static_cast<WizardPower>(type);
-    j.at("hasUsedPowerInMatch").get_to(wizard.m_HasUsedPowerInMatch);
-}
+// void to_json(nlohmann::json &j, const Wizard &wizard) {
+//     j = nlohmann::json{{"type", static_cast<int>(wizard.m_Type)},
+//                        {"hasUsedPowerInMatch", wizard.m_HasUsedPowerInMatch}};
+// }
+//
+// void from_json(const nlohmann::json &j, Wizard &wizard) {
+//     int type;
+//     j.at("type").get_to(type);
+//     wizard.m_Type = static_cast<WizardPower>(type);
+//     j.at("hasUsedPowerInMatch").get_to(wizard.m_HasUsedPowerInMatch);
+// }

@@ -43,6 +43,7 @@ void BoardWidget::SetBoard(const Board &board) {
         for (int i = leftX; i <= rightX; ++i) {
             const auto button = new QPushButton();
             button->setFixedSize(150, 150);
+            button->setToolTip(QString("Coordinates: (%1, %2)").arg(i).arg(j));
 
             const auto placedCard = gameBoard.find({i, j});
 
@@ -51,6 +52,11 @@ void BoardWidget::SetBoard(const Board &board) {
                     button->setEnabled(false);
                 }
             } else {
+                std::cout << placedCard->second.top() << '\n';
+                if (placedCard->second.top().GetIsHole()) {
+                    continue;
+                }
+
                 const int playerId =
                         placedCard->second.top().GetPlacedBy() == PlayerTurn::Player1 ? 1 : 2;
                 QString imagePath = QString(":/simple-%1-%2")

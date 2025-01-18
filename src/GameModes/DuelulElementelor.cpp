@@ -70,60 +70,62 @@ void DuelulElementelor::SetPlayerAbility2(const ElementPower &ability) {
     m_AbilityPlayer2 = ability;
 }
 
-void to_json(nlohmann::json &j, DuelulElementelor &duelulElementelor) {
-    j = nlohmann::json{{"boardSize", duelulElementelor.GetBoard().GetMaxBoardSize()},
-                       {"scoreToWin", duelulElementelor.GetScoreToWin()},
-                       {"player1", duelulElementelor.GetPlayer1()},
-                       {"player2", duelulElementelor.GetPlayer2()},
-                       {"options",
-                        {duelulElementelor.GetEterEnabled(), duelulElementelor.GetIllusionEnabled(),
-                         duelulElementelor.ExplosionEnabled()}},
-                       {"currentPlayer", duelulElementelor.GetCurrentPlayerTurn()},
-                       {"scorePlayer1", duelulElementelor.GetPlayer1Score()},
-                       {"scorePlayer2", duelulElementelor.GetPlayer2Score()},
-                       {"lastPositionPlayer1", duelulElementelor.GetLastCardPlayer1()},
-                       {"lastPositionPlayer2", duelulElementelor.GetLastCardPlayer2()},
-                       {"rowPlayer1", duelulElementelor.GetRowPlayer1()},
-                       {"rowPlayer2", duelulElementelor.GetRowPlayer2()},
-                       {"abilityPlayer1", duelulElementelor.GetPlayerAbility1()},
-                       {"abilityPlayer2", duelulElementelor.GetPlayerAbility2()}};
-}
-
-void from_json(const nlohmann::json &j, DuelulElementelor &duelulElementelor) {
-    int                 boardSize, scoreToWin;
-    std::string         nameOne, nameTwo;
-    std::array<bool, 3> options;
-    PlayerTurn          currentPlayer;
-    Game::GameState     gameState;
-    int                 scorePlayer1, scorePlayer2;
-    Position            lastPositionPlayer1, lastPositionPlayer2;
-    int                 rowPlayer1, rowPlayer2;
-    ElementPower        abilityPlayer1, abilityPlayer2;
-
-    j.at("boardSize").get_to(boardSize);
-    j.at("scoreToWin").get_to(scoreToWin);
-    j.at("player1").get_to(nameOne);
-    j.at("player2").get_to(nameTwo);
-    j.at("options").get_to(options);
-    j.at("currentPlayer").get_to(currentPlayer);
-    j.at("gameState").get_to(gameState);
-    j.at("scorePlayer1").get_to(scorePlayer1);
-    j.at("scorePlayer2").get_to(scorePlayer2);
-    j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
-    j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
-    j.at("rowPlayer1").get_to(rowPlayer1);
-    j.at("rowPlayer2").get_to(rowPlayer2);
-    j.at("abilityPlayer1").get_to(abilityPlayer1);
-    j.at("abilityPlayer2").get_to(abilityPlayer2);
-
-    duelulElementelor = DuelulElementelor(nameOne, nameTwo, options);
-    duelulElementelor.SetNextPlayerTurn(currentPlayer);
-    duelulElementelor.IncreasePlayerScore(PlayerTurn::Player1);
-    duelulElementelor.IncreasePlayerScore(PlayerTurn::Player2);
-    duelulElementelor.SetLastCardPlayer1(lastPositionPlayer1);
-    duelulElementelor.SetLastCardPlayer2(lastPositionPlayer2);
-    duelulElementelor.SetRowPlayer1(rowPlayer1);
-    duelulElementelor.SetRowPlayer2(rowPlayer2);
-    duelulElementelor.SetPlayerAbility1(abilityPlayer1);
-    duelulElementelor.SetPlayerAbility2(abilityPlayer2);
-}
+// void DuelulElementelor::to_json(nlohmann::json &j, DuelulElementelor &duelulElementelor) {
+//     j = nlohmann::json{{"boardSize", duelulElementelor.GetBoard().GetMaxBoardSize()},
+//                        {"scoreToWin", duelulElementelor.GetScoreToWin()},
+//                        {"player1", duelulElementelor.GetPlayer1()},
+//                        {"player2", duelulElementelor.GetPlayer2()},
+//                        {"options",
+//                         {duelulElementelor.GetEterEnabled(),
+//                         duelulElementelor.GetIllusionEnabled(),
+//                          duelulElementelor.ExplosionEnabled()}},
+//                        {"currentPlayer", duelulElementelor.GetCurrentPlayerTurn()},
+//                        {"scorePlayer1", duelulElementelor.GetPlayer1Score()},
+//                        {"scorePlayer2", duelulElementelor.GetPlayer2Score()},
+//                        {"lastPositionPlayer1", duelulElementelor.GetLastCardPlayer1()},
+//                        {"lastPositionPlayer2", duelulElementelor.GetLastCardPlayer2()},
+//                        {"rowPlayer1", duelulElementelor.GetRowPlayer1()},
+//                        {"rowPlayer2", duelulElementelor.GetRowPlayer2()},
+//                        {"abilityPlayer1", duelulElementelor.GetPlayerAbility1()},
+//                        {"abilityPlayer2", duelulElementelor.GetPlayerAbility2()}};
+// }
+//
+// void DuelulElementelor::from_json(const nlohmann::json &j, DuelulElementelor &duelulElementelor)
+// {
+//     int                 boardSize, scoreToWin;
+//     std::string         nameOne, nameTwo;
+//     std::array<bool, 3> options;
+//     PlayerTurn          currentPlayer;
+//     Game::GameState     gameState;
+//     int                 scorePlayer1, scorePlayer2;
+//     Position            lastPositionPlayer1, lastPositionPlayer2;
+//     int                 rowPlayer1, rowPlayer2;
+//     ElementPower        abilityPlayer1, abilityPlayer2;
+//
+//     j.at("boardSize").get_to(boardSize);
+//     j.at("scoreToWin").get_to(scoreToWin);
+//     j.at("player1").get_to(nameOne);
+//     j.at("player2").get_to(nameTwo);
+//     j.at("options").get_to(options);
+//     j.at("currentPlayer").get_to(currentPlayer);
+//     j.at("gameState").get_to(gameState);
+//     j.at("scorePlayer1").get_to(scorePlayer1);
+//     j.at("scorePlayer2").get_to(scorePlayer2);
+//     j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
+//     j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
+//     j.at("rowPlayer1").get_to(rowPlayer1);
+//     j.at("rowPlayer2").get_to(rowPlayer2);
+//     j.at("abilityPlayer1").get_to(abilityPlayer1);
+//     j.at("abilityPlayer2").get_to(abilityPlayer2);
+//
+//     duelulElementelor = DuelulElementelor(nameOne, nameTwo, options);
+//     duelulElementelor.SetNextPlayerTurn(currentPlayer);
+//     duelulElementelor.IncreasePlayerScore(PlayerTurn::Player1);
+//     duelulElementelor.IncreasePlayerScore(PlayerTurn::Player2);
+//     duelulElementelor.SetLastCardPlayer1(lastPositionPlayer1);
+//     duelulElementelor.SetLastCardPlayer2(lastPositionPlayer2);
+//     duelulElementelor.SetRowPlayer1(rowPlayer1);
+//     duelulElementelor.SetRowPlayer2(rowPlayer2);
+//     duelulElementelor.SetPlayerAbility1(abilityPlayer1);
+//     duelulElementelor.SetPlayerAbility2(abilityPlayer2);
+// }

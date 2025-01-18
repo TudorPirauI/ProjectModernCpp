@@ -13,6 +13,9 @@ class ExplosionDialog final : public QDialog {
 public:
     explicit ExplosionDialog(const Explosion &explosion, QWidget *parent = nullptr);
 
+signals:
+    void ExplosionTriggered();
+
 private slots:
     void OnTriggerButtonClicked();
     void OnCancelButtonClicked();

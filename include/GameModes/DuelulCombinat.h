@@ -30,6 +30,8 @@ public:
                    const std::array<bool, 3> &options);
     void SetWizardAbility(const Wizard &wizardAbility);
     void SetElementalAbility(const ElementPower &elementalAbility);
+    // void to_json(nlohmann::json &j, DuelulCombinat &duelulCombinat);
+    // void from_json(const nlohmann::json &j, DuelulCombinat &duelulCombinat);
     ~DuelulCombinat() override = default;
 };
 

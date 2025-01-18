@@ -15,6 +15,7 @@ class Card {
     bool       m_IsEter : 1 {false};
     bool       m_IsFlipped : 1 {false};
     bool       m_IsGranite : 1 {false};
+    bool       m_IsHole : 1 {false};
 
 public:
     explicit Card(int value);
@@ -39,6 +40,9 @@ public:
     [[nodiscard]] bool GetIsFlipped() const;
     void               SetIsFlipped(bool isFlipped);
 
+    [[nodiscard]] bool GetIsHole() const;
+    void               SetIsHole(bool isHole);
+
     [[nodiscard]] PlayerTurn GetPlacedBy() const;
     void                     SetPlacedBy(PlayerTurn placedBy);
 
@@ -51,7 +55,7 @@ public:
     [[nodiscard]] int GetModifier() const;
     void              SetModifier(int value);
 
-    friend void to_json(nlohmann::json &j, const Card &c);
-    friend void from_json(const nlohmann::json &j, Card &c);
+    // static void to_json(nlohmann::json &j, const Card &c);
+    // static void from_json(const nlohmann::json &j, Card &c);
 };
 #endif // CARD_H

@@ -62,8 +62,8 @@ public:
     bool GetUsedPowerInMatch() const;
     void SetUsedPowerInMatch(bool value);
 
-    friend void to_json(nlohmann::json &j, const ElementPower &wizard);
-    friend void from_json(const nlohmann::json &j, ElementPower &wizard);
+    // friend void to_json(nlohmann::json &j, const ElementPower &wizard);
+    // friend void from_json(const nlohmann::json &j, ElementPower &wizard);
 };
 
 #endif // ELEMENTPOWER_H

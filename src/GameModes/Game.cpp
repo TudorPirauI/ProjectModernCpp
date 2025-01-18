@@ -30,10 +30,10 @@ Game::Game(const int boardSize, const int scoreToWin, const std::string &nameOne
     m_Player1.SetIllusion(numberOfIllusions);
     m_Player2.SetIllusion(numberOfIllusions);
 
-    if (m_ExplosionEnabled) {
-        m_Player1.SetHasExplosion(true);
-        m_Player2.SetHasExplosion(true);
-    }
+    // if (m_ExplosionEnabled) {
+    //     m_Player1.SetHasExplosion(true);
+    //     m_Player2.SetHasExplosion(true);
+    // }
 }
 
 PlayerTurn Game::GetCurrentPlayerTurn() const { return m_PlayerTurn; }
@@ -43,6 +43,10 @@ Player &Game::GetCurrentPlayer() {
         return m_Player1;
 
     return m_Player2;
+}
+
+void Game::SwapTurn() {
+    m_PlayerTurn = m_PlayerTurn == PlayerTurn::Player1 ? PlayerTurn::Player2 : PlayerTurn::Player1;
 }
 
 Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
@@ -851,6 +855,10 @@ CardType Game::GetCardType(const Card &card) {
         return CardType::Eter;
     if (card.GetIsIllusion())
         return CardType::Illusion;
+    if (card.GetIsGranite())
+        return CardType::Granite;
+    if (card.GetIsHole())
+        return CardType::Hole;
 
     return CardType::Normal;
 }
@@ -859,18 +867,36 @@ Board Game::RemadeGameBoard(Board board) {
     Board modifiedBoard{board.GetMaxBoardSize()};
 
     for (auto [position, stack] : board.GetGameBoard()) {
-        while (!stack.empty()) {
-            const auto &card = stack.top();
-            stack.pop();
+        std::stack<Card> tempStack;
 
-            if (modifiedBoard.InsertCard(card, position, card.GetPlacedBy(), GetCardType(card),
-                                         *this) != InsertOutputs::Success) {
+        while (!stack.empty()) {
+            tempStack.push(stack.top());
+            stack.pop();
+        }
+
+        while (!tempStack.empty()) {
+            const auto &card = tempStack.top();
+            tempStack.pop();
+
+            std::cout << "[RMD BOARD]\nCard: " << card.GetValue()
+                      << "\nIs Hole: " << card.GetIsHole() << "\nPosition: (" << position.first
+                      << ", " << position.second << ")\n\n";
+
+            const auto result = modifiedBoard.InsertCard(card, position, card.GetPlacedBy(),
+                                                         GetCardType(card), *this, true);
+
+            if (!card.GetIsHole()) {
+                modifiedBoard.UpdateCorners(position);
+            }
+            if (result != InsertOutputs::Success) {
+                std::cout << "Invalid move\n";
+
                 return Board{0};
             }
         }
     }
 
-    return board;
+    return modifiedBoard;
 }
 
 Explosion Game::GenerateExplosion() const {
@@ -879,22 +905,23 @@ Explosion Game::GenerateExplosion() const {
 }
 
 bool Game::ApplyExplosion(const Explosion &explosion) {
+    std::cout << "Applying explosion\n";
     auto  newBoard     = RemadeGameBoard(m_Board);
     auto &newGameBoard = newBoard.GetGameBoard();
 
     for (const auto &[position, effect] : explosion.GetEffects()) {
         switch (effect) {
             case Explosion::Effect::Eliminate: {
-                if (auto &stack = newGameBoard[position]; !stack.empty()) {
-                    newGameBoard[position].pop();
-                }
+                newGameBoard.erase(position);
                 break;
             }
             case Explosion::Effect::Return: {
-                if (auto &stack = newGameBoard[position]; !stack.empty()) {
-                    // const auto &card = newGameBoard[position].top();
-                    newGameBoard[position].pop();
-                }
+                auto stack = newGameBoard[position];
+
+                newGameBoard.erase(position);
+
+                // todo: return the shit to the players
+
                 break;
             }
             case Explosion::Effect::Hole: {
@@ -904,7 +931,10 @@ bool Game::ApplyExplosion(const Explosion &explosion) {
                     stack.pop();
                 }
 
-                Card hole{true}; // this is not correct
+                Card hole{1};
+                hole.SetIsHole(true);
+                hole.SetPlacedBy(PlayerTurn::Granite);
+                // ^this is gonna bite us in the ass later on 103%
 
                 stack.emplace(hole);
                 break;
@@ -918,20 +948,28 @@ bool Game::ApplyExplosion(const Explosion &explosion) {
     if (const auto &remadeNewBoard = RemadeGameBoard(newBoard);
         remadeNewBoard.GetMaxBoardSize() != 0) {
         m_Board = remadeNewBoard;
+
         m_Board.UpdateDiagonals();
         m_Board.CheckIsLocked();
+
+        // std::cout << "Board up size: " << m_Board.GetGameBoard().at(m_Board.GetUp()).size() <<
+        // '\n';
+
+        std::cout << "[expl] is board locked?: " << m_Board.IsBoardLocked() << '\n';
+
+        std::cout << "Explosion applied\n";
+
+        m_ExplosionUsed = true;
 
         return true;
     }
 
+    std::cout << "Explosion not applied\n";
+
     return false;
 }
 
-bool Game::CheckExplosion() {
-    // return m_Board.CheckTwoLinesFull();
-
-    return true;
-}
+bool Game::CheckExplosion() { return GetCurrentPlayer().GetHasExplosion() && !m_ExplosionUsed; }
 
 bool Game::GetIllusionEnabled() const { return m_IllusionEnabled; }
 bool Game::GetEterEnabled() const { return m_EterEnabled; }
@@ -1161,51 +1199,63 @@ Position Game::GetDefaultPosition() {
     return Position{0, 0};
 }
 
-void to_json(nlohmann::json &j, Game &game) {
-    j = nlohmann::json{
-            {"boardSize", game.GetBoard().GetMaxBoardSize()},
-            {"scoreToWin", game.GetScoreToWin()},
-            {"player1", game.GetPlayer1()},
-            {"player2", game.GetPlayer2()},
-            {"options",
-             {game.GetEterEnabled(), game.GetIllusionEnabled(), game.ExplosionEnabled()}},
-            {"currentPlayer", game.GetCurrentPlayerTurn()},
-            {"scorePlayer1", game.GetPlayer1Score()},
-            {"scorePlayer2", game.GetPlayer2Score()},
-            {"lastPositionPlayer1", game.GetLastCardPlayer1()},
-            {"lastPositionPlayer2", game.GetLastCardPlayer2()},
-            {"rowPlayer1", game.GetRowPlayer1()},
-            {"rowPlayer2", game.GetRowPlayer2()}};
+void Game::SaveGameState() {
+    // nlohmann::json j;
+    // to_json(j, *this);
+    // std::ofstream file(JSON_FILE_NAME);
+    // if (file.is_open()) {
+    //     file << j.dump(4); // Indent with 4 spaces for readability
+    //     file.close();
+    // } else {
+    //     std::cerr << "Unable to open file for saving game state\n";
+    // }
 }
 
-void from_json(const nlohmann::json &j, Game &game) {
-    int                 boardSize, scoreToWin;
-    std::string         nameOne, nameTwo;
-    std::array<bool, 3> options;
-    PlayerTurn          currentPlayer;
-    int                 scorePlayer1, scorePlayer2;
-    Position            lastPositionPlayer1, lastPositionPlayer2;
-    int                 rowPlayer1, rowPlayer2;
-
-    j.at("boardSize").get_to(boardSize);
-    j.at("scoreToWin").get_to(scoreToWin);
-    j.at("player1").get_to(nameOne);
-    j.at("player2").get_to(nameTwo);
-    j.at("options").get_to(options);
-    j.at("currentPlayer").get_to(currentPlayer);
-    j.at("scorePlayer1").get_to(scorePlayer1);
-    j.at("scorePlayer2").get_to(scorePlayer2);
-    j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
-    j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
-    j.at("rowPlayer1").get_to(rowPlayer1);
-    j.at("rowPlayer2").get_to(rowPlayer2);
-
-    game = Game(boardSize, scoreToWin, nameOne, nameTwo, options);
-    game.SetNextPlayerTurn(currentPlayer);
-    game.IncreasePlayerScore(PlayerTurn::Player1);
-    game.IncreasePlayerScore(PlayerTurn::Player2);
-    game.SetLastCardPlayer1(lastPositionPlayer1);
-    game.SetLastCardPlayer2(lastPositionPlayer2);
-    game.SetRowPlayer1(rowPlayer1);
-    game.SetRowPlayer2(rowPlayer2);
-}
+// void Game::to_json(nlohmann::json &j, const Game &game) {
+//     j = nlohmann::json{
+//             {"boardSize", (static_cast<Game>(game).GetBoard().GetMaxBoardSize())},
+//             {"scoreToWin", game.GetScoreToWin()},
+//             {"player1", static_cast<Game>(game).GetPlayer1()},
+//             {"player2", static_cast<Game>(game).GetPlayer2()},
+//             {"options",
+//              {game.GetEterEnabled(), game.GetIllusionEnabled(), game.ExplosionEnabled()}},
+//             {"currentPlayer", game.GetCurrentPlayerTurn()},
+//             {"scorePlayer1", game.GetPlayer1Score()},
+//             {"scorePlayer2", game.GetPlayer2Score()},
+//             {"lastPositionPlayer1", static_cast<Game>(game).GetLastCardPlayer1()},
+//             {"lastPositionPlayer2", static_cast<Game>(game).GetLastCardPlayer2()},
+//             {"rowPlayer1", game.GetRowPlayer1()},
+//             {"rowPlayer2", game.GetRowPlayer2()}};
+// }
+//
+// void Game::from_json(const nlohmann::json &j, Game &game) {
+//     int                 boardSize, scoreToWin;
+//     std::string         nameOne, nameTwo;
+//     std::array<bool, 3> options;
+//     PlayerTurn          currentPlayer;
+//     int                 scorePlayer1, scorePlayer2;
+//     Position            lastPositionPlayer1, lastPositionPlayer2;
+//     int                 rowPlayer1, rowPlayer2;
+//
+//     j.at("boardSize").get_to(boardSize);
+//     j.at("scoreToWin").get_to(scoreToWin);
+//     j.at("player1").get_to(nameOne);
+//     j.at("player2").get_to(nameTwo);
+//     j.at("options").get_to(options);
+//     j.at("currentPlayer").get_to(currentPlayer);
+//     j.at("scorePlayer1").get_to(scorePlayer1);
+//     j.at("scorePlayer2").get_to(scorePlayer2);
+//     j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
+//     j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
+//     j.at("rowPlayer1").get_to(rowPlayer1);
+//     j.at("rowPlayer2").get_to(rowPlayer2);
+//
+//     game = Game(boardSize, scoreToWin, nameOne, nameTwo, options);
+//     game.SetNextPlayerTurn(currentPlayer);
+//     game.IncreasePlayerScore(PlayerTurn::Player1);
+//     game.IncreasePlayerScore(PlayerTurn::Player2);
+//     game.SetLastCardPlayer1(lastPositionPlayer1);
+//     game.SetLastCardPlayer2(lastPositionPlayer2);
+//     game.SetRowPlayer1(rowPlayer1);
+//     game.SetRowPlayer2(rowPlayer2);
+// }

@@ -56,62 +56,63 @@ void DuelulVrajitorilor::SetPlayerAbility1(const Wizard &ability) { m_AbilityPla
 
 void DuelulVrajitorilor::SetPlayerAbility2(const Wizard &ability) { m_AbilityPlayer2 = ability; }
 
-void to_json(nlohmann::json &j, DuelulVrajitorilor &duelulVrajitorilor) {
-    j = nlohmann::json{
-            {"boardSize", duelulVrajitorilor.GetBoard().GetMaxBoardSize()},
-            {"scoreToWin", duelulVrajitorilor.GetScoreToWin()},
-            {"player1", duelulVrajitorilor.GetPlayer1()},
-            {"player2", duelulVrajitorilor.GetPlayer2()},
-            {"options",
-             {duelulVrajitorilor.GetEterEnabled(), duelulVrajitorilor.GetIllusionEnabled(),
-              duelulVrajitorilor.ExplosionEnabled()}},
-            {"currentPlayer", duelulVrajitorilor.GetCurrentPlayerTurn()},
-            {"scorePlayer1", duelulVrajitorilor.GetPlayer1Score()},
-            {"scorePlayer2", duelulVrajitorilor.GetPlayer2Score()},
-            {"lastPositionPlayer1", duelulVrajitorilor.GetLastCardPlayer1()},
-            {"lastPositionPlayer2", duelulVrajitorilor.GetLastCardPlayer2()},
-            {"rowPlayer1", duelulVrajitorilor.GetRowPlayer1()},
-            {"rowPlayer2", duelulVrajitorilor.GetRowPlayer2()},
-            {"abilityPlayer1", duelulVrajitorilor.GetPlayerAbility1()},
-            {"abilityPlayer2", duelulVrajitorilor.GetPlayerAbility2()}};
-}
-
-void from_json(const nlohmann::json &j, DuelulVrajitorilor &duelulVrajitorilor) {
-    int                 boardSize, scoreToWin;
-    std::string         nameOne, nameTwo;
-    std::array<bool, 3> options;
-    PlayerTurn          currentPlayer;
-    Game::GameState     gameState;
-    int                 scorePlayer1, scorePlayer2;
-    Position            lastPositionPlayer1, lastPositionPlayer2;
-    int                 rowPlayer1, rowPlayer2;
-    Wizard              abilityPlayer1, abilityPlayer2;
-
-    j.at("boardSize").get_to(boardSize);
-    j.at("scoreToWin").get_to(scoreToWin);
-    j.at("player1").get_to(nameOne);
-    j.at("player2").get_to(nameTwo);
-    j.at("options").get_to(options);
-    j.at("currentPlayer").get_to(currentPlayer);
-    j.at("gameState").get_to(gameState);
-    j.at("scorePlayer1").get_to(scorePlayer1);
-    j.at("scorePlayer2").get_to(scorePlayer2);
-    j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
-    j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
-    j.at("rowPlayer1").get_to(rowPlayer1);
-    j.at("rowPlayer2").get_to(rowPlayer2);
-    j.at("abilityPlayer1").get_to(abilityPlayer1);
-    j.at("abilityPlayer2").get_to(abilityPlayer2);
-
-    duelulVrajitorilor = DuelulVrajitorilor(nameOne, nameTwo, options);
-    duelulVrajitorilor.SetNextPlayerTurn(currentPlayer);
-    duelulVrajitorilor.SetGameState(gameState);
-    duelulVrajitorilor.IncreasePlayerScore(PlayerTurn::Player1);
-    duelulVrajitorilor.IncreasePlayerScore(PlayerTurn::Player2);
-    duelulVrajitorilor.SetLastCardPlayer1(lastPositionPlayer1);
-    duelulVrajitorilor.SetLastCardPlayer2(lastPositionPlayer2);
-    duelulVrajitorilor.SetRowPlayer1(rowPlayer1);
-    duelulVrajitorilor.SetRowPlayer2(rowPlayer2);
-    duelulVrajitorilor.SetPlayerAbility1(abilityPlayer1);
-    duelulVrajitorilor.SetPlayerAbility2(abilityPlayer2);
-}
+// void DuelulVrajitorilor::to_json(nlohmann::json &j, DuelulVrajitorilor &duelulVrajitorilor) {
+//     j = nlohmann::json{
+//             {"boardSize", duelulVrajitorilor.GetBoard().GetMaxBoardSize()},
+//             {"scoreToWin", duelulVrajitorilor.GetScoreToWin()},
+//             {"player1", duelulVrajitorilor.GetPlayer1()},
+//             {"player2", duelulVrajitorilor.GetPlayer2()},
+//             {"options",
+//              {duelulVrajitorilor.GetEterEnabled(), duelulVrajitorilor.GetIllusionEnabled(),
+//               duelulVrajitorilor.ExplosionEnabled()}},
+//             {"currentPlayer", duelulVrajitorilor.GetCurrentPlayerTurn()},
+//             {"scorePlayer1", duelulVrajitorilor.GetPlayer1Score()},
+//             {"scorePlayer2", duelulVrajitorilor.GetPlayer2Score()},
+//             {"lastPositionPlayer1", duelulVrajitorilor.GetLastCardPlayer1()},
+//             {"lastPositionPlayer2", duelulVrajitorilor.GetLastCardPlayer2()},
+//             {"rowPlayer1", duelulVrajitorilor.GetRowPlayer1()},
+//             {"rowPlayer2", duelulVrajitorilor.GetRowPlayer2()},
+//             {"abilityPlayer1", duelulVrajitorilor.GetPlayerAbility1()},
+//             {"abilityPlayer2", duelulVrajitorilor.GetPlayerAbility2()}};
+// }
+//
+// void DuelulVrajitorilor::from_json(const nlohmann::json &j,
+//                                    DuelulVrajitorilor   &duelulVrajitorilor) {
+//     int                 boardSize, scoreToWin;
+//     std::string         nameOne, nameTwo;
+//     std::array<bool, 3> options;
+//     PlayerTurn          currentPlayer;
+//     Game::GameState     gameState;
+//     int                 scorePlayer1, scorePlayer2;
+//     Position            lastPositionPlayer1, lastPositionPlayer2;
+//     int                 rowPlayer1, rowPlayer2;
+//     Wizard              abilityPlayer1, abilityPlayer2;
+//
+//     j.at("boardSize").get_to(boardSize);
+//     j.at("scoreToWin").get_to(scoreToWin);
+//     j.at("player1").get_to(nameOne);
+//     j.at("player2").get_to(nameTwo);
+//     j.at("options").get_to(options);
+//     j.at("currentPlayer").get_to(currentPlayer);
+//     j.at("gameState").get_to(gameState);
+//     j.at("scorePlayer1").get_to(scorePlayer1);
+//     j.at("scorePlayer2").get_to(scorePlayer2);
+//     j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
+//     j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
+//     j.at("rowPlayer1").get_to(rowPlayer1);
+//     j.at("rowPlayer2").get_to(rowPlayer2);
+//     j.at("abilityPlayer1").get_to(abilityPlayer1);
+//     j.at("abilityPlayer2").get_to(abilityPlayer2);
+//
+//     duelulVrajitorilor = DuelulVrajitorilor(nameOne, nameTwo, options);
+//     duelulVrajitorilor.SetNextPlayerTurn(currentPlayer);
+//     duelulVrajitorilor.SetGameState(gameState);
+//     duelulVrajitorilor.IncreasePlayerScore(PlayerTurn::Player1);
+//     duelulVrajitorilor.IncreasePlayerScore(PlayerTurn::Player2);
+//     duelulVrajitorilor.SetLastCardPlayer1(lastPositionPlayer1);
+//     duelulVrajitorilor.SetLastCardPlayer2(lastPositionPlayer2);
+//     duelulVrajitorilor.SetRowPlayer1(rowPlayer1);
+//     duelulVrajitorilor.SetRowPlayer2(rowPlayer2);
+//     duelulVrajitorilor.SetPlayerAbility1(abilityPlayer1);
+//     duelulVrajitorilor.SetPlayerAbility2(abilityPlayer2);
+// }

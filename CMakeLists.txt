@@ -23,7 +23,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
 elseif (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Building in Debug mode")
 
-    add_compile_options(-g1)
+    add_compile_options(-Og -g)
 else ()
     message(WARNING "Unknown build type (${CMAKE_BUILD_TYPE}). Not applying any extra optimisations.")
 endif ()
@@ -89,22 +89,22 @@ find_package(Qt6 COMPONENTS
         REQUIRED
 )
 
-find_package(nlohmann_json QUIET)
-
-if (nlohmann_json_FOUND)
-    message(STATUS "Found nlohmann_json")
-else ()
-    message(STATUS "Fetching nlohmann_json")
-
-    FetchContent_Declare(
-            nlohmann_json
-            GIT_REPOSITORY https://github.com/nlohmann/json.git
-            GIT_TAG v3.11.3
-    )
-
-    FetchContent_MakeAvailable(nlohmann_json)
-
-endif ()
+#find_package(nlohmann_json QUIET)
+#
+#if (nlohmann_json_FOUND)
+#    message(STATUS "Found nlohmann_json")
+#else ()
+#    message(STATUS "Fetching nlohmann_json")
+#
+#    FetchContent_Declare(
+#            nlohmann_json
+#            GIT_REPOSITORY https://github.com/nlohmann/json.git
+#            GIT_TAG v3.11.3
+#    )
+#
+#    FetchContent_MakeAvailable(nlohmann_json)
+#
+#endif ()
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
@@ -149,5 +149,5 @@ target_link_libraries(Eter PRIVATE
         Qt6::Gui
         Qt6::Widgets
         Qt6::Multimedia
-        nlohmann_json::nlohmann_json
+        #        nlohmann_json::nlohmann_json
 )

@@ -28,6 +28,8 @@ public:
                                const std::array<bool, 3> &options);
     void SetPlayerAbility1(const ElementPower &ability);
     void SetPlayerAbility2(const ElementPower &ability);
+    // void to_json(nlohmann::json &j, DuelulElementelor &duelulElementelor);
+    // void from_json(const nlohmann::json &j, DuelulElementelor &duelulElementelor);
     ~DuelulElementelor() override = default;
 };
 

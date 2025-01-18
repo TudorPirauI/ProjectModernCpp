@@ -13,6 +13,8 @@ public:
                 const std::array<bool, 3> &options);
 
     void SetNewCards() override;
+    // void to_json(nlohmann::json &j, Antrenament &antrenament);
+    // void from_json(const nlohmann::json &j, Antrenament &antrenament);
 
     Antrenament(const Antrenament &other)                = default;
     Antrenament(Antrenament &&other) noexcept            = default;

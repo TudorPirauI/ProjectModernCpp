@@ -7,7 +7,7 @@ class Game;
 using GameBoard               = std::map<Position, std::stack<Card>>;
 constexpr auto START_POSITION = Position{0, 0};
 
-enum class CardType { Normal, Eter, Illusion, Granite };
+enum class CardType { Normal, Eter, Illusion, Hole, Granite };
 enum class InsertOutputs {
     Success,
     PositionInvalid,
@@ -39,7 +39,8 @@ public:
     explicit Board(int maxBoardSize);
 
     [[nodiscard]] InsertOutputs InsertCard(Card card, Position pos, const PlayerTurn &playerTurn,
-                                           const CardType &cardType, Game &currentGame);
+                                           const CardType &cardType, Game &currentGame,
+                                           bool forceInsert = false);
     [[nodiscard]] bool          InsertIllusion(Card &card, const Position &pos);
     [[nodiscard]] bool          InsertEter(Card &card, const Position &pos);
 

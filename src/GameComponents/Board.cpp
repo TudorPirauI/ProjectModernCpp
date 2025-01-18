@@ -220,17 +220,22 @@ bool Board::UpdateDiagonals() {
     m_PrincipalDiagonal.clear();
     m_SecondaryDiagonal.clear();
 
-    const auto &[leftX, leftY] = GetLeft();
-    const auto &[downX, downY] = GetDown();
-    const auto &[upX, upY]     = GetUp();
+    const auto &[leftX, leftY]   = GetLeft();
+    const auto &[downX, downY]   = GetDown();
+    const auto &[upX, upY]       = GetUp();
+    const auto &[rightX, rightY] = GetRight();
+
+    std::cout << std::format("Left: ({}, {}), Right: ({}, {}), Up: ({}, {}), Down: ({}, {})\n",
+                             leftX, leftY, rightX, rightY, upX, upY, downX, downY);
 
     auto updateDiagonal = [&](auto &diagonal, auto condition) {
         for (const auto &position : m_Board | std::views::keys) {
-            if (!condition(position))
+            if (!condition(position) or m_Board.at(position).top().GetIsHole())
                 continue;
-            if (m_Board[position].top().GetPlacedBy() == PlayerTurn::Player1) {
+
+            if (m_Board.at(position).top().GetPlacedBy() == PlayerTurn::Player1) {
                 diagonal[position.first] = 1;
-            } else if (m_Board[position].top().GetPlacedBy() == PlayerTurn::Player2) {
+            } else if (m_Board.at(position).top().GetPlacedBy() == PlayerTurn::Player2) {
                 diagonal[position.first] = -1;
             }
         }
@@ -261,12 +266,17 @@ Board::Board(const int maxBoardSize) :
 bool Board::IsBoardLocked() const { return m_IsLocked; }
 
 InsertOutputs Board::InsertCard(Card card, Position pos, const PlayerTurn &playerTurn,
-                                const CardType &cardType, Game &currentGame) {
+                                const CardType &cardType, Game &currentGame,
+                                const bool forceInsert) {
     if (cardType == CardType::Granite and !m_Board[pos].empty())
         return InsertOutputs::GraniteOccupied;
 
-    if (m_Board.empty()) {
+    if (m_Board.empty() && !forceInsert) {
         pos = START_POSITION;
+    }
+
+    if (cardType == CardType::Hole) {
+        return InsertOutputs::Success;
     }
 
     if (!IsPositionValid(pos, card)) {
@@ -330,12 +340,16 @@ InsertOutputs Board::InsertCard(Card card, Position pos, const PlayerTurn &playe
     CheckTwoColumns(pos, playerTurn);
     CheckTwoLinesFull(pos, playerTurn);
 
-    if (m_Cross or m_TwoColumns or m_TwoLines) {
+    const auto someoneHasExplosion = currentGame.GetPlayer1().GetHasExplosion() ||
+                                     currentGame.GetPlayer2().GetHasExplosion();
+    if (!someoneHasExplosion and (m_Cross or m_TwoColumns or m_TwoLines)) {
         auto &getCurrentPlayer = currentGame.GetCurrentPlayer();
         getCurrentPlayer.SetHasExplosion(true);
     }
 
-    UpdateCorners(pos);
+    if (!card.GetIsHole()) {
+        UpdateCorners(pos);
+    }
     CheckIsLocked();
     UpdateDiagonals();
 
@@ -387,38 +401,39 @@ bool Board::CoverIllusion(const Card &cardOpponent, const Position &pos) {
     return true;
 }
 
-void to_json(nlohmann::json &j, const std::stack<Card> &stack) {
-    std::vector<Card> temp;
-    std::stack<Card>  copy = stack;
-    while (!copy.empty()) {
-        temp.push_back(copy.top());
-        copy.pop();
-    }
-    j = temp;
-}
-
-void from_json(const nlohmann::json &j, std::stack<Card> &stack) {
-    std::vector<Card> temp = j.get<std::vector<Card>>();
-    for (auto &it : std::ranges::reverse_view(temp)) {
-        stack.push(it);
-    }
-}
-
-void to_json(nlohmann::json &j, const GameBoard &gameBoard) {
-    j = nlohmann::json::object();
-    for (const auto &pair : gameBoard) {
-        j[std::to_string(pair.first.first) + "," + std::to_string(pair.first.second)] = pair.second;
-    }
-}
-
-void from_json(const nlohmann::json &j, GameBoard &gameBoard) {
-    gameBoard.clear();
-    for (nlohmann::json::const_iterator it = j.begin(); it != j.end(); ++it) {
-        Position pos;
-        std::sscanf(it.key().c_str(), "%d,%d", &pos.first, &pos.second);
-        it.value().get_to(gameBoard[pos]);
-    }
-}
+// void to_json(nlohmann::json &j, const std::stack<Card> &stack) {
+//     std::vector<Card> temp;
+//     std::stack<Card>  copy = stack;
+//     while (!copy.empty()) {
+//         temp.push_back(copy.top());
+//         copy.pop();
+//     }
+//     j = temp;
+// }
+//
+// void from_json(const nlohmann::json &j, std::stack<Card> &stack) {
+//     std::vector<Card> temp = j.get<std::vector<Card>>();
+//     for (auto &it : std::ranges::reverse_view(temp)) {
+//         stack.push(it);
+//     }
+// }
+//
+// void to_json(nlohmann::json &j, const GameBoard &gameBoard) {
+//     j = nlohmann::json::object();
+//     for (const auto &pair : gameBoard) {
+//         j[std::to_string(pair.first.first) + "," + std::to_string(pair.first.second)] =
+//         pair.second;
+//     }
+// }
+//
+// void from_json(const nlohmann::json &j, GameBoard &gameBoard) {
+//     gameBoard.clear();
+//     for (nlohmann::json::const_iterator it = j.begin(); it != j.end(); ++it) {
+//         Position pos;
+//         std::sscanf(it.key().c_str(), "%d,%d", &pos.first, &pos.second);
+//         it.value().get_to(gameBoard[pos]);
+//     }
+// }
 
 bool Board::CheckLineWin(GameBoard &board, const Position &position) {
     int row   = position.first;

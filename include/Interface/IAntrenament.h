@@ -22,6 +22,7 @@ public slots:
     void OnCardSelected(int cardIndex);
     void OnPositionSelected(int x, int y);
     void OnModifierSelected(int modifier);
+    void OnExplosion();
 
 signals:
     void GameFinished();
@@ -30,7 +31,7 @@ private:
     void SwitchTurn();
 
     Antrenament         m_CurrentGame;
-    PlayerTurn          m_CurrentTurn;
+    Explosion           m_CurrentExplosion;
     std::optional<Card> m_SelectedCard;
 
     bool m_IsIllusionSelected{false};

@@ -35,6 +35,7 @@ public:
     [[nodiscard]] int        GetScoreToWin() const;
     [[nodiscard]] PlayerTurn GetCurrentPlayerTurn() const;
     Player                  &GetCurrentPlayer();
+    void                     SwapTurn();
     WinningCondition         CheckWinningConditions();
     void                     SwitchPlayerTurn();
     void                     SetGameState(GameState gameState);
@@ -90,6 +91,9 @@ public:
     Position GetSetupPosition(const Player &player, const Card &card);
     Position GetPlacementPosition(const Player &player, const Card &card);
     Position GetDefaultPosition();
+    void     SaveGameState();
+    // void     to_json(nlohmann::json &j, const Game &game);
+    // void     from_json(const nlohmann::json &j, Game &game);
 
     Explosion GenerateExplosion() const;
     bool      ApplyExplosion(const Explosion &explosion);
@@ -118,6 +122,7 @@ protected:
     bool       m_IllusionEnabled{false};
     bool       m_EterEnabled{false};
     bool       m_ExplosionEnabled{false};
+    bool       m_ExplosionUsed{false};
 
     static constexpr std::string JSON_FILE_NAME = "reload.json";
 

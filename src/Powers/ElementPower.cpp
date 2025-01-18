@@ -92,14 +92,14 @@ bool ElementPower::GetUsedPowerInMatch() const { return m_HasUsedPowerInMatch; }
 
 void ElementPower::SetUsedPowerInMatch(const bool value) { m_HasUsedPowerInMatch = value; }
 
-void to_json(nlohmann::json &j, const ElementPower &elementPower) {
-    j = nlohmann::json{{"power", static_cast<int>(elementPower.m_Power)},
-                       {"hasUsedPowerInMatch", elementPower.m_HasUsedPowerInMatch}};
-}
-
-void from_json(const nlohmann::json &j, ElementPower &elementPower) {
-    int power;
-    j.at("power").get_to(power);
-    elementPower.m_Power = static_cast<ElementIndexPower>(power);
-    j.at("hasUsedPowerInMatch").get_to(elementPower.m_HasUsedPowerInMatch);
-}
+// void to_json(nlohmann::json &j, const ElementPower &elementPower) {
+//     j = nlohmann::json{{"power", static_cast<int>(elementPower.m_Power)},
+//                        {"hasUsedPowerInMatch", elementPower.m_HasUsedPowerInMatch}};
+// }
+//
+// void from_json(const nlohmann::json &j, ElementPower &elementPower) {
+//     int power;
+//     j.at("power").get_to(power);
+//     elementPower.m_Power = static_cast<ElementIndexPower>(power);
+//     j.at("hasUsedPowerInMatch").get_to(elementPower.m_HasUsedPowerInMatch);
+// }

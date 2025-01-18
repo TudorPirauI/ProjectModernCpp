@@ -70,34 +70,67 @@ void Player::RemoveFromRemovedCards(const Card &card) {
     }
 }
 
-void to_json(nlohmann::json &j, const Player &p) {
-    j = nlohmann::json{{"name", p.GetUserName()},
-                       {"score", p.GetScore()},
-                       {"hand", p.GetHand()},
-                       {"removedCards", p.m_RemovedCards},
-                       {"illusion", p.m_NumberOfIllusion},
-                       {"hasIllusion", p.m_HasIllusionInGame},
-                       {"hasExplosion", p.m_HasExplosion}};
-}
-
-void from_json(const nlohmann::json &j, Player &p) {
-    j.at("name").get_to(p.m_UserName);
-    j.at("score").get_to(p.m_Score);
-    j.at("hand").get_to(p.m_Hand);
-    j.at("removedCards").get_to(p.m_RemovedCards);
-    j.at("illusion").get_to(p.m_NumberOfIllusion);
-}
-
-void to_json(nlohmann::json &j, const Hand &hand) {
-    j = nlohmann::json::array();
-    for (const auto &card : hand) {
-        j.push_back(card);
-    }
-}
-
-void from_json(const nlohmann::json &j, Hand &hand) {
-    hand.clear();
-    for (const auto &item : j) {
-        hand.push_back(item.get<Card>());
-    }
-}
+// void to_json(nlohmann::json &j, const Card &card) {
+//     j = nlohmann::json{{"value", card.GetValue()},
+//                        {"isEter", card.GetIsEter()},
+//                        {"isIllusion", card.GetIsIllusion()},
+//                        {"placedBy", card.GetPlacedBy()},
+//                        {"modifier", card.GetModifier()}};
+// }
+//
+// void from_json(const nlohmann::json &j, Card &card) {
+//     int        value;
+//     bool       isEter, isIllusion;
+//     PlayerTurn placedBy;
+//     int        modifier;
+//
+//     j.at("value").get_to(value);
+//     j.at("isEter").get_to(isEter);
+//     j.at("isIllusion").get_to(isIllusion);
+//     j.at("placedBy").get_to(placedBy);
+//     j.at("modifier").get_to(modifier);
+//
+//     card.SetValue(value);
+//     card.SetEter(isEter);
+//     card.SetIllusion(isIllusion);
+//     card.SetPlacedBy(placedBy);
+//     card.SetModifier(modifier);
+// }
+//
+// // Define to_json for Player
+// void to_json(nlohmann::json &j, const Player &p) {
+//     j = nlohmann::json{{"name", p.GetUserName()},
+//                        {"score", p.GetScore()},
+//                        {"hand", p.GetHand()},
+//                        {"removedCards", p.GetRemovedCards()},
+//                        {"illusion", p.GetIllusion()},
+//                        {"hasIllusion", p.GetHasIllusionInGame()},
+//                        {"hasExplosion", p.GetHasExplosion()}};
+// }
+//
+// // Define from_json for Player
+// void Player::from_json(const nlohmann::json &j, Player &p) {
+//     j.at("name").get_to(p.m_UserName);
+//     j.at("score").get_to(p.m_Score);
+//     j.at("hand").get_to(p.m_Hand);
+//     j.at("removedCards").get_to(p.m_RemovedCards);
+//     j.at("illusion").get_to(p.m_NumberOfIllusion);
+//     j.at("hasIllusion").get_to(p.m_HasIllusionInGame);
+//     j.at("hasExplosion").get_to(p.m_HasExplosion);
+// }
+//
+// // Define to_json for Hand
+// void to_json(nlohmann::json &j, const Hand &hand) {
+//     j = nlohmann::json::array();
+//     for (const auto &card : hand) {
+//         j.push_back(card);
+//     }
+// }
+//
+// // Define from_json for Hand
+// void from_json(const nlohmann::json &j, Hand &hand) {
+//     hand.clear();
+//     for (const auto &item : j) {
+//         hand.push_back(item.get<Card>());
+//     }
+// }

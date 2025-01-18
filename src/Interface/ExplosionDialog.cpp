@@ -4,6 +4,8 @@
 
 #include "../../include/Interface/ExplosionDialog.h"
 
+#include "Interface/IAntrenament.h"
+
 ExplosionDialog::ExplosionDialog(const Explosion &explosion, QWidget *parent) :
     QDialog(parent), m_Explosion(explosion) {
     setWindowTitle("Explosion Card");
@@ -49,7 +51,10 @@ ExplosionDialog::ExplosionDialog(const Explosion &explosion, QWidget *parent) :
     setLayout(layout);
 }
 
-void ExplosionDialog::OnTriggerButtonClicked() { accept(); }
+void ExplosionDialog::OnTriggerButtonClicked() {
+    emit ExplosionTriggered();
+    accept();
+}
 
 void ExplosionDialog::OnCancelButtonClicked() {
     const auto result = QMessageBox::question(this, "Cancel Explosion",
