@@ -23,7 +23,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
 elseif (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Building in Debug mode")
 
-    add_compile_options(-g1)
+    #        add_compile_options(-g1)
 else ()
     message(WARNING "Unknown build type (${CMAKE_BUILD_TYPE}). Not applying any extra optimisations.")
 endif ()

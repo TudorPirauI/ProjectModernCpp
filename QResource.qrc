@@ -12,12 +12,12 @@
         <file alias="simple-2-4">resources/images/player2/4.png</file>
 
         <!--Eter Cards-->
-        <file alias="eter-1">resources/images/player1/eter.jpg</file>
-        <file alias="eter-2">resources/images/player2/eter.jpg</file>
+        <file alias="eter-1">resources/images/player1/eter.png</file>
+        <file alias="eter-2">resources/images/player2/eter.png</file>
 
         <!--Illusion Cards-->
-        <file alias="illusion-1">resources/images/player1/illusion.jpg</file>
-        <file alias="illusion-2">resources/images/player2/illusion.jpg</file>
+        <file alias="illusion-1">resources/images/player1/illusion.png</file>
+        <file alias="illusion-2">resources/images/player2/illusion.png</file>
 
         <!--Sounds-->
         <file alias="background_music">resources/sounds/background_music.wav</file>
