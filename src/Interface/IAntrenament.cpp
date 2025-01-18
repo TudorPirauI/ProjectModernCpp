@@ -93,6 +93,30 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
     SwitchTurn();
 }
 
+void IAntrenament::OnModifierSelected(int modifier) {
+    // 1 -> Illusion
+    // 2 -> Explosion (should be triggered instantly)
+    switch (modifier) {
+        case 1: {
+            const auto currentPlayer = m_CurrentTurn == PlayerTurn::Player1
+                                               ? m_CurrentGame.GetPlayer1()
+                                               : m_CurrentGame.GetPlayer2();
+
+            if (!currentPlayer.GetHasIllusionInGame()) {
+                m_IsIllusionSelected = !m_IsIllusionSelected;
+            }
+            break;
+        }
+        case 2: {
+            // just explode the board I guess. also check if it's a valid call}
+            break;
+        }
+        default: {
+            std::cerr << "Invalid modifier selected: " << modifier << '\n';
+        }
+    }
+}
+
 void IAntrenament::SwitchTurn() {
     // TODO: Pretty up the hand and the board
 

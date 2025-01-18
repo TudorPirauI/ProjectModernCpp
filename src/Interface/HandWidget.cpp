@@ -50,6 +50,9 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
         button->setIcon(buttonIcon);
         button->setIconSize(button->size());
 
+        // Set border color
+        button->setStyleSheet("border: 2px solid red;");
+
         connect(button, &QPushButton::clicked, [this, i, button] {
             if (m_SelectedCardIndex == i) {
                 return;
