@@ -1,4 +1,6 @@
 #include "GameComponents/Board.h"
+
+#include <ranges>
 #include "GameComponents/Player.h"
 #include "GameModes/Game.h"
 
@@ -319,4 +321,38 @@ bool Board::CoverIllusion(const Card &cardOpponent, const Position &pos) {
     m_Board[pos].pop();
     m_Board[pos].emplace(cardOpponent);
     return true;
+}
+
+void to_json(nlohmann::json &j, const std::stack<Card> &stack) {
+    std::vector<Card> temp;
+    std::stack<Card>  copy = stack;
+    while (!copy.empty()) {
+        temp.push_back(copy.top());
+        copy.pop();
+    }
+    j = temp;
+}
+
+void from_json(const nlohmann::json &j, std::stack<Card> &stack) {
+    std::vector<Card> temp = j.get<std::vector<Card>>();
+    for (auto &it : std::ranges::reverse_view(temp)) {
+        stack.push(it);
+    }
+}
+
+// Implementarea funcțiilor pentru GameBoard
+void to_json(nlohmann::json &j, const GameBoard &gameBoard) {
+    j = nlohmann::json::object();
+    for (const auto &pair : gameBoard) {
+        j[std::to_string(pair.first.first) + "," + std::to_string(pair.first.second)] = pair.second;
+    }
+}
+
+void from_json(const nlohmann::json &j, GameBoard &gameBoard) {
+    gameBoard.clear();
+    for (nlohmann::json::const_iterator it = j.begin(); it != j.end(); ++it) {
+        Position pos;
+        std::sscanf(it.key().c_str(), "%d,%d", &pos.first, &pos.second);
+        it.value().get_to(gameBoard[pos]);
+    }
 }
