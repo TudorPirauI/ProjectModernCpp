@@ -21,5 +21,6 @@
 
         <!--Sounds-->
         <file alias="background_music">resources/sounds/background_music.wav</file>
+        <file alias="background_music">resources/sounds/background_music.mp3</file>
     </qresource>
 </RCC>
