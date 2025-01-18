@@ -81,6 +81,16 @@ public:
 
     std::pair<Position, Card> RecommendMove();
 
+    bool     CanWinNextMove(const Player &player, const Card &card);
+    bool     CanOpponentWinNextMove(const Player &opponent, const Card &card);
+    bool     CanSetupNextMoveWin(const Player &player, const Card &card);
+    bool     CanPlaceOverOpponentCard(const Player &player, const Card &card);
+    Position GetWinningPosition(const Player &player, const Card &card);
+    Position GetBlockingPosition(const Player &opponent, const Card &card);
+    Position GetSetupPosition(const Player &player, const Card &card);
+    Position GetPlacementPosition(const Player &player, const Card &card);
+    Position GetDefaultPosition();
+
     // TODO: Simple recomandation system
     // Takes in -> Current board, current players, current hand of each players
     // first check: can we win in the next move? if yes, do it (override another card and make a

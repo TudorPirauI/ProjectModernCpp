@@ -935,14 +935,223 @@ void Game::SetRowPlayer1(const int row) { m_RowPlayer1 = row; }
 void Game::SetRowPlayer2(const int row) { m_RowPlayer2 = row; }
 
 std::pair<Position, Card> Game::RecommendMove() {
-    // TODO: Simple recomandation system
-    // Takes in -> Current board, current players, current hand of each players
-    // first check: can we win in the next move? if yes, do it (override another card and make a
-    // straight line, column or diagonal / just by placing a card)
-    // second check: can the opponent win in the next move? if yes, block it
-    // if we can't do either, priortize placing cards that would make another card win in the next
-    // if we can't do the above, try prioritizing having as many face cards up as possible (placing
-    // cards over the opponent's)
+    Player &currentPlayer  = (m_PlayerTurn == PlayerTurn::Player1) ? m_Player1 : m_Player2;
+    Player &opponentPlayer = (m_PlayerTurn == PlayerTurn::Player1) ? m_Player2 : m_Player1;
+
+    // Check if we can win in the next move
+    for (const auto &card : currentPlayer.GetHand()) {
+        if (CanWinNextMove(currentPlayer, card)) {
+            return {GetWinningPosition(currentPlayer, card), card};
+        }
+    }
+
+    // Check if the opponent can win in the next move
+    for (const auto &card : currentPlayer.GetHand()) {
+        if (CanOpponentWinNextMove(opponentPlayer, card)) {
+            return {GetBlockingPosition(opponentPlayer, card), card};
+        }
+    }
+
+    // Prioritize placing cards that would make another card win in the next move
+    for (const auto &card : currentPlayer.GetHand()) {
+        if (CanSetupNextMoveWin(currentPlayer, card)) {
+            return {GetSetupPosition(currentPlayer, card), card};
+        }
+    }
+
+    // Prioritize having as many face cards up as possible
+    for (const auto &card : currentPlayer.GetHand()) {
+        if (CanPlaceOverOpponentCard(currentPlayer, card)) {
+            return {GetPlacementPosition(currentPlayer, card), card};
+        }
+    }
+
+    // Default move if no other conditions are met
+    return {GetDefaultPosition(), currentPlayer.GetHand().front()};
+}
+
+bool Game::CanWinNextMove(const Player &player, const Card &card) {
+    auto  newBoard = RemadeGameBoard(m_Board);
+    auto &board    = newBoard.GetGameBoard();
+    for (auto &[position, stack] : board) {
+        if (stack.empty() || stack.top().GetPlacedBy() != m_PlayerTurn) {
+            continue;
+        }
+
+        stack.emplace(card);
+
+        if (newBoard.CheckLineWin(board, position)) {
+            return true;
+        }
+
+        if (newBoard.CheckColumnWin(board, position)) {
+            return true;
+        }
+
+        if (newBoard.CheckDiagonalWin(board, position)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Game::CanOpponentWinNextMove(const Player &opponent, const Card &card) {
+    auto  newBoard = RemadeGameBoard(m_Board);
+    auto &board    = newBoard.GetGameBoard();
+    for (auto &[position, stack] : board) {
+        if (stack.empty() || stack.top().GetPlacedBy() != m_PlayerTurn) {
+            continue;
+        }
+
+        stack.emplace(card);
+
+        if (newBoard.CheckLineWin(board, position)) {
+            return true;
+        }
+
+        if (newBoard.CheckColumnWin(board, position)) {
+            return true;
+        }
+
+        if (newBoard.CheckDiagonalWin(board, position)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Game::CanSetupNextMoveWin(const Player &player, const Card &card) {
+    auto  newBoard = RemadeGameBoard(m_Board);
+    auto &board    = newBoard.GetGameBoard();
+    for (auto &[position, stack] : board) {
+        if (stack.empty() || stack.top().GetPlacedBy() != m_PlayerTurn) {
+            continue;
+        }
+
+        stack.emplace(card);
+
+        for (const auto &nextCard : player.GetHand()) {
+            if (nextCard == card) {
+                continue;
+            }
+
+            stack.emplace(nextCard);
+
+            if (newBoard.CheckLineWin(board, position) ||
+                newBoard.CheckColumnWin(board, position) ||
+                newBoard.CheckDiagonalWin(board, position)) {
+                return true;
+            }
+
+            stack.pop();
+        }
+
+        stack.pop();
+    }
+    return false;
+}
+
+bool Game::CanPlaceOverOpponentCard(const Player &player, const Card &card) {
+    auto &board = m_Board.GetGameBoard();
+    for (const auto &[position, stack] : board) {
+        if (!stack.empty() && stack.top().GetPlacedBy() != m_PlayerTurn &&
+            card.GetValue() > stack.top().GetValue()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Position Game::GetWinningPosition(const Player &player, const Card &card) {
+    auto  newBoard = RemadeGameBoard(m_Board);
+    auto &board    = newBoard.GetGameBoard();
+    for (auto &[position, stack] : board) {
+        if (stack.empty() || stack.top().GetPlacedBy() != m_PlayerTurn) {
+            continue;
+        }
+
+        stack.emplace(card);
+
+        if (newBoard.CheckLineWin(board, position) || newBoard.CheckColumnWin(board, position) ||
+            newBoard.CheckDiagonalWin(board, position)) {
+            return position;
+        }
+
+        stack.pop();
+    }
+    return Position{0, 0};
+}
+
+Position Game::GetBlockingPosition(const Player &opponent, const Card &card) {
+    auto  newBoard = RemadeGameBoard(m_Board);
+    auto &board    = newBoard.GetGameBoard();
+    for (auto &[position, stack] : board) {
+        if (stack.empty() || stack.top().GetPlacedBy() != m_PlayerTurn) {
+            continue;
+        }
+
+        stack.emplace(card);
+
+        if (newBoard.CheckLineWin(board, position) || newBoard.CheckColumnWin(board, position) ||
+            newBoard.CheckDiagonalWin(board, position)) {
+            return position;
+        }
+
+        stack.pop();
+    }
+    return Position{0, 0};
+}
+
+Position Game::GetSetupPosition(const Player &player, const Card &card) {
+    auto  newBoard = RemadeGameBoard(m_Board);
+    auto &board    = newBoard.GetGameBoard();
+    for (auto &[position, stack] : board) {
+        if (stack.empty() || stack.top().GetPlacedBy() != m_PlayerTurn) {
+            continue;
+        }
+
+        stack.emplace(card);
+
+        for (const auto &nextCard : player.GetHand()) {
+            if (nextCard == card) {
+                continue;
+            }
+
+            stack.emplace(nextCard);
+
+            if (newBoard.CheckLineWin(board, position) ||
+                newBoard.CheckColumnWin(board, position) ||
+                newBoard.CheckDiagonalWin(board, position)) {
+                return position;
+            }
+
+            stack.pop();
+        }
+
+        stack.pop();
+    }
+    return Position{0, 0};
+}
+
+Position Game::GetPlacementPosition(const Player &player, const Card &card) {
+    auto &board = m_Board.GetGameBoard();
+    for (const auto &[position, stack] : board) {
+        if (!stack.empty() && stack.top().GetPlacedBy() != m_PlayerTurn &&
+            card.GetValue() > stack.top().GetValue()) {
+            return position;
+        }
+    }
+    return Position{0, 0};
+}
+
+Position Game::GetDefaultPosition() {
+    auto &board = m_Board.GetGameBoard();
+    for (const auto &[position, stack] : board) {
+        if (stack.empty()) {
+            return position;
+        }
+    }
+    return Position{0, 0};
 }
 
 void to_json(nlohmann::json &j, Game &game) {

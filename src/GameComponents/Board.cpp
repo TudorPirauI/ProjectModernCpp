@@ -355,3 +355,70 @@ void from_json(const nlohmann::json &j, GameBoard &gameBoard) {
         it.value().get_to(gameBoard[pos]);
     }
 }
+
+bool Board::CheckLineWin(GameBoard &board, const Position &position) {
+    int row   = position.first;
+    int count = 0;
+    for (int col = 0; col < GetMaxBoardSize(); ++col) {
+        if (!board.at({row, col}).empty() &&
+            board.at({row, col}).top().GetPlacedBy() == board.at(position).top().GetPlacedBy()) {
+            ++count;
+        } else {
+            count = 0;
+        }
+        if (count == GetMaxBoardSize()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Board::CheckColumnWin(GameBoard &board, const Position &position) {
+    int col   = position.second;
+    int count = 0;
+    for (int row = 0; row < GetMaxBoardSize(); ++row) {
+        if (!board.at({row, col}).empty() &&
+            board.at({row, col}).top().GetPlacedBy() == board.at(position).top().GetPlacedBy()) {
+            ++count;
+        } else {
+            count = 0;
+        }
+        if (count == GetMaxBoardSize()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Board::CheckDiagonalWin(GameBoard &board, const Position &position) {
+    int count = 0;
+
+    for (int i = 0; i < GetMaxBoardSize(); ++i) {
+        if (!board.at({i, i}).empty() &&
+            board.at({i, i}).top().GetPlacedBy() == board.at(position).top().GetPlacedBy()) {
+            ++count;
+        } else {
+            count = 0;
+        }
+        if (count == GetMaxBoardSize()) {
+            return true;
+        }
+    }
+
+    count = 0;
+
+    for (int i = 0; i < GetMaxBoardSize(); ++i) {
+        if (!board.at({i, GetMaxBoardSize() - 1 - i}).empty() &&
+            board.at({i, GetMaxBoardSize() - 1 - i}).top().GetPlacedBy() ==
+                    board.at(position).top().GetPlacedBy()) {
+            ++count;
+        } else {
+            count = 0;
+        }
+        if (count == GetMaxBoardSize()) {
+            return true;
+        }
+    }
+
+    return false;
+}
