@@ -42,6 +42,6 @@
 #include <QUrl>
 #include <QVBoxLayout>
 
-// #include <nlohmann/json.hpp>
+#include <nlohmann/json.hpp>
 
 #endif // PCH_H

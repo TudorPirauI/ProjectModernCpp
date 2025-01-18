@@ -66,19 +66,35 @@ std::ostream &operator<<(std::ostream &os, const PlayerTurn &playerTurn) {
     return os;
 }
 
-// void to_json(nlohmann::json &j, const Card &c) {
-//     j = nlohmann::json{{"value", c.m_Value},          {"placedBy", c.m_PlacedBy},
-//                        {"isFlipped", c.m_IsFlipped},  {"isGranite", c.m_IsGranite},
-//                        {"isEter", c.m_IsEter},        {"isIllusion", c.m_IsIllusion},
-//                        {"onModifier", c.m_OnModifier}};
-// }
+void to_json(nlohmann::json &j, const Card &c) {
+    j = nlohmann::json{{"value", c.m_Value},          {"placedBy", c.m_PlacedBy},
+                       {"isFlipped", c.m_IsFlipped},  {"isGranite", c.m_IsGranite},
+                       {"isEter", c.m_IsEter},        {"isIllusion", c.m_IsIllusion},
+                       {"onModifier", c.m_OnModifier}};
+}
 
-// void from_json(const nlohmann::json &j, Card &c) {
-//     j.at("value").get_to(c.m_Value);
-//     j.at("placedBy").get_to(c.m_PlacedBy);
-//     j.at("isFlipped").get_to(c.m_IsFlipped);
-//     j.at("isGranite").get_to(c.m_IsGranite);
-//     j.at("isEter").get_to(c.m_IsEter);
-//     j.at("isIllusion").get_to(c.m_IsIllusion);
-//     j.at("onModifier").get_to(c.m_OnModifier);
-// }
+void from_json(const nlohmann::json &j, Card &c) {
+    j.at("value").get_to(c.m_Value);
+
+    PlayerTurn placedBy;
+    j.at("placedBy").get_to(placedBy);
+    c.m_PlacedBy = placedBy;
+
+    bool isFlipped;
+    j.at("isFlipped").get_to(isFlipped);
+    c.m_IsFlipped = isFlipped;
+
+    bool isGranite;
+    j.at("isGranite").get_to(isGranite);
+    c.m_IsGranite = isGranite;
+
+    bool isEter;
+    j.at("isEter").get_to(isEter);
+    c.m_IsEter = isEter;
+
+    bool isIllusion;
+    j.at("isIllusion").get_to(isIllusion);
+    c.m_IsIllusion = isIllusion;
+
+    j.at("onModifier").get_to(c.m_OnModifier);
+}
