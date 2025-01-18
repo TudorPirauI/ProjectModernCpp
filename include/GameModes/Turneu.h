@@ -1,23 +1,30 @@
-// //
-// // Created by edi on 17.01.2025.
-// //
-//
-// #ifndef TURNEU_H
-// #define TURNEU_H
-// #include "Game.h"
-//
-// class Turneu {
-//     std::unique_ptr<Game> m_Game;
-//
-// public:
-//     void                                SetGameMode(std::unique_ptr<Game> game);
-//     [[nodiscard]] std::unique_ptr<Game> GetGameMode();
-//
-//     Turneu();
-//     Turneu(const Turneu &other)     = default;
-//     Turneu(Turneu &&other) noexcept = default;
-//     Turneu &operator=(Turneu other);
-//     ~Turneu() = default;
-// };
-//
-// #endif // TURNEU_H
+#ifndef TOURNAMENT_H
+#define TOURNAMENT_H
+
+#include "Game.h"
+#include "GameComponents/Arena.h"
+
+enum class Mode { A, B, C, BPlusC };
+
+class Turneu {
+public:
+    Turneu(int boardSize, int scoreToWin, const std::string &nameOne, const std::string &nameTwo,
+           const std::array<bool, 3> &options, Mode mode);
+
+    void       Start();
+    void       PlayGame();
+    bool       CheckMatchWin() const;
+    PlayerTurn GetMatchWinner() const;
+
+private:
+    std::unique_ptr<Game> m_Game;
+    Arena                 m_Arena;
+    Mode                  m_Mode;
+    int                   m_GamesPlayed;
+    int                   m_Player1Wins;
+    int                   m_Player2Wins;
+
+    void PlacePieceInArena(const Position &pos, PlayerTurn player);
+};
+
+#endif // TOURNAMENT_H
