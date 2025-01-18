@@ -129,7 +129,7 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
     SwitchTurn();
 }
 
-void IAntrenament::OnModifierSelected(int modifier) {
+void IAntrenament::OnModifierSelected(const int modifier) {
     // 1 -> Illusion
     // 2 -> Explosion (should be triggered instantly)
     switch (modifier) {
