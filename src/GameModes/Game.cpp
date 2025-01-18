@@ -102,6 +102,8 @@ void Game::IncreasePlayerScore(const PlayerTurn turn) {
 
 void Game::SetNextPlayerTurn(const PlayerTurn playerTurn) { m_PlayerTurn = playerTurn; }
 
+void Game::SetNewCards() {}
+
 Board &Game::GetBoard() { return m_Board; }
 
 Player &Game::GetPlayer1() { return m_Player1; }
@@ -919,67 +921,55 @@ bool Game::GetIllusionEnabled() const { return m_IllusionEnabled; }
 bool Game::GetEterEnabled() const { return m_EterEnabled; }
 bool Game::ExplosionEnabled() const { return m_ExplosionEnabled; }
 
-// void Game::SaveDataInJson() {
-//     nlohmann::json json;
-//
-//     // Serialize board
-//     for (const auto &[position, stack] : m_Board.GetGameBoard()) {
-//         std::vector<Card> cards;
-//         auto              tempStack = stack;
-//         while (!tempStack.empty()) {
-//             cards.push_back(tempStack.top());
-//             tempStack.pop();
-//         }
-//         json["board"][std::to_string(position.first) + "," + std::to_string(position.second)] =
-//                 cards;
-//     }
-//
-//     // Serialize players
-//     json["player1"] = m_Player1;
-//     json["player2"] = m_Player2;
-//
-//     // Serialize other game state variables
-//     json["playerTurn"]      = m_PlayerTurn;
-//     json["gameState"]       = m_GameState;
-//     json["scorePlayer1"]    = m_ScorePlayer1;
-//     json["scorePlayer2"]    = m_ScorePlayer2;
-//     json["rowPlayer1"]      = m_RowPlayer1;
-//     json["rowPlayer2"]      = m_RowPlayer2;
-//     json["illusionEnabled"] = m_IllusionEnabled;
-//
-//     std::ofstream file(JSON_FILE_NAME);
-//     file << json.dump(4); // Pretty print with 4 spaces
-// }
-//
-// void Game::LoadDataInJson() {
-//     std::ifstream  file(JSON_FILE_NAME);
-//     nlohmann::json json;
-//     file >> json;
-//
-//     // Deserialize board
-//     for (const auto &[key, value] : json["board"].items()) {
-//         auto     pos = key.find(',');
-//         int      x   = std::stoi(key.substr(0, pos));
-//         int      y   = std::stoi(key.substr(pos + 1));
-//         Position position{x, y};
-//
-//         std::stack<Card> stack;
-//         for (const auto &card : value) {
-//             stack.push(card);
-//         }
-//         m_Board.GetGameBoard()[position] = stack;
-//     }
-//
-//     // Deserialize players
-//     m_Player1 = json["player1"].get<Player>();
-//     m_Player2 = json["player2"].get<Player>();
-//
-//     // Deserialize other game state variables
-//     m_PlayerTurn      = json["playerTurn"].get<PlayerTurn>();
-//     m_GameState       = json["gameState"].get<GameState>();
-//     m_ScorePlayer1    = json["scorePlayer1"];
-//     m_ScorePlayer2    = json["scorePlayer2"];
-//     m_RowPlayer1      = json["rowPlayer1"];
-//     m_RowPlayer2      = json["rowPlayer2"];
-//     m_IllusionEnabled = json["illusionEnabled"];
-// }
+void Game::SetRowPlayer1(const int row) { m_RowPlayer1 = row; }
+
+void Game::SetRowPlayer2(const int row) { m_RowPlayer2 = row; }
+
+void to_json(nlohmann::json &j, Game &game) {
+    j = nlohmann::json{
+            {"boardSize", game.GetBoard().GetMaxBoardSize()},
+            {"scoreToWin", game.GetScoreToWin()},
+            {"player1", game.GetPlayer1()},
+            {"player2", game.GetPlayer2()},
+            {"options",
+             {game.GetEterEnabled(), game.GetIllusionEnabled(), game.ExplosionEnabled()}},
+            {"currentPlayer", game.GetCurrentPlayer()},
+            {"scorePlayer1", game.GetPlayer1Score()},
+            {"scorePlayer2", game.GetPlayer2Score()},
+            {"lastPositionPlayer1", game.GetLastCardPlayer1()},
+            {"lastPositionPlayer2", game.GetLastCardPlayer2()},
+            {"rowPlayer1", game.GetRowPlayer1()},
+            {"rowPlayer2", game.GetRowPlayer2()}};
+}
+
+void from_json(const nlohmann::json &j, Game &game) {
+    int                 boardSize, scoreToWin;
+    std::string         nameOne, nameTwo;
+    std::array<bool, 3> options;
+    PlayerTurn          currentPlayer;
+    int                 scorePlayer1, scorePlayer2;
+    Position            lastPositionPlayer1, lastPositionPlayer2;
+    int                 rowPlayer1, rowPlayer2;
+
+    j.at("boardSize").get_to(boardSize);
+    j.at("scoreToWin").get_to(scoreToWin);
+    j.at("player1").get_to(nameOne);
+    j.at("player2").get_to(nameTwo);
+    j.at("options").get_to(options);
+    j.at("currentPlayer").get_to(currentPlayer);
+    j.at("scorePlayer1").get_to(scorePlayer1);
+    j.at("scorePlayer2").get_to(scorePlayer2);
+    j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
+    j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
+    j.at("rowPlayer1").get_to(rowPlayer1);
+    j.at("rowPlayer2").get_to(rowPlayer2);
+
+    game = Game(boardSize, scoreToWin, nameOne, nameTwo, options);
+    game.SetNextPlayerTurn(currentPlayer);
+    game.IncreasePlayerScore(PlayerTurn::Player1);
+    game.IncreasePlayerScore(PlayerTurn::Player2);
+    game.SetLastCardPlayer1(lastPositionPlayer1);
+    game.SetLastCardPlayer2(lastPositionPlayer2);
+    game.SetRowPlayer1(rowPlayer1);
+    game.SetRowPlayer2(rowPlayer2);
+}
