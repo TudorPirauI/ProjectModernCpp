@@ -124,9 +124,9 @@ void Board::CheckTwoLinesFull(const Position &position, const PlayerTurn &player
     }
 
     if (counter >= 2) {
-        m_TwoColumns = playerTurn;
-        m_TwoLines   = playerTurn;
-        m_Cross      = playerTurn;
+        m_TwoColumns = true;
+        m_TwoLines   = true;
+        m_Cross      = true;
     }
 }
 
@@ -146,9 +146,9 @@ void Board::CheckTwoColumns(const Position &position, const PlayerTurn &playerTu
     }
 
     if (counter >= 2) {
-        m_TwoColumns = playerTurn;
-        m_TwoLines   = playerTurn;
-        m_Cross      = playerTurn;
+        m_TwoColumns = true;
+        m_TwoLines   = true;
+        m_Cross      = true;
     }
 }
 
@@ -178,9 +178,9 @@ void Board::CheckCross(const Position &position, const PlayerTurn &playerTurn) {
     checkTwoColumnsFull(numberOfCardsPerLines, m_MaxBoardSize, counterLines);
 
     if (counterColumns >= 1 and counterLines >= 1) {
-        m_Cross      = playerTurn;
-        m_TwoColumns = playerTurn;
-        m_TwoLines   = playerTurn;
+        m_Cross      = true;
+        m_TwoColumns = true;
+        m_TwoLines   = true;
     }
 }
 
@@ -482,9 +482,9 @@ bool Board::CheckDiagonalWin(GameBoard &board, const Position &position) {
     return false;
 }
 
-void       Board::SetTwoLines(const PlayerTurn &playerTurn) { m_TwoLines = playerTurn; }
-void       Board::SetTwoColumns(const PlayerTurn &playerTurn) { m_TwoColumns = playerTurn; }
-void       Board::SetCross(const PlayerTurn &playerTurn) { m_Cross = playerTurn; }
-PlayerTurn Board::GetTwoLines() const { return m_TwoLines; }
-PlayerTurn Board::GetTwoColumns() const { return m_TwoColumns; }
-PlayerTurn Board::GetCross() const { return m_Cross; }
+void Board::SetTwoLines(const bool value) { m_TwoLines = value; }
+void Board::SetTwoColumns(const bool value) { m_TwoColumns = value; }
+void Board::SetCross(const bool value) { m_Cross = value; }
+bool Board::GetTwoLines() const { return m_TwoLines; }
+bool Board::GetTwoColumns() const { return m_TwoColumns; }
+bool Board::GetCross() const { return m_Cross; }
