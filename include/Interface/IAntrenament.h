@@ -9,6 +9,7 @@
 #include "GameModes/Antrenament.h"
 #include "Interface/BoardWidget.h"
 #include "Interface/HandWidget.h"
+#include "SpecialOptions.h"
 
 class IAntrenament final : public QWidget {
     Q_OBJECT
@@ -31,9 +32,10 @@ private:
     PlayerTurn          m_CurrentTurn;
     std::optional<Card> m_SelectedCard;
 
-    QWidget     *m_ParentWidget;
-    BoardWidget *m_BoardWidget;
-    HandWidget  *m_HandWidget;
+    QWidget        *m_ParentWidget;
+    BoardWidget    *m_BoardWidget;
+    HandWidget     *m_HandWidget;
+    SpecialOptions *m_SpecialOptions;
 };
 
 #endif // IANTRENAMENT_H
