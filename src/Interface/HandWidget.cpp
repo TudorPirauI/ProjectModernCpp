@@ -4,6 +4,7 @@
 
 #include "Interface/HandWidget.h"
 #include "GameComponents/Card.h"
+#include "Interface/MainWindow.h"
 
 HandWidget::HandWidget(QWidget *parent) : QWidget(parent), m_SelectedCardIndex(-1) {
     setAttribute(Qt::WA_Hover);
@@ -50,8 +51,15 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
         button->setIcon(buttonIcon);
         button->setIconSize(button->size());
 
+        QColor m_BorderColor;
+
         // Set border color
-        button->setStyleSheet("border: 2px solid red;");
+        if (playerId == 1) {
+            m_BorderColor = MainWindow::m_Player1Color;
+        } else {
+            m_BorderColor = MainWindow::m_Player2Color;
+        }
+        button->setStyleSheet(QString("border: 10px solid %1;").arg(m_BorderColor.name()));
 
         connect(button, &QPushButton::clicked, [this, i, button] {
             if (m_SelectedCardIndex == i) {
