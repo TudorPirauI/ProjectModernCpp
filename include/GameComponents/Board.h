@@ -41,6 +41,9 @@ public:
     [[nodiscard]] bool          InsertEter(Card &card, const Position &pos);
 
     [[nodiscard]] bool CoverIllusion(const Card &cardOpponent, const Position &pos);
+    bool               CheckLineWin(GameBoard &board, const Position &position);
+    bool               CheckColumnWin(GameBoard &board, const Position &position);
+    bool               CheckDiagonalWin(GameBoard &board, const Position &position);
     [[nodiscard]] bool IsBoardLocked() const;
     [[nodiscard]] int  GetMaxBoardSize() const;
     [[nodiscard]] bool IsPositionValid(const Position &pos, const Card &card) const;
