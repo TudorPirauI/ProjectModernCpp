@@ -40,12 +40,12 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
     m_HandWidget->setFixedSize(m_HandWidget->GetIdealWidth(), 200);
     connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
 
-    // TODO: Simple recomandation system
+    // TODO: Simple recommendation system
     // Takes in -> Current board, current players, current hand of each players
     // first check: can we win in the next move? if yes, do it (override another card and make a
     // straight line, column or diagonal / just by placing a card)
     // second check: can the opponent win in the next move? if yes, block it
-    // if we can't do either, priortize placing cards that would make another card win in the next
+    // if we can't do either, prioritize placing cards that would make another card win in the next
     // if we can't do the above, try prioritizing having as many face cards up as possible (placing
     // cards over the opponent's)
 
@@ -77,25 +77,52 @@ void IAntrenament::OnCardSelected(const int cardIndex) {
 
 void IAntrenament::OnPositionSelected(const int x, const int y) {
     if (!m_SelectedCard.has_value()) {
-        std::cerr << "Please select a card first!\n";
+        const auto alertWidget = new AlertWidget(m_ParentWidget);
+
+        alertWidget->ShowAlert("You must select a card first!");
+
         return;
     }
 
     if (!m_CurrentGame.GetBoard().IsPositionValid({x, y}, m_SelectedCard.value())) {
-        std::cerr << "You cannot place a card there!\n";
+        const auto alertWidget = new AlertWidget(m_ParentWidget);
+
+        alertWidget->ShowAlert("You can't place a card there!");
+
         return;
     }
 
     const auto success = m_CurrentGame.GetBoard().InsertCard(
             m_SelectedCard.value(), {x, y}, m_CurrentTurn, CardType::Normal, m_CurrentGame);
 
-    if (success != InsertOutputs::Success) {
-        std::cerr << "Could not place card on board\n";
-        return;
-    }
-
     auto &currentPlayer = m_CurrentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
                                                                : m_CurrentGame.GetPlayer2();
+
+    if (success != InsertOutputs::Success) {
+        std::cerr << "Could not place card on board\n";
+
+        const auto alertWidget = new AlertWidget(m_ParentWidget);
+
+        switch (success) {
+            case InsertOutputs::PositionInvalid:
+                alertWidget->ShowAlert("That's an invalid position!");
+                break;
+            case InsertOutputs::IllusionOccupied:
+                alertWidget->ShowAlert("Your card was not powerful enough to cover the Illusion!");
+                currentPlayer.RemoveCard(m_SelectedCard.value());
+                SwitchTurn();
+                return;
+            case InsertOutputs::EterOccupied:
+                alertWidget->ShowAlert("That position is occupied by an Eter card!");
+                break;
+            case InsertOutputs::GraniteOccupied:
+                alertWidget->ShowAlert("That position is blocked off!");
+                break;
+            default:
+                alertWidget->ShowAlert("Bruh");
+        }
+        return;
+    }
 
     currentPlayer.RemoveCard(m_SelectedCard.value());
 
