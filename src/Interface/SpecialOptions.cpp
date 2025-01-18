@@ -20,7 +20,7 @@ void SpecialOptions::SetPowers(const bool eter, const bool illusion, const bool 
 
     m_Buttons.clear();
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 1; i < 3; ++i) {
         auto button = new QPushButton(this);
         button->setCheckable(false);
         button->setFixedSize(100, 100);
