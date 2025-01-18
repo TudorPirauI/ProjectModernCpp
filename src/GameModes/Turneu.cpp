@@ -20,7 +20,7 @@ void Turneu::PlayGame() {
         m_Game->SwitchPlayerTurn();
     }
 
-    PlayerTurn winner  = m_Game->GetCurrentPlayer();
+    PlayerTurn winner  = m_Game->GetCurrentPlayerTurn();
     Position   lastPos = (winner == PlayerTurn::Player1) ? m_Game->GetLastCardPlayer1()
                                                          : m_Game->GetLastCardPlayer2();
     PlacePieceInArena(lastPos, winner);

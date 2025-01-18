@@ -24,6 +24,9 @@ class Board {
     std::unordered_map<int, int> m_PrincipalDiagonal;
     std::unordered_map<int, int> m_SecondaryDiagonal;
     bool                         m_IsLocked{false};
+    PlayerTurn                   m_TwoLines;
+    PlayerTurn                   m_TwoColumns;
+    PlayerTurn                   m_Cross;
 
     std::array<Position, 4> m_Corners{START_POSITION, START_POSITION, START_POSITION,
                                       START_POSITION};
@@ -75,9 +78,19 @@ public:
 
     void CleanUpBoard();
 
-    bool CheckTwoLinesFull();
+    void CheckTwoLinesFull(const Position &position, const PlayerTurn &playerTurn);
 
+    void CheckTwoColumns(const Position &position, const PlayerTurn &playerTurn);
 
+    void CheckCross(const Position &position, const PlayerTurn &playerTurn);
+
+    void SetTwoLines(const PlayerTurn &playerTurn);
+    void SetTwoColumns(const PlayerTurn &playerTurn);
+    void SetCross(const PlayerTurn &playerTurn);
+
+    PlayerTurn GetTwoLines() const;
+    PlayerTurn GetTwoColumns() const;
+    PlayerTurn GetCross() const;
 };
 
 #endif // BOARD_H

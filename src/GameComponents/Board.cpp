@@ -108,25 +108,80 @@ bool Board::CheckPlacedCard(const Position &pos, const PlayerTurn &playerTurn) {
     return false;
 }
 
-bool Board::CheckTwoLinesFull() {
-    std::unordered_map<int, int> numberOfCardsPerLines;
+void Board::CheckTwoLinesFull(const Position &position, const PlayerTurn &playerTurn) {
+    static std::unordered_map<int, int> numberOfCardsPerColumns;
 
-    for (const auto &[position, stacks] : m_Board) {
-        if (!stacks.empty())
-            ++numberOfCardsPerLines[position.first];
-    }
+    ++numberOfCardsPerColumns[position.first];
 
     int counter = 0;
 
-    for (const auto &numberOfCards : numberOfCardsPerLines | std::views::values) {
-        if (numberOfCards == m_MaxBoardSize)
+    for (const auto &value : numberOfCardsPerColumns | std::views::values) {
+        if (counter >= 2)
+            continue;
+
+        if (value == m_MaxBoardSize)
             ++counter;
     }
 
-    if (counter >= 2)
-        return true;
+    if (counter >= 2) {
+        m_TwoColumns = playerTurn;
+        m_TwoLines   = playerTurn;
+        m_Cross      = playerTurn;
+    }
+}
 
-    return false;
+void Board::CheckTwoColumns(const Position &position, const PlayerTurn &playerTurn) {
+    static std::unordered_map<int, int> numberOfCardsPerColumns;
+
+    ++numberOfCardsPerColumns[position.second];
+
+    int counter = 0;
+
+    for (const auto &value : numberOfCardsPerColumns | std::views::values) {
+        if (counter >= 2)
+            continue;
+
+        if (value == m_MaxBoardSize)
+            ++counter;
+    }
+
+    if (counter >= 2) {
+        m_TwoColumns = playerTurn;
+        m_TwoLines   = playerTurn;
+        m_Cross      = playerTurn;
+    }
+}
+
+void Board::CheckCross(const Position &position, const PlayerTurn &playerTurn) {
+    static std::unordered_map<int, int> numberOfCardsPerColumns;
+    static std::unordered_map<int, int> numberOfCardsPerLines;
+
+    ++numberOfCardsPerLines[position.first];
+    ++numberOfCardsPerColumns[position.second];
+
+    int counterLines   = 0;
+    int counterColumns = 0;
+
+    auto checkTwoColumnsFull = [&](const std::unordered_map<int, int> &numberOfCards,
+                                   int maxBoardSize, int &counter) {
+        for (const auto &value : numberOfCards | std::views::values) {
+            if (counter >= 1)
+                continue;
+
+            if (value == maxBoardSize)
+                ++counter;
+        }
+        return counter >= 1;
+    };
+
+    checkTwoColumnsFull(numberOfCardsPerColumns, m_MaxBoardSize, counterColumns);
+    checkTwoColumnsFull(numberOfCardsPerLines, m_MaxBoardSize, counterLines);
+
+    if (counterColumns >= 1 and counterLines >= 1) {
+        m_Cross      = playerTurn;
+        m_TwoColumns = playerTurn;
+        m_TwoLines   = playerTurn;
+    }
 }
 
 void Board::CleanUpBoard() {
@@ -270,6 +325,10 @@ InsertOutputs Board::InsertCard(Card card, Position pos, const PlayerTurn &playe
     }
 
     m_Board[pos].push(card);
+
+    CheckCross(pos, playerTurn);
+    CheckTwoColumns(pos, playerTurn);
+    CheckTwoLinesFull(pos, playerTurn);
 
     UpdateCorners(pos);
     CheckIsLocked();
@@ -422,3 +481,10 @@ bool Board::CheckDiagonalWin(GameBoard &board, const Position &position) {
 
     return false;
 }
+
+void       Board::SetTwoLines(const PlayerTurn &playerTurn) { m_TwoLines = playerTurn; }
+void       Board::SetTwoColumns(const PlayerTurn &playerTurn) { m_TwoColumns = playerTurn; }
+void       Board::SetCross(const PlayerTurn &playerTurn) { m_Cross = playerTurn; }
+PlayerTurn Board::GetTwoLines() const { return m_TwoLines; }
+PlayerTurn Board::GetTwoColumns() const { return m_TwoColumns; }
+PlayerTurn Board::GetCross() const { return m_Cross; }
