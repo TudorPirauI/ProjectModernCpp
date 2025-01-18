@@ -20,22 +20,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(Ga
         showNormal();
     }
 
-    m_MediaPlayer = new QMediaPlayer(this);
-    m_AudioOutput = new QAudioOutput(this);
-
-    m_MediaPlayer->setAudioOutput(m_AudioOutput);
-    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
-
-    const QString musicFilePath = ":/resources/sounds/background_music.wav";
-    if (!QFile::exists(musicFilePath)) {
-        qDebug() << "Music file not found:" << musicFilePath << '\n';
-    } else {
-        m_MediaPlayer->setSource(QUrl::fromLocalFile(musicFilePath));
-        m_MediaPlayer->setLoops(QMediaPlayer::Infinite);
-        std::cout << "Playing music\n";
-    }
-
-    m_MediaPlayer->play();
+    //    m_MediaPlayer = new QMediaPlayer(this);
+    //    m_AudioOutput = new QAudioOutput(this);
+    //
+    //    m_MediaPlayer->setAudioOutput(m_AudioOutput);
+    //    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
+    //
+    //    const QString musicFilePath = ":/resources/sounds/background_music.wav";
+    //    if (!QFile::exists(musicFilePath)) {
+    //        qDebug() << "Music file not found:" << musicFilePath << '\n';
+    //    } else {
+    //        m_MediaPlayer->setSource(QUrl::fromLocalFile(musicFilePath));
+    //        m_MediaPlayer->setLoops(QMediaPlayer::Infinite);
+    //        std::cout << "Playing music\n";
+    //    }
+    //
+    //    m_MediaPlayer->play();
 
     DrawMenu();
 }

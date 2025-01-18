@@ -108,7 +108,9 @@ find_package(Qt6 COMPONENTS
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ON)
+if (UNIX AND NOT APPLE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ON)
+endif ()
 
 qt_add_resources(RESOURCES ./QResource.qrc)
 
