@@ -890,13 +890,15 @@ bool Game::CheckExplosion() {
                 if (auto &stack = newGameBoard[position]; !stack.empty()) {
                     newGameBoard[position].pop();
                 }
-            } break;
+                break;
+            }
             case Explosion::Effect::Return: {
                 if (auto &stack = newGameBoard[position]; !stack.empty()) {
                     // const auto &card = newGameBoard[position].top();
                     newGameBoard[position].pop();
                 }
-            } break;
+                break;
+            }
             case Explosion::Effect::Hole: {
                 auto &stack = newGameBoard[position];
 
@@ -907,10 +909,11 @@ bool Game::CheckExplosion() {
                 Card hole{true};
 
                 stack.emplace(hole);
-            } break;
+                break;
+            }
             default: {
-
-            } break;
+                break;
+            }
         }
     }
 

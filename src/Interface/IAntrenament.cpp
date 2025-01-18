@@ -159,6 +159,10 @@ void IAntrenament::SwitchTurn() {
 
     m_SelectedCard.reset();
 
+    if (m_CurrentGame.CheckExplosion()) {
+        std::cout << "Explosion triggered\n";
+    }
+
     const auto winningReason = m_CurrentGame.CheckWinningConditions();
 
     if (winningReason == Game::WinningCondition::NoWin) {
