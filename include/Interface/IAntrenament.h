@@ -19,7 +19,7 @@ public:
                  const std::array<bool, 3> &options, QWidget *parent);
 
 public slots:
-    void OnCardSelected(int cardValue);
+    void OnCardSelected(int cardIndex);
     void OnPositionSelected(int x, int y);
 
 signals:

@@ -17,7 +17,7 @@ public:
 
     [[nodiscard]] int GetIdealWidth() const;
 signals:
-    void CardSelected(int cardValue);
+    void CardSelected(int cardIndex);
 
 private:
     std::vector<Card>          m_Cards;

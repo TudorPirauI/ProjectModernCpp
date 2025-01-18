@@ -56,6 +56,13 @@ void BoardWidget::SetBoard(const Board &board) {
                 QString imagePath = QString(":/simple-%1-%2")
                                             .arg(playerId)
                                             .arg(placedCard->second.top().GetValue());
+
+                if (placedCard->second.top().GetIsEter()) {
+                    imagePath = QString(":/eter-%1").arg(playerId);
+                } else if (placedCard->second.top().GetIsIllusion()) {
+                    imagePath = QString(":/illusion-%1").arg(playerId);
+                }
+
                 QPixmap pixmap(imagePath);
 
                 QIcon buttonIcon(pixmap);

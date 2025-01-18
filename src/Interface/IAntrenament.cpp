@@ -30,20 +30,29 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     mainLayout->addLayout(boardLayout);
 
+    if (options[0]) {
+        m_CurrentGame.GetPlayer1().GiveEterCard(PlayerTurn::Player1);
+        m_CurrentGame.GetPlayer2().GiveEterCard(PlayerTurn::Player2);
+    }
+
     m_HandWidget = new HandWidget(this);
     m_HandWidget->SetCards(m_CurrentGame.GetPlayer1().GetHand());
     m_HandWidget->setFixedSize(m_HandWidget->GetIdealWidth(), 200);
     connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
 
+    // TODO: Simple recomandation system
+    // Takes in -> Current board, current players, current hand of each players
+    // first check: can we win in the next move? if yes, do it (override another card and make a
+    // straight line, column or diagonal / just by placing a card)
+    // second check: can the opponent win in the next move? if yes, block it
+    // if we can't do either, priortize placing cards that would make another card win in the next
+    // if we can't do the above, try prioritizing having as many face cards up as possible (placing
+    // cards over the opponent's)
+
     auto *handLayout = new QHBoxLayout();
     handLayout->addWidget(m_HandWidget);
 
     mainLayout->addLayout(handLayout);
-
-    if (options[0]) {
-        m_CurrentGame.GetPlayer1().GiveEterCard(PlayerTurn::Player1);
-        m_CurrentGame.GetPlayer2().GiveEterCard(PlayerTurn::Player2);
-    }
 
     m_SpecialOptions = new SpecialOptions(this);
 
@@ -54,9 +63,16 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
     parent->setLayout(mainLayout);
 }
 
-void IAntrenament::OnCardSelected(const int cardValue) {
-    m_SelectedCard = Card(cardValue);
-    m_SelectedCard->SetPlacedBy(m_CurrentTurn);
+void IAntrenament::OnCardSelected(const int cardIndex) {
+    const auto currentPlayer = m_CurrentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+                                                                    : m_CurrentGame.GetPlayer2();
+
+    if (cardIndex >= currentPlayer.GetHand().size() || cardIndex < 0) {
+        std::cerr << "Invalid card index: " << cardIndex << '\n';
+        return;
+    }
+
+    m_SelectedCard = currentPlayer.GetHand()[cardIndex];
 }
 
 void IAntrenament::OnPositionSelected(const int x, const int y) {
@@ -66,7 +82,7 @@ void IAntrenament::OnPositionSelected(const int x, const int y) {
     }
 
     if (!m_CurrentGame.GetBoard().IsPositionValid({x, y}, m_SelectedCard.value())) {
-        std::cerr << "You cannot place a card there!";
+        std::cerr << "You cannot place a card there!\n";
         return;
     }
 
