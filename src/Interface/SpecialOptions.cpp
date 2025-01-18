@@ -28,6 +28,7 @@ void SpecialOptions::SetPowers(const bool eter, const bool illusion, const bool 
         if (i == 0) {
             if (eter) {
                 button->setCheckable(eter);
+                button->setText("Eter");
             } else {
                 button->setChecked(false);
             }
@@ -36,6 +37,7 @@ void SpecialOptions::SetPowers(const bool eter, const bool illusion, const bool 
         if (i == 1) {
             if (illusion) {
                 button->setCheckable(illusion);
+                button->setText("Illusion");
             } else {
                 button->setChecked(false);
             }
@@ -44,14 +46,13 @@ void SpecialOptions::SetPowers(const bool eter, const bool illusion, const bool 
         if (i == 2) {
             if (explosion) {
                 button->setCheckable(explosion);
+                button->setText("Explosion");
             } else {
                 button->setChecked(false);
             }
         }
 
-        connect(button, &QPushButton::clicked, [this, i, button] {
-            emit OptionSelected(i);
-        });
+        connect(button, &QPushButton::clicked, [this, i, button] { emit OptionSelected(i); });
 
         m_Buttons.push_back(button);
         layout()->addWidget(button);

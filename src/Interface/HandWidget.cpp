@@ -37,10 +37,13 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
         button->setCheckable(true);
         button->setFixedSize(100, 100);
 
-        const int playerId  = static_cast<int>(m_Cards[i].GetPlacedBy()) + 1;
-        QString   imagePath = QString(":/resources/images/player%1/%2.png")
-                                    .arg(playerId)
-                                    .arg(m_Cards[i].GetValue());
+        const int playerId = static_cast<int>(m_Cards[i].GetPlacedBy()) + 1;
+
+        QString imagePath = QString(":/simple-%1-%2").arg(playerId).arg(m_Cards[i].GetValue());
+        if (m_Cards[i].GetIsEter()) {
+            imagePath = QString(":/eter-%1").arg(playerId);
+        }
+
         QPixmap pixmap(imagePath);
 
         QIcon buttonIcon(pixmap);
@@ -62,7 +65,7 @@ void HandWidget::SetCards(const std::vector<Card> &cards) {
             }
 
             m_SelectedCardIndex = i;
-            emit CardSelected(m_Cards[i].GetValue());
+            emit CardSelected(i);
 
             for (int j = 0; j < m_Buttons.size(); ++j) {
                 m_Buttons[j]->setChecked(j == m_SelectedCardIndex);

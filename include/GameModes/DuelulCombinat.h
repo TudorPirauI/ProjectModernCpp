@@ -28,6 +28,8 @@ public:
 
     DuelulCombinat(const std::string &nameOne, const std::string &nameTwo,
                    const std::array<bool, 3> &options);
+    void SetWizardAbility(const Wizard &wizardAbility);
+    void SetElementalAbility(const ElementPower &elementalAbility);
     ~DuelulCombinat() override = default;
 };
 

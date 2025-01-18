@@ -34,6 +34,9 @@ public:
 
     WizardPower ActivatePower();
     void        ResetPowerForNewMatch();
+
+    friend void to_json(nlohmann::json &j, const Wizard &wizard);
+    friend void from_json(const nlohmann::json &j, Wizard &wizard);
 };
 
 #endif // WIZARD_H

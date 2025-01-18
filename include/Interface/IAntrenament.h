@@ -9,6 +9,7 @@
 #include "GameModes/Antrenament.h"
 #include "Interface/BoardWidget.h"
 #include "Interface/HandWidget.h"
+#include "SpecialOptions.h"
 
 class IAntrenament final : public QWidget {
     Q_OBJECT
@@ -18,7 +19,7 @@ public:
                  const std::array<bool, 3> &options, QWidget *parent);
 
 public slots:
-    void OnCardSelected(int cardValue);
+    void OnCardSelected(int cardIndex);
     void OnPositionSelected(int x, int y);
 
 signals:
@@ -31,9 +32,10 @@ private:
     PlayerTurn          m_CurrentTurn;
     std::optional<Card> m_SelectedCard;
 
-    QWidget     *m_ParentWidget;
-    BoardWidget *m_BoardWidget;
-    HandWidget  *m_HandWidget;
+    QWidget        *m_ParentWidget;
+    BoardWidget    *m_BoardWidget;
+    HandWidget     *m_HandWidget;
+    SpecialOptions *m_SpecialOptions;
 };
 
 #endif // IANTRENAMENT_H
