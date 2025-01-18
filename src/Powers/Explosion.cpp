@@ -51,7 +51,13 @@ Explosion::Effect Explosion::GenerateRandomEffect() {
 }
 
 int Explosion::RandomInt(const int min, const int max) {
+    int minValue = min;
+    int maxValue = max;
+    if (min > max) {
+        std::swap(minValue, maxValue);
+    }
+    std::cout << minValue << ' ' << maxValue << '\n';
     static std::mt19937                rng(std::random_device{}());
-    std::uniform_int_distribution<int> dist(min, max);
+    std::uniform_int_distribution<int> dist(minValue, maxValue);
     return dist(rng);
 }

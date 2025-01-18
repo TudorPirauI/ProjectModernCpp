@@ -30,6 +30,7 @@
 #include <QLineEdit>
 #include <QMainWindow>
 #include <QMediaPlayer>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QObject>
 #include <QPainter>

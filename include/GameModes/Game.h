@@ -91,6 +91,9 @@ public:
     Position GetPlacementPosition(const Player &player, const Card &card);
     Position GetDefaultPosition();
 
+    Explosion GenerateExplosion() const;
+    bool      ApplyExplosion(const Explosion &explosion);
+
     // TODO: Simple recomandation system
     // Takes in -> Current board, current players, current hand of each players
     // first check: can we win in the next move? if yes, do it (override another card and make a
@@ -118,7 +121,8 @@ protected:
 
     static constexpr std::string JSON_FILE_NAME = "reload.json";
 
-    Board           RemadeGameBoard(Board board);
+    Board RemadeGameBoard(Board board);
+
     static void     CheckModifierCard(std::stack<Card> &stack);
     static CardType GetCardType(const Card &card);
 };

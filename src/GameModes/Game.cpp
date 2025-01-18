@@ -873,14 +873,12 @@ Board Game::RemadeGameBoard(Board board) {
     return board;
 }
 
-bool Game::CheckExplosion() {
-    if (const auto result = m_Board.CheckTwoLinesFull(); !result)
-        return false;
+Explosion Game::GenerateExplosion() const {
+    return Explosion::Generate(m_Board.GetMaxBoardSize(), m_Board.GetLeft(), m_Board.GetUp(),
+                               m_Board.GetDown(), m_Board.GetRight());
+}
 
-    const auto &explosion =
-            Explosion::Generate(m_Board.GetMaxBoardSize(), m_Board.GetLeft(), m_Board.GetUp(),
-                                m_Board.GetDown(), m_Board.GetRight());
-
+bool Game::ApplyExplosion(const Explosion &explosion) {
     auto  newBoard     = RemadeGameBoard(m_Board);
     auto &newGameBoard = newBoard.GetGameBoard();
 
@@ -906,7 +904,7 @@ bool Game::CheckExplosion() {
                     stack.pop();
                 }
 
-                Card hole{true};
+                Card hole{true}; // this is not correct
 
                 stack.emplace(hole);
                 break;
@@ -927,6 +925,12 @@ bool Game::CheckExplosion() {
     }
 
     return false;
+}
+
+bool Game::CheckExplosion() {
+    // return m_Board.CheckTwoLinesFull();
+
+    return true;
 }
 
 bool Game::GetIllusionEnabled() const { return m_IllusionEnabled; }

@@ -4,6 +4,7 @@
 
 #include "Interface/IAntrenament.h"
 #include "Interface/AlertWidget.h"
+#include "Interface/ExplosionDialog.h"
 #include "Interface/SpecialOptions.h"
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
@@ -159,7 +160,12 @@ void IAntrenament::SwitchTurn() {
 
     m_SelectedCard.reset();
 
-    if (m_CurrentGame.CheckExplosion()) {
+    if (m_CurrentGame.CheckExplosion() && m_CurrentGame.ExplosionEnabled() &&
+        m_CurrentGame.GetBoard().IsBoardLocked()) {
+        const auto explosionDialog = new ExplosionDialog(m_CurrentGame.GenerateExplosion(), this);
+
+        explosionDialog->exec();
+
         std::cout << "Explosion triggered\n";
     }
 
