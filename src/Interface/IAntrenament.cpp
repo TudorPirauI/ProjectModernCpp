@@ -4,6 +4,7 @@
 
 #include "Interface/IAntrenament.h"
 #include "Interface/AlertWidget.h"
+#include "Interface/SpecialOptions.h"
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
                            const std::array<bool, 3> &options, QWidget *parent) :
@@ -38,6 +39,17 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
     handLayout->addWidget(m_HandWidget);
 
     mainLayout->addLayout(handLayout);
+
+    if (options[0]) {
+        m_CurrentGame.GetPlayer1().GiveEterCard(PlayerTurn::Player1);
+        m_CurrentGame.GetPlayer2().GiveEterCard(PlayerTurn::Player2);
+    }
+
+    m_SpecialOptions = new SpecialOptions(this);
+
+    m_SpecialOptions->SetPowers(options[0], options[1], options[2]);
+
+    mainLayout->addWidget(m_SpecialOptions);
 
     parent->setLayout(mainLayout);
 }
@@ -95,6 +107,14 @@ void IAntrenament::SwitchTurn() {
 
         m_HandWidget->update();
         m_BoardWidget->update();
+
+        const auto shouldHaveEter = m_CurrentGame.GetEterEnabled();
+        const auto shouldHaveIllusion =
+                m_CurrentGame.GetIllusionEnabled() && !nextPlayer.GetHasIllusionInGame();
+        const auto shouldHaveExplosion =
+                m_CurrentGame.ExplosionEnabled() && nextPlayer.GetHasExplosion();
+
+        m_SpecialOptions->SetPowers(shouldHaveEter, shouldHaveIllusion, shouldHaveExplosion);
 
         return;
     }
