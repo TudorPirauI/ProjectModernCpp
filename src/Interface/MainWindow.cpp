@@ -432,3 +432,11 @@ void MainWindow::OnBackClicked() {
     m_CurrentState = GameState::MainMenu;
     DrawMenu();
 }
+
+QColor MainWindow::GetPlayer1Color() const { return m_Player1Color; }
+
+void MainWindow::SetPlayer1Color(const QColor &color) { m_Player1Color = color; }
+
+QColor MainWindow::GetPlayer2Color() const { return m_Player2Color; }
+
+void MainWindow::SetPlayer2Color(const QColor &color) { m_Player2Color = color; }

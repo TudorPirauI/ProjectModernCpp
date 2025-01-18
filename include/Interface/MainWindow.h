@@ -14,6 +14,12 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     void AddBackButton(const QWidget *widget);
 
+    QColor GetPlayer1Color() const;
+    void   SetPlayer1Color(const QColor &color);
+
+    QColor GetPlayer2Color() const;
+    void   SetPlayer2Color(const QColor &color);
+
 private slots:
     void OnResolutionChanged(const QString &resolution);
     void OnNewGameClicked();
