@@ -26,6 +26,8 @@ public:
 
     explicit DuelulElementelor(const std::string &nameOne, const std::string &nameTwo,
                                const std::array<bool, 3> &options);
+    void SetPlayerAbility1(const ElementPower &ability);
+    void SetPlayerAbility2(const ElementPower &ability);
     ~DuelulElementelor() override = default;
 };
 
