@@ -49,6 +49,9 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     m_SpecialOptions->SetPowers(options[0], options[1], options[2]);
 
+    connect(m_SpecialOptions, &SpecialOptions::OptionSelected, this,
+            &IAntrenament::OnModifierSelected);
+
     mainLayout->addWidget(m_SpecialOptions);
 
     parent->setLayout(mainLayout);
@@ -68,25 +71,58 @@ void IAntrenament::OnCardSelected(const int cardIndex) {
 
 void IAntrenament::OnPositionSelected(const int x, const int y) {
     if (!m_SelectedCard.has_value()) {
-        std::cerr << "Please select a card first!\n";
+        const auto alertWidget = new AlertWidget(m_ParentWidget);
+
+        alertWidget->ShowAlert("You must select a card first!");
+
         return;
     }
 
     if (!m_CurrentGame.GetBoard().IsPositionValid({x, y}, m_SelectedCard.value())) {
-        std::cerr << "You cannot place a card there!\n";
+        const auto alertWidget = new AlertWidget(m_ParentWidget);
+
+        alertWidget->ShowAlert("You can't place a card there!");
+
         return;
+    }
+
+    auto cardType = CardType::Normal;
+
+    if (m_IsIllusionSelected) {
+        cardType = CardType::Illusion;
     }
 
     const auto success = m_CurrentGame.GetBoard().InsertCard(
-            m_SelectedCard.value(), {x, y}, m_CurrentTurn, CardType::Normal, m_CurrentGame);
-
-    if (success != InsertOutputs::Success) {
-        std::cerr << "Could not place card on board\n";
-        return;
-    }
+            m_SelectedCard.value(), {x, y}, m_CurrentTurn, cardType, m_CurrentGame);
 
     auto &currentPlayer = m_CurrentTurn == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
                                                                : m_CurrentGame.GetPlayer2();
+
+    if (success != InsertOutputs::Success) {
+        std::cerr << "Could not place card on board\n";
+
+        const auto alertWidget = new AlertWidget(m_ParentWidget);
+
+        switch (success) {
+            case InsertOutputs::PositionInvalid:
+                alertWidget->ShowAlert("That's an invalid position!");
+                break;
+            case InsertOutputs::IllusionOccupied:
+                alertWidget->ShowAlert("Your card was not powerful enough to cover the Illusion!");
+                currentPlayer.RemoveCard(m_SelectedCard.value());
+                SwitchTurn();
+                return;
+            case InsertOutputs::EterOccupied:
+                alertWidget->ShowAlert("That position is occupied by an Eter card!");
+                break;
+            case InsertOutputs::GraniteOccupied:
+                alertWidget->ShowAlert("That position is blocked off!");
+                break;
+            default:
+                alertWidget->ShowAlert("Bruh");
+        }
+        return;
+    }
 
     currentPlayer.RemoveCard(m_SelectedCard.value());
 
