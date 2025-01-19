@@ -2,8 +2,8 @@
 // Created by Tudor on 1/17/2025.
 //
 
-#ifndef ETER_IDUELULELEMENTELOR_H
-#define ETER_IDUELULELEMENTELOR_H
+#ifndef ETER_IDUELULVRAJITORILOR_H
+#define ETER_IDUELULVRAJITORILOR_H
 
 #include "GameComponents/Card.h"
 #include "GameModes/DuelulVrajitorilor.h"
@@ -47,4 +47,5 @@ private:
     SpecialOptions *m_SpecialOptions;
     VrajitorWidget *m_WizardWidget;
 };
-#endif // ETER_IDUELULELEMENTELOR_H
+
+#endif // ETER_IDUELULVRAJITORILOR_H

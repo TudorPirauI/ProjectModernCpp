@@ -43,9 +43,15 @@ public:
     [[nodiscard]] bool GetHasExplosion() const;
     void               SetHasExplosion(bool value);
 
-    [[nodiscard]] Hand GetRemovedCards() const;
-    void               AddToRemovedCards(const Card &card);
-    void               RemoveFromRemovedCards(const Card &card);
+    [[nodiscard]] Hand &GetRemovedCards();
+    void                AddToRemovedCards(const Card &card);
+    void                RemoveFromRemovedCards(const Card &card);
+
+    void SetUserName(const std::string &userName);
+
+    void SetScore(int score);
+
+    void SetRemovedCards(const Hand &removedCards);
 
     // static void to_json(nlohmann::json &j, const Player &p);
     // static void from_json(const nlohmann::json &j, Player &p);

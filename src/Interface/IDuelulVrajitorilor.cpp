@@ -5,8 +5,8 @@
 
 IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo,
                                          const std::array<bool, 3> &options, QWidget *parent) :
-    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_CurrentExplosion({}),
-    m_SelectedCard(std::nullopt), m_ParentWidget(parent) {
+    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_SelectedCard(std::nullopt),
+    m_ParentWidget(parent) {
 
     const auto mainLayout = new QVBoxLayout(this);
 
@@ -208,7 +208,7 @@ void IDuelulVrajitorilor::OnDialogAccepted(const std::vector<QString> &info) {
             positionTwo.first  = positions[0].toInt();
             positionTwo.second = positions[1].toInt();
         } else if (data.contains("Card")) {
-            card.SetValue(data.split(" ")[1].toInt()); // todo: check this lol
+            card.SetValue(data.split(" ")[1].toInt());
         } else if (data.contains("Number")) {
             number = data.split(" ")[1].toInt();
         }
@@ -216,17 +216,13 @@ void IDuelulVrajitorilor::OnDialogAccepted(const std::vector<QString> &info) {
 
     // todo: switch case with the power type
 
-    // const auto result = m_CurrentGame.VerifyElementalPower(
-    //         m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
-    //                 ? m_CurrentGame.GetPlayerAbility1().GetPower()
-    //                 : m_CurrentGame.GetPlayerAbility2().GetPower(),
-    //         positionOne, positionTwo, card, m_CurrentGame.GetCurrentPlayerTurn(), number);
+    const auto result = m_CurrentGame.VerifyWizardPower(
+            m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                    ? m_CurrentGame.GetPlayerAbility1().GetType()
+                    : m_CurrentGame.GetPlayerAbility2().GetType(),
+            positionOne, positionTwo, card, m_CurrentGame.GetCurrentPlayerTurn());
 
-    const auto result = m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
-                                ? m_CurrentGame.GetPlayerAbility1().ActivatePower()
-                                : m_CurrentGame.GetPlayerAbility2().ActivatePower();
-
-    if (result != WizardPower::NoPower) {
+    if (result) {
         m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
         m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer().GetHand());
         if (m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1) {
@@ -238,6 +234,8 @@ void IDuelulVrajitorilor::OnDialogAccepted(const std::vector<QString> &info) {
         m_WizardWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
                                          ? m_CurrentGame.GetPlayerAbility1()
                                          : m_CurrentGame.GetPlayerAbility2());
+
+        std::cout << "Power activated\n";
     }
 }
 

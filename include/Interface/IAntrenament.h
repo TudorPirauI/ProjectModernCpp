@@ -18,6 +18,8 @@ public:
     IAntrenament(const std::string &nameOne, const std::string &nameTwo,
                  const std::array<bool, 3> &options, QWidget *parent);
 
+    IAntrenament(Antrenament &other, QWidget *parent);
+
 public slots:
     void OnCardSelected(int cardIndex);
     void OnPositionSelected(int x, int y);

@@ -11,6 +11,7 @@ public:
                               const Position &down, const Position &right);
 
     explicit Explosion(const std::vector<std::pair<Position, Effect>> &effectMap);
+    Explosion() = default;
 
     std::vector<std::pair<Position, Effect>> GetEffects() const;
 

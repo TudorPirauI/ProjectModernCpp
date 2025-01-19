@@ -3,20 +3,41 @@
 //
 
 #include "Interface/IAntrenament.h"
+
+#include "GameComponents/JsonUtils.h"
 #include "Interface/AlertWidget.h"
 #include "Interface/ExplosionDialog.h"
 #include "Interface/SpecialOptions.h"
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
                            const std::array<bool, 3> &options, QWidget *parent) :
-    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_CurrentExplosion({}),
-    m_SelectedCard(std::nullopt), m_ParentWidget(parent) {
+    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_SelectedCard(std::nullopt),
+    m_ParentWidget(parent) {
 
     const auto mainLayout = new QVBoxLayout(this);
 
     const auto backButton = new QPushButton("<", this);
     backButton->setFixedSize(30, 30);
-    connect(backButton, &QPushButton::clicked, this, [this] { emit GameFinished(); });
+    connect(backButton, &QPushButton::clicked, this, [this] {
+        const auto result = JsonUtils::TrainingModeToJson(m_CurrentGame);
+
+        const QString fileName =
+                QString("antrenament-%1-%2-%3.json")
+                        .arg(QString::fromStdString(m_CurrentGame.GetPlayer1().GetUserName()))
+                        .arg(QString::fromStdString(m_CurrentGame.GetPlayer2().GetUserName()))
+                        .arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
+
+        QFile saveFile(QCoreApplication::applicationDirPath() + "/saves/" + fileName);
+        if (!saveFile.open(QIODevice::WriteOnly)) {
+            QMessageBox::warning(this, "Error", "Could not save the game.");
+            return;
+        }
+
+        saveFile.write(QJsonDocument(result).toJson());
+        saveFile.close();
+
+        emit GameFinished();
+    });
     mainLayout->addWidget(backButton, 0, Qt::AlignLeft);
 
     m_BoardWidget = new BoardWidget(this, 3);
@@ -244,4 +265,82 @@ void IAntrenament::SwitchTurn() {
         m_HandWidget->update();
         m_BoardWidget->update();
     }
+}
+
+IAntrenament::IAntrenament(Antrenament &other, QWidget *parent) :
+    m_CurrentGame(other), m_SelectedCard(std::nullopt), m_ParentWidget() {
+
+    const auto mainLayout = new QVBoxLayout(this);
+
+    const auto backButton = new QPushButton("<", this);
+    backButton->setFixedSize(30, 30);
+    connect(backButton, &QPushButton::clicked, this, [this] {
+        const auto result = JsonUtils::TrainingModeToJson(m_CurrentGame);
+
+        const QString fileName =
+                QString("antrenament-%1-%2-%3.json")
+                        .arg(QString::fromStdString(m_CurrentGame.GetPlayer1().GetUserName()))
+                        .arg(QString::fromStdString(m_CurrentGame.GetPlayer2().GetUserName()))
+                        .arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
+
+        QFile saveFile(QCoreApplication::applicationDirPath() + "/saves/" + fileName);
+        if (!saveFile.open(QIODevice::WriteOnly)) {
+            QMessageBox::warning(this, "Error", "Could not save the game.");
+            return;
+        }
+
+        saveFile.write(QJsonDocument(result).toJson());
+        saveFile.close();
+
+        emit GameFinished();
+    });
+    mainLayout->addWidget(backButton, 0, Qt::AlignLeft);
+
+    m_BoardWidget = new BoardWidget(this, 3);
+    m_BoardWidget->setFixedSize(800, 800);
+    connect(m_BoardWidget, &BoardWidget::BoardSlotClicked, this, &IAntrenament::OnPositionSelected);
+    m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+
+    auto *boardLayout = new QHBoxLayout();
+    boardLayout->addStretch();
+    boardLayout->addWidget(m_BoardWidget);
+    boardLayout->addStretch();
+
+    mainLayout->addLayout(boardLayout);
+
+    if (other.GetEterEnabled()) {
+        m_CurrentGame.GetPlayer1().GiveEterCard(PlayerTurn::Player1);
+        m_CurrentGame.GetPlayer2().GiveEterCard(PlayerTurn::Player2);
+    }
+
+    m_CurrentGame.SetPlayerTurn(PlayerTurn::Player1);
+
+    m_HandWidget = new HandWidget(this);
+    m_HandWidget->SetCards(m_CurrentGame.GetPlayer1().GetHand());
+    m_HandWidget->setFixedSize(m_HandWidget->GetIdealWidth(), 200);
+    connect(m_HandWidget, &HandWidget::CardSelected, this, &IAntrenament::OnCardSelected);
+
+    auto *handLayout = new QHBoxLayout();
+    handLayout->addWidget(m_HandWidget);
+
+    mainLayout->addLayout(handLayout);
+
+    m_SpecialOptions = new SpecialOptions(this);
+
+    m_SpecialOptions->SetPowers(m_CurrentGame.GetEterEnabled(), m_CurrentGame.GetIllusionEnabled(),
+                                m_CurrentGame.ExplosionEnabled());
+
+    connect(m_SpecialOptions, &SpecialOptions::OptionSelected, this,
+            &IAntrenament::OnModifierSelected);
+
+    mainLayout->addWidget(m_SpecialOptions);
+
+    for (const auto &pos : m_CurrentGame.GetBoard().GetGameBoard() | std::views::keys) {
+        m_CurrentGame.GetBoard().UpdateCorners(pos);
+    }
+
+    m_CurrentGame.GetBoard().UpdateDiagonals();
+    m_CurrentGame.GetBoard().CheckIsLocked();
+
+    parent->setLayout(mainLayout);
 }

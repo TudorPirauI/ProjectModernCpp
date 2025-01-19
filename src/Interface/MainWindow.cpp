@@ -1,4 +1,6 @@
 #include "Interface/MainWindow.h"
+
+#include "GameComponents/JsonUtils.h"
 #include "Interface/AlertWidget.h"
 #include "Interface/IAntrenament.h"
 #include "Interface/IDuelulElementelor.h"
@@ -244,8 +246,14 @@ void MainWindow::DrawResumeGame() {
     label->setAlignment(Qt::AlignCenter);
     layout->addWidget(label);
 
-    m_GameListWidget           = new QListWidget(this);
-    const QStringList gameList = {"Game 1", "Game 2", "Game 3", "Game 4", "Game 5"};
+    m_GameListWidget = new QListWidget(this);
+    QDir savesDir(QCoreApplication::applicationDirPath() + "/saves");
+    if (!savesDir.exists()) {
+        savesDir.mkpath(".");
+    }
+
+    const auto gameList = savesDir.entryList(QStringList() << "*.json", QDir::Files);
+
     m_GameListWidget->addItems(gameList);
     m_GameListWidget->setFixedSize(400, 300);
     layout->addWidget(m_GameListWidget, 0, Qt::AlignCenter);
@@ -267,7 +275,31 @@ void MainWindow::DrawResumeGame() {
         if (selectedItem) {
             const QString selectedGame = selectedItem->text();
             qDebug() << "Loading game:" << selectedGame;
-            // Add logic to load the selected game
+
+            if (selectedItem->text().contains("antrenament")) {
+                QFile file(QCoreApplication::applicationDirPath() + "/saves/" +
+                           selectedItem->text());
+                if (!file.open(QIODevice::ReadOnly)) {
+                    QMessageBox::warning(this, "Error", "Could not open save file.");
+                    return;
+                }
+
+                const QByteArray    saveData = file.readAll();
+                const QJsonDocument jsonDoc(QJsonDocument::fromJson(saveData));
+                const QJsonObject   json = jsonDoc.object();
+
+                Antrenament game = JsonUtils::JsonToTrainingMode(json);
+
+                const auto  gameWidget      = new QWidget(this);
+                const auto *antrenamentGame = new IAntrenament(game, gameWidget);
+
+                connect(antrenamentGame, &IAntrenament::GameFinished, this,
+                        &MainWindow::OnGameFinished);
+
+                m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
+                m_StackedWidget->addWidget(gameWidget);
+                m_StackedWidget->setCurrentWidget(gameWidget);
+            }
         } else {
             qDebug() << "No game selected!";
         }

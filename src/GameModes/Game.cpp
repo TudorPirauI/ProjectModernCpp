@@ -160,16 +160,16 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
                 }
             }
 
-            const auto &checkNewBoard = RemadeGameBoard(newBoard);
+            if (const auto &remadeGameBoard = RemadeGameBoard(newBoard);
+                remadeGameBoard.GetMaxBoardSize() != 0) {
+                m_Board = remadeGameBoard;
+                m_Board.UpdateDiagonals();
+                m_Board.CheckIsLocked();
 
-            if (checkNewBoard.GetMaxBoardSize() == 0)
-                return false;
+                return true;
+            }
 
-            m_Board = checkNewBoard;
-            m_Board.CheckIsLocked();
-
-            m_Board.UpdateDiagonals();
-            return true;
+            return false;
         }
         case WizardPower::CoverOpponentCard: {
             if (auto &stack = board[position];
@@ -182,7 +182,9 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
         }
         case WizardPower::CreatePit: {
             if (auto &stack = board[position]; stack.empty()) {
-                stack.emplace(true);
+                Card cardHole{1};
+                cardHole.SetIsHole(true);
+                stack.emplace(cardHole);
                 return true;
             }
 
@@ -193,52 +195,84 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
             auto newBoard = RemadeGameBoard(m_Board);
 
             if (auto &newGameBoard = newBoard.GetGameBoard();
-                newGameBoard[posStack].empty() and !newGameBoard[position].empty() and
+                newGameBoard[posStack].empty() && !newGameBoard[position].empty() &&
                 newGameBoard[position].top().GetPlacedBy() == playerTurn) {
 
+                std::stack<Card> tempStack;
                 while (!newGameBoard[position].empty()) {
-                    const auto &cardOnTop = newGameBoard[position].top();
+                    tempStack.push(newGameBoard[position].top());
+                    newGameBoard[position].pop();
+                }
+
+                newGameBoard.erase(position);
+
+                newBoard.SetGameBoard(newGameBoard);
+
+                while (!tempStack.empty()) {
+                    const auto &cardOnTop = tempStack.top();
                     const auto  result    = newBoard.InsertCard(
-                            cardOnTop, position, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
+                            cardOnTop, posStack, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
 
                     if (result != InsertOutputs::Success)
                         return false;
+
+                    tempStack.pop();
                 }
 
-                while (!board[position].empty()) {
-                    board[position].pop();
-                }
+                newGameBoard.erase(position);
 
-                newBoard.UpdateDiagonals();
-                m_Board = newBoard;
-                return true;
+                if (const auto &remadeGameBoard = RemadeGameBoard(newBoard);
+                    remadeGameBoard.GetMaxBoardSize() != 0) {
+                    m_Board = remadeGameBoard;
+                    m_Board.UpdateDiagonals();
+                    m_Board.CheckIsLocked();
+
+                    return true;
+                }
+                return false;
             }
 
             return false;
         }
         case WizardPower::MoveOpponentStack: {
             auto newBoard = RemadeGameBoard(m_Board);
+            std::cout << "MoveOpponentStack\n";
             if (auto &newGameBoard = newBoard.GetGameBoard();
-                newGameBoard[posStack].empty() and !newGameBoard[position].empty() and
+                newGameBoard[posStack].empty() && !newGameBoard[position].empty() &&
                 newGameBoard[position].top().GetPlacedBy() != playerTurn) {
 
+                std::stack<Card> tempStack;
                 while (!newGameBoard[position].empty()) {
-                    const auto &cardOnTop = newGameBoard[position].top();
+                    tempStack.push(newGameBoard[position].top());
+                    newGameBoard[position].pop();
+                }
+
+                newGameBoard.erase(position);
+
+                newBoard.SetGameBoard(newGameBoard);
+
+                while (!tempStack.empty()) {
+                    const auto &cardOnTop = tempStack.top();
                     const auto  result    = newBoard.InsertCard(
-                            cardOnTop, position, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
+                            cardOnTop, posStack, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
 
                     if (result != InsertOutputs::Success)
                         return false;
+
+                    tempStack.pop();
                 }
 
-                while (!board[position].empty()) {
-                    board[position].pop();
+                newGameBoard.erase(position);
+
+                if (const auto &remadeGameBoard = RemadeGameBoard(newBoard);
+                    remadeGameBoard.GetMaxBoardSize() != 0) {
+                    m_Board = remadeGameBoard;
+                    m_Board.UpdateDiagonals();
+                    m_Board.CheckIsLocked();
+
+                    return true;
                 }
-
-                newBoard.UpdateDiagonals();
-                m_Board = newBoard;
-
-                return true;
+                return false;
             }
             return false;
         }
@@ -251,6 +285,9 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
             } else {
                 m_Player2.GiveEterCard(PlayerTurn::Player2);
             }
+
+            std::cout << "GainEterCard: true\n";
+
             return true;
         }
         case WizardPower::ShiftRowToEdge: {
@@ -896,10 +933,6 @@ Board Game::RemadeGameBoard(Board board) {
             const auto &card = tempStack.top();
             tempStack.pop();
 
-            std::cout << "[RMD BOARD]\nCard: " << card.GetValue()
-                      << "\nIs Hole: " << card.GetIsHole() << "\nPosition: (" << position.first
-                      << ", " << position.second << ")\n\n";
-
             const auto result = modifiedBoard.InsertCard(card, position, card.GetPlacedBy(),
                                                          GetCardType(card), *this, true);
 
@@ -1228,6 +1261,20 @@ void Game::SaveGameState() {
     //     std::cerr << "Unable to open file for saving game state\n";
     // }
 }
+void Game::SetBoard(const GameBoard &map) { m_Board.SetGameBoard(map); }
+
+void Game::SetPlayer1(const Player &player) { m_Player1 = player; }
+void Game::SetPlayer2(const Player &player) { m_Player2 = player; }
+
+void Game::SetCurrentPlayerTurn(const PlayerTurn &playerTurn) { m_PlayerTurn = playerTurn; }
+
+void Game::SetPlayer1Score(const int score) { m_Player1.SetScore(score); }
+void Game::SetPlayer2Score(const int score) { m_Player2.SetScore(score); }
+
+void Game::SetScoreToWin(int scoreToWin) { m_ScoreToWin = scoreToWin; }
+void Game::SetIllusionEnabled(bool value) { m_IllusionEnabled = value; }
+void Game::SetEterEnabled(bool value) { m_EterEnabled = value; }
+void Game::SetExplosionEnabled(bool value) { m_ExplosionEnabled = value; }
 
 // void Game::to_json(nlohmann::json &j, const Game &game) {
 //     j = nlohmann::json{

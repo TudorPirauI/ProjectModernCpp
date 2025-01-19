@@ -13,6 +13,8 @@ int Wizard::RandomPower() {
 
 Wizard::Wizard() : m_Type(static_cast<WizardPower>(RandomPower())) {}
 
+WizardPower Wizard::GetType() const { return m_Type; }
+
 std::vector<ElementPowerInfo> Wizard::GetWizardRequiredInfo() const {
     switch (m_Type) {
         case WizardPower::EliminateOpponentCard:
@@ -24,11 +26,11 @@ std::vector<ElementPowerInfo> Wizard::GetWizardRequiredInfo() const {
         case WizardPower::CreatePit:
             return {ElementPowerInfo::PositionOne};
         case WizardPower::MoveOwnStack:
-            return {ElementPowerInfo::PositionOne};
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo};
         case WizardPower::GainEterCard:
             return {};
         case WizardPower::MoveOpponentStack:
-            return {ElementPowerInfo::PositionOne};
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo};
         case WizardPower::ShiftRowToEdge:
             return {ElementPowerInfo::PositionOne};
         case WizardPower::NoPower:
@@ -37,6 +39,8 @@ std::vector<ElementPowerInfo> Wizard::GetWizardRequiredInfo() const {
             return {};
     }
 }
+
+void Wizard::SetType(WizardPower toInt) { m_Type = toInt; }
 
 bool Wizard::HasUsedPowerInMatch() const { return m_HasUsedPowerInMatch; }
 
@@ -80,6 +84,7 @@ WizardPower Wizard::ActivatePower() {
 }
 
 void Wizard::ResetPowerForNewMatch() { m_HasUsedPowerInMatch = false; }
+void Wizard::SetUsedPowerInMatch(bool toBool) { m_HasUsedPowerInMatch = toBool; }
 
 // void to_json(nlohmann::json &j, const Wizard &wizard) {
 //     j = nlohmann::json{{"type", static_cast<int>(wizard.m_Type)},
