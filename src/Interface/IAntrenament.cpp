@@ -84,10 +84,10 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     mainLayout->addWidget(m_SpecialOptions);
 
-    m_InactivityTimer = new QTimer(this);
-    m_InactivityTimer->setInterval(15000);
-    connect(m_InactivityTimer, &QTimer::timeout, this, &IAntrenament::ShowHintPopup);
-    m_InactivityTimer->start();
+    // m_InactivityTimer = new QTimer(this);
+    // m_InactivityTimer->setInterval(15000);
+    // connect(m_InactivityTimer, &QTimer::timeout, this, &IAntrenament::ShowHintPopup);
+    // m_InactivityTimer->start();
 
     if (m_Rapid > 0) {
         m_TurnTimer = new QTimer(this);
@@ -157,7 +157,7 @@ void IAntrenament::ShowHintPopup() {
 }
 
 void IAntrenament::OnCardSelected(const int cardIndex) {
-    m_InactivityTimer->start(); // Reset the timer
+    // m_InactivityTimer->start(); // Reset the timer
 
     const auto currentPlayer = m_CurrentGame.GetCurrentPlayer();
 
@@ -170,7 +170,7 @@ void IAntrenament::OnCardSelected(const int cardIndex) {
 }
 
 void IAntrenament::OnPositionSelected(const int x, const int y) {
-    m_InactivityTimer->start(); // Reset the timer
+    // m_InactivityTimer->start(); // Reset the timer
 
     if (!m_SelectedCard.has_value()) {
         const auto alertWidget = new AlertWidget(m_ParentWidget);
@@ -254,7 +254,7 @@ void IAntrenament::OnModifierSelected(const int modifier) {
 void IAntrenament::OnExplosion() { m_CurrentGame.ApplyExplosion(m_CurrentExplosion); }
 
 void IAntrenament::SwitchTurn() {
-    m_InactivityTimer->start();
+    // m_InactivityTimer->start();
     StopTurnTimer();
     StartTurnTimer();
 
@@ -429,10 +429,10 @@ IAntrenament::IAntrenament(Antrenament &other, QWidget *parent) :
     m_CurrentGame.GetBoard().UpdateDiagonals();
     m_CurrentGame.GetBoard().CheckIsLocked();
 
-    m_InactivityTimer = new QTimer(this); // Initialize the timer
-    m_InactivityTimer->setInterval(15000); // Set the interval to 15 seconds
-    connect(m_InactivityTimer, &QTimer::timeout, this, &IAntrenament::ShowHintPopup);
-    m_InactivityTimer->start(); // Start the timer
+    // m_InactivityTimer = new QTimer(this); // Initialize the timer
+    // m_InactivityTimer->setInterval(15000); // Set the interval to 15 seconds
+    // connect(m_InactivityTimer, &QTimer::timeout, this, &IAntrenament::ShowHintPopup);
+    // m_InactivityTimer->start(); // Start the timer
 
     parent->setLayout(mainLayout);
 }

@@ -11,7 +11,7 @@ void ElementPower::RandomPower() {
     static std::mt19937                  gen(rd());
     static std::uniform_int_distribution dis(0, totalPowers - 1);
 
-    m_Power = static_cast<ElementIndexPower>(dis(gen));
+    m_Power = ElementIndexPower::Gale;
 }
 
 std::vector<ElementPowerInfo> ElementPower::GetRequiredInfo(const ElementIndexPower &power) {

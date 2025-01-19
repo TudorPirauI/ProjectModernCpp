@@ -40,7 +40,7 @@ private:
 
     // TODO: We should load the settings from a file and only fall back to these defaults if the
     // file is missing or corrupted
-    QString m_GameResolution{"1920x1080"};
+    QString m_GameResolution{"2560x1440"};
     bool    m_FullScreen{true};
     int     m_MasterVolume{100};
     int     m_MusicVolume{100};

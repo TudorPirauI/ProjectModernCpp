@@ -11,7 +11,7 @@ int Wizard::RandomPower() {
     return dis(gen);
 }
 
-Wizard::Wizard() : m_Type(static_cast<WizardPower>(RandomPower())) {}
+Wizard::Wizard() : m_Type(WizardPower::CreatePit) {}
 
 WizardPower Wizard::GetType() const { return m_Type; }
 

@@ -49,7 +49,7 @@ private:
     HandWidget     *m_HandWidget;
     SpecialOptions *m_SpecialOptions;
 
-    QTimer *m_InactivityTimer;
+    // QTimer *m_InactivityTimer;
     QTimer *m_TurnTimer;
     QLabel *m_TimerLabel;
     int     m_Rapid;

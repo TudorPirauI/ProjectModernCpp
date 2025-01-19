@@ -27,22 +27,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_CurrentState(Ga
         showNormal();
     }
 
-    //    m_MediaPlayer = new QMediaPlayer(this);
-    //    m_AudioOutput = new QAudioOutput(this);
-    //
-    //    m_MediaPlayer->setAudioOutput(m_AudioOutput);
-    //    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
-    //
-    //    const QString musicFilePath = ":/resources/sounds/background_music.wav";
-    //    if (!QFile::exists(musicFilePath)) {
-    //        qDebug() << "Music file not found:" << musicFilePath << '\n';
-    //    } else {
-    //        m_MediaPlayer->setSource(QUrl::fromLocalFile(musicFilePath));
-    //        m_MediaPlayer->setLoops(QMediaPlayer::Infinite);
-    //        std::cout << "Playing music\n";
-    //    }
-    //
-    //    m_MediaPlayer->play();
+    m_MediaPlayer = new QMediaPlayer(this);
+    m_AudioOutput = new QAudioOutput(this);
+
+    m_MediaPlayer->setAudioOutput(m_AudioOutput);
+    m_AudioOutput->setVolume(m_MusicVolume / 700.0);
+
+    const QString musicFilePath =
+            "/home/mavri/Documents/GitHub/ProjectModernCpp/resources/sounds/background_music.wav";
+    if (!QFile::exists(musicFilePath)) {
+        qDebug() << "Music file not found:" << musicFilePath << '\n';
+    } else {
+        m_MediaPlayer->setSource(QUrl::fromLocalFile(musicFilePath));
+        m_MediaPlayer->setLoops(QMediaPlayer::Infinite);
+        std::cout << "Playing music\n";
+    }
+
+    m_MediaPlayer->play();
 
     DrawMenu();
 }
@@ -363,8 +364,8 @@ void MainWindow::DrawOptions() {
 
     CreateLabel("Game Resolution:", optionsWidget);
     const auto resolutionComboBox = new QComboBox(this);
-    resolutionComboBox->addItems({"1920x1080", "1280x720", "1024x768"});
-    resolutionComboBox->setCurrentText(m_GameResolution.isEmpty() ? "1920x1080" : m_GameResolution);
+    resolutionComboBox->addItems({"2560x1440", "1280x720", "1024x768"});
+    resolutionComboBox->setCurrentText(m_GameResolution.isEmpty() ? "2560x1440" : m_GameResolution);
     layout->addWidget(resolutionComboBox);
     connect(resolutionComboBox, &QComboBox::currentTextChanged, this,
             &MainWindow::OnResolutionChanged);
@@ -474,17 +475,6 @@ QVBoxLayout *MainWindow::CreateLimitedLayout(QWidget *widget) {
 void MainWindow::OnNewGameClicked() {
     m_CurrentState = GameState::NewGame;
     DrawNewGame();
-
-    // Use the resource path
-    //    const QString musicFilePath = ":/background_music.mp3";
-    //    m_MediaPlayer->setSource(QUrl(musicFilePath));
-    //    m_AudioOutput->setVolume(m_MusicVolume / 100.0);
-    //    m_MediaPlayer->play();
-
-    // Check for errors
-    //    if (m_MediaPlayer->error() != QMediaPlayer::NoError) {
-    //        qDebug() << "Error playing music:" << m_MediaPlayer->errorString();
-    //    }
 }
 
 void MainWindow::OnGameFinished() {
