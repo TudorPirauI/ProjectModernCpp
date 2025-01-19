@@ -49,3 +49,5 @@ cmake ..
 make
 ```
 You should see the `Eter` executable. If needed, `chmod +x` it, then execute it.
+
+Youtube video: https://www.youtube.com/watch?v=DpzmA7O061o
