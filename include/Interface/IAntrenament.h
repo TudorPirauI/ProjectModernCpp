@@ -26,7 +26,8 @@ public slots:
     void OnModifierSelected(int modifier);
     void OnExplosion();
     void ShowHintPopup();
-    void OnTurnTimeExpired(); // New slot for handling turn time expiration
+    void OnTurnTimeExpired();
+    void UpdateTimerLabel();
 
 signals:
     void GameFinished();
@@ -49,7 +50,9 @@ private:
     SpecialOptions *m_SpecialOptions;
 
     QTimer *m_InactivityTimer;
-    QTimer *m_TurnTimer; // New QTimer for turn time limit
-    int     m_Rapid; // Time limit for each turn in seconds
+    QTimer *m_TurnTimer;
+    QLabel *m_TimerLabel;
+    int     m_Rapid;
+    int     m_TimeRemaining;
 };
 #endif // IANTRENAMENT_H

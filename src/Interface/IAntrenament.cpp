@@ -12,9 +12,15 @@
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
                            const std::array<bool, 3> &options, QWidget *parent, int rapid) :
     QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_SelectedCard(std::nullopt),
-    m_ParentWidget(parent), m_Rapid(rapid) {
+    m_ParentWidget(parent), m_Rapid(rapid), m_TimeRemaining(rapid) {
 
     const auto mainLayout = new QVBoxLayout(this);
+
+    if (m_Rapid > 0) {
+        m_TimerLabel = new QLabel(this);
+        m_TimerLabel->setAlignment(Qt::AlignCenter);
+        mainLayout->addWidget(m_TimerLabel);
+    }
 
     const auto backButton = new QPushButton("<", this);
     backButton->setFixedSize(30, 30);
@@ -85,12 +91,35 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     if (m_Rapid > 0) {
         m_TurnTimer = new QTimer(this);
-        m_TurnTimer->setInterval(m_Rapid * 1000);
-        connect(m_TurnTimer, &QTimer::timeout, this, &IAntrenament::OnTurnTimeExpired);
+        m_TurnTimer->setInterval(1000); // Update every second
+        connect(m_TurnTimer, &QTimer::timeout, this, &IAntrenament::UpdateTimerLabel);
         StartTurnTimer();
     }
 
     parent->setLayout(mainLayout);
+}
+
+void IAntrenament::UpdateTimerLabel() {
+    if (m_TimeRemaining > 0) {
+        m_TimeRemaining--;
+        m_TimerLabel->setText(QString("Time remaining: %1 seconds").arg(m_TimeRemaining));
+    } else {
+        OnTurnTimeExpired();
+    }
+}
+
+void IAntrenament::StartTurnTimer() {
+    if (m_Rapid > 0) {
+        m_TimeRemaining = m_Rapid;
+        m_TurnTimer->start();
+        UpdateTimerLabel();
+    }
+}
+
+void IAntrenament::StopTurnTimer() {
+    if (m_Rapid > 0) {
+        m_TurnTimer->stop();
+    }
 }
 
 void IAntrenament::OnTurnTimeExpired() {
@@ -108,18 +137,6 @@ void IAntrenament::OnTurnTimeExpired() {
                                " wins the game!");
     }
     QTimer::singleShot(3000, this, &IAntrenament::GameFinished);
-}
-
-void IAntrenament::StartTurnTimer() {
-    if (m_Rapid > 0) {
-        m_TurnTimer->start();
-    }
-}
-
-void IAntrenament::StopTurnTimer() {
-    if (m_Rapid > 0) {
-        m_TurnTimer->stop();
-    }
 }
 
 void IAntrenament::ShowHintPopup() {
