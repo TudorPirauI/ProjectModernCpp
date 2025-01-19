@@ -1,9 +1,8 @@
 #include "Interface/MainWindow.h"
-#include <QListWidget>
-
 #include "Interface/AlertWidget.h"
 #include "Interface/IAntrenament.h"
 #include "Interface/IDuelulElementelor.h"
+#include "Interface/IDuelulVrajitorilor.h"
 
 QColor MainWindow::m_Player1Color{QColor(173, 216, 230)};
 QColor MainWindow::m_Player2Color{QColor(255, 105, 97)};
@@ -204,6 +203,15 @@ void MainWindow::DrawNewGame() {
 
                     connect(duelulElementelorGame, &IDuelulElementelor::GameFinished, this,
                             &MainWindow::OnGameFinished);
+                } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {
+                    const std::array options = {eterResponse, illusionResponse, explosionResponse};
+                    const auto      *duelulVrajitorilorGame =
+                            new IDuelulVrajitorilor(player1Name.toStdString(),
+                                                    player2Name.toStdString(), options, gameWidget);
+
+                    connect(duelulVrajitorilorGame, &IDuelulVrajitorilor::GameFinished, this,
+                            &MainWindow::OnGameFinished);
+
                 } else {
                     throw std::runtime_error("Invalid game mode selected");
                 }

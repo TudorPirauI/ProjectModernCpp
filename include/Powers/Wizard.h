@@ -4,6 +4,11 @@
 
 #ifndef WIZARD_H
 #define WIZARD_H
+#include <iosfwd>
+
+#include <vector>
+
+#include "ElementPower.h"
 
 enum class WizardPower {
     EliminateOpponentCard,
@@ -29,8 +34,12 @@ public:
     Wizard &operator=(Wizard &&other) noexcept = default;
     Wizard();
     ~Wizard() = default;
-    static int                RandomPower();
-    [[nodiscard]] std::string GetWizardPowerDescription() const;
+
+    [[nodiscard]] bool HasUsedPowerInMatch() const;
+
+    [[nodiscard]] std::string                   GetWizardPowerDescription() const;
+    [[nodiscard]] std::vector<ElementPowerInfo> GetWizardRequiredInfo() const;
+    static int                                  RandomPower();
 
     WizardPower ActivatePower();
     void        ResetPowerForNewMatch();

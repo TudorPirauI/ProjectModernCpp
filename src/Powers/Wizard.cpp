@@ -1,6 +1,8 @@
 
 #include "Powers/Wizard.h"
 
+#include "Powers/ElementPower.h"
+
 int Wizard::RandomPower() {
     static std::random_device            rd;
     static std::mt19937                  gen(rd());
@@ -10,6 +12,33 @@ int Wizard::RandomPower() {
 }
 
 Wizard::Wizard() : m_Type(static_cast<WizardPower>(RandomPower())) {}
+
+std::vector<ElementPowerInfo> Wizard::GetWizardRequiredInfo() const {
+    switch (m_Type) {
+        case WizardPower::EliminateOpponentCard:
+            return {ElementPowerInfo::PositionOne};
+        case WizardPower::RemoveRow:
+            return {ElementPowerInfo::PositionOne};
+        case WizardPower::CoverOpponentCard:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::Card};
+        case WizardPower::CreatePit:
+            return {ElementPowerInfo::PositionOne};
+        case WizardPower::MoveOwnStack:
+            return {ElementPowerInfo::PositionOne};
+        case WizardPower::GainEterCard:
+            return {};
+        case WizardPower::MoveOpponentStack:
+            return {ElementPowerInfo::PositionOne};
+        case WizardPower::ShiftRowToEdge:
+            return {ElementPowerInfo::PositionOne};
+        case WizardPower::NoPower:
+            return {};
+        default:
+            return {};
+    }
+}
+
+bool Wizard::HasUsedPowerInMatch() const { return m_HasUsedPowerInMatch; }
 
 std::string Wizard::GetWizardPowerDescription() const {
     switch (m_Type) {
