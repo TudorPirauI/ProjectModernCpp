@@ -375,5 +375,10 @@ IAntrenament::IAntrenament(Antrenament &other, QWidget *parent) :
     m_CurrentGame.GetBoard().UpdateDiagonals();
     m_CurrentGame.GetBoard().CheckIsLocked();
 
+    m_InactivityTimer = new QTimer(this); // Initialize the timer
+    m_InactivityTimer->setInterval(15000); // Set the interval to 15 seconds
+    connect(m_InactivityTimer, &QTimer::timeout, this, &IAntrenament::ShowHintPopup);
+    m_InactivityTimer->start(); // Start the timer
+
     parent->setLayout(mainLayout);
 }
