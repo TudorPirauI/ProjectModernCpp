@@ -10,7 +10,7 @@
 #include "Interface/SpecialOptions.h"
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
-                           const std::array<bool, 3> &options, QWidget *parent) :
+                           const std::array<bool, 3> &options, QWidget *parent, bool rapid) :
     QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_SelectedCard(std::nullopt),
     m_ParentWidget(parent) {
 
@@ -78,10 +78,34 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
 
     mainLayout->addWidget(m_SpecialOptions);
 
+    m_InactivityTimer = new QTimer(this);
+    m_InactivityTimer->setInterval(15000);
+    connect(m_InactivityTimer, &QTimer::timeout, this, &IAntrenament::ShowHintPopup);
+    m_InactivityTimer->start();
+
     parent->setLayout(mainLayout);
 }
 
+void IAntrenament::ShowHintPopup() {
+    const auto alertWidget = new AlertWidget(m_ParentWidget);
+    const auto move        = m_CurrentGame.RecommendMove();
+
+    const auto pos  = move.first;
+    const auto card = move.second;
+
+    const QString hintMessage =
+            QString("You've been inactive for too long! Here's a hint: \nPlace your "
+                    "%1 card at (%2, %3)")
+                    .arg(QString::fromStdString(std::to_string(card.GetValue())))
+                    .arg(pos.first)
+                    .arg(pos.second);
+
+    alertWidget->ShowAlert(hintMessage, 4500);
+}
+
 void IAntrenament::OnCardSelected(const int cardIndex) {
+    m_InactivityTimer->start(); // Reset the timer
+
     const auto currentPlayer = m_CurrentGame.GetCurrentPlayer();
 
     if (cardIndex >= currentPlayer.GetHand().size() || cardIndex < 0) {
@@ -93,6 +117,8 @@ void IAntrenament::OnCardSelected(const int cardIndex) {
 }
 
 void IAntrenament::OnPositionSelected(const int x, const int y) {
+    m_InactivityTimer->start(); // Reset the timer
+
     if (!m_SelectedCard.has_value()) {
         const auto alertWidget = new AlertWidget(m_ParentWidget);
 
@@ -175,6 +201,8 @@ void IAntrenament::OnModifierSelected(const int modifier) {
 void IAntrenament::OnExplosion() { m_CurrentGame.ApplyExplosion(m_CurrentExplosion); }
 
 void IAntrenament::SwitchTurn() {
+    m_InactivityTimer->start();
+
     m_IsIllusionSelected = false;
 
     m_SelectedCard.reset();
@@ -213,7 +241,12 @@ void IAntrenament::SwitchTurn() {
         return;
     }
 
-    const auto &winner = m_CurrentGame.GetCurrentPlayer();
+    auto &winner = m_CurrentGame.GetCurrentPlayer();
+
+    if (winningReason == Game::WinningCondition::Points) {
+        winner = m_CurrentGame.GetWinByPoints() == PlayerTurn::Player1 ? m_CurrentGame.GetPlayer1()
+                                                                       : m_CurrentGame.GetPlayer2();
+    }
 
     m_CurrentGame.IncreasePlayerScore(m_CurrentGame.GetCurrentPlayerTurn());
 
@@ -247,7 +280,7 @@ void IAntrenament::SwitchTurn() {
     if (currentScore >= m_CurrentGame.GetScoreToWin()) {
         alertWidget->ShowAlert(QString::fromStdString(winner.GetUserName() + " has won the game!"));
 
-        QTimer::singleShot(1500, this, &IAntrenament::GameFinished);
+        QTimer::singleShot(1000, this, &IAntrenament::GameFinished);
     } else {
         const auto playerOneStats = m_CurrentGame.GetPlayer1().GetUserName() + " - " +
                                     std::to_string(m_CurrentGame.GetPlayer1Score());

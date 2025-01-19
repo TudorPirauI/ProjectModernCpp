@@ -64,6 +64,6 @@ void ElementDialog::onOkClicked() {
         }
     }
 
-    emit DialogAccepted(info);
+    emit DialogAccepted(info, false);
     accept();
 }

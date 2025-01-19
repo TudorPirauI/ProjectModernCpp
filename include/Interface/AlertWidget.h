@@ -10,7 +10,7 @@ class AlertWidget final : public QWidget {
 
 public:
     explicit AlertWidget(QWidget *parent = nullptr);
-    void ShowAlert(const QString &message);
+    void ShowAlert(const QString &message, int duration = 1500);
 
 private:
     QLabel *m_MessageLabel;

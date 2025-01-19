@@ -61,6 +61,6 @@ void VrajitorDialog::onOkClicked() {
         }
     }
 
-    emit DialogAccepted(info);
+    emit DialogAccepted(info, true);
     accept();
 }

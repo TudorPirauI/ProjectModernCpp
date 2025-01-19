@@ -3,6 +3,7 @@
 #include "GameComponents/JsonUtils.h"
 #include "Interface/AlertWidget.h"
 #include "Interface/IAntrenament.h"
+#include "Interface/IDuelulCombinat.h"
 #include "Interface/IDuelulElementelor.h"
 #include "Interface/IDuelulVrajitorilor.h"
 
@@ -118,7 +119,7 @@ void MainWindow::DrawNewGame() {
     CreateLabel("Select Game Mode:", newGameWidget);
     auto                          *buttonGroup = new QButtonGroup(this);
     const std::vector<std::string> gameModes   = {"Antrenament", "Duelul Vrajitorilor",
-                                                  "Duelul Elementelor", "Turneu", "Rapid"};
+                                                  "Duelul Elementelor", "Duelul Combinat"};
 
     const auto modeLayout = new QHBoxLayout();
     const auto modeWidget = new QWidget(this);
@@ -214,8 +215,14 @@ void MainWindow::DrawNewGame() {
                     connect(duelulVrajitorilorGame, &IDuelulVrajitorilor::GameFinished, this,
                             &MainWindow::OnGameFinished);
 
-                } else {
-                    throw std::runtime_error("Invalid game mode selected");
+                } else if (m_CurrentGameMode == "Duelul Combinat") {
+                    const std::array options = {eterResponse, illusionResponse, explosionResponse};
+                    const auto      *duelulVrajitorilorGame =
+                            new IDuelulCombinat(player1Name.toStdString(),
+                                                player2Name.toStdString(), options, gameWidget);
+
+                    connect(duelulVrajitorilorGame, &IDuelulCombinat::GameFinished, this,
+                            &MainWindow::OnGameFinished);
                 }
 
                 m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());

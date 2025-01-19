@@ -52,6 +52,9 @@ void Game::SwapTurn() {
 Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
 
 Game::WinningCondition Game::CheckWinningConditions() {
+    if (IsStalemate())
+        return WinningCondition::Points;
+
     const auto &lines             = m_Board.GetLineAdvantage();
     const auto &columns           = m_Board.GetColumnAdvantage();
     const auto &principalDiagonal = m_Board.GetPrincipalDiagonalAdvantage();
@@ -112,6 +115,54 @@ void Game::IncreasePlayerScore(const PlayerTurn turn) {
 }
 
 void Game::SetNextPlayerTurn(const PlayerTurn playerTurn) { m_PlayerTurn = playerTurn; }
+
+bool Game::IsStalemate() {
+    const auto  currentPlayer = GetCurrentPlayer();
+    const auto &playerHand    = currentPlayer.GetHand();
+
+    if (playerHand.empty())
+        return true;
+
+    const auto board = m_Board.GetGameBoard();
+
+    if (!m_Board.IsBoardLocked())
+        return false;
+
+    const auto highestCard =
+            std::ranges::max_element(playerHand, [](const auto &lhs, const auto &rhs) {
+                return lhs.GetValue() < rhs.GetValue();
+            });
+
+    if (m_Board.GetGameBoard().size() != m_Board.GetMaxBoardSize() * m_Board.GetMaxBoardSize())
+        return false;
+
+    for (const auto &pos : board | std::views::keys) {
+        if (m_Board.IsPositionValid(pos, *highestCard)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+PlayerTurn Game::GetWinByPoints() {
+    const auto board = m_Board.GetGameBoard();
+
+    int playerOneScore = 0;
+    int playerTwoScore = 0;
+
+    for (const auto &stack : board | std::views::values) {
+        const auto cardOnTop = stack.top();
+
+        if (cardOnTop.GetPlacedBy() == PlayerTurn::Player1) {
+            playerOneScore += cardOnTop.GetValue();
+        } else {
+            playerTwoScore += cardOnTop.GetValue();
+        }
+    }
+
+    return playerOneScore > playerTwoScore ? PlayerTurn::Player1 : PlayerTurn::Player2;
+}
 
 void Game::SetNewCards() {}
 
@@ -1275,52 +1326,3 @@ void Game::SetScoreToWin(int scoreToWin) { m_ScoreToWin = scoreToWin; }
 void Game::SetIllusionEnabled(bool value) { m_IllusionEnabled = value; }
 void Game::SetEterEnabled(bool value) { m_EterEnabled = value; }
 void Game::SetExplosionEnabled(bool value) { m_ExplosionEnabled = value; }
-
-// void Game::to_json(nlohmann::json &j, const Game &game) {
-//     j = nlohmann::json{
-//             {"boardSize", (static_cast<Game>(game).GetBoard().GetMaxBoardSize())},
-//             {"scoreToWin", game.GetScoreToWin()},
-//             {"player1", static_cast<Game>(game).GetPlayer1()},
-//             {"player2", static_cast<Game>(game).GetPlayer2()},
-//             {"options",
-//              {game.GetEterEnabled(), game.GetIllusionEnabled(), game.ExplosionEnabled()}},
-//             {"currentPlayer", game.GetCurrentPlayerTurn()},
-//             {"scorePlayer1", game.GetPlayer1Score()},
-//             {"scorePlayer2", game.GetPlayer2Score()},
-//             {"lastPositionPlayer1", static_cast<Game>(game).GetLastCardPlayer1()},
-//             {"lastPositionPlayer2", static_cast<Game>(game).GetLastCardPlayer2()},
-//             {"rowPlayer1", game.GetRowPlayer1()},
-//             {"rowPlayer2", game.GetRowPlayer2()}};
-// }
-//
-// void Game::from_json(const nlohmann::json &j, Game &game) {
-//     int                 boardSize, scoreToWin;
-//     std::string         nameOne, nameTwo;
-//     std::array<bool, 3> options;
-//     PlayerTurn          currentPlayer;
-//     int                 scorePlayer1, scorePlayer2;
-//     Position            lastPositionPlayer1, lastPositionPlayer2;
-//     int                 rowPlayer1, rowPlayer2;
-//
-//     j.at("boardSize").get_to(boardSize);
-//     j.at("scoreToWin").get_to(scoreToWin);
-//     j.at("player1").get_to(nameOne);
-//     j.at("player2").get_to(nameTwo);
-//     j.at("options").get_to(options);
-//     j.at("currentPlayer").get_to(currentPlayer);
-//     j.at("scorePlayer1").get_to(scorePlayer1);
-//     j.at("scorePlayer2").get_to(scorePlayer2);
-//     j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
-//     j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
-//     j.at("rowPlayer1").get_to(rowPlayer1);
-//     j.at("rowPlayer2").get_to(rowPlayer2);
-//
-//     game = Game(boardSize, scoreToWin, nameOne, nameTwo, options);
-//     game.SetNextPlayerTurn(currentPlayer);
-//     game.IncreasePlayerScore(PlayerTurn::Player1);
-//     game.IncreasePlayerScore(PlayerTurn::Player2);
-//     game.SetLastCardPlayer1(lastPositionPlayer1);
-//     game.SetLastCardPlayer2(lastPositionPlayer2);
-//     game.SetRowPlayer1(rowPlayer1);
-//     game.SetRowPlayer2(rowPlayer2);
-// }

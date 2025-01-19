@@ -14,7 +14,7 @@ public:
     explicit VrajitorDialog(const Wizard &power, QWidget *parent = nullptr);
 
 signals:
-    void DialogAccepted(const std::vector<QString> &info);
+    void DialogAccepted(const std::vector<QString> &info, bool isWizardPower);
 
 private slots:
     void onOkClicked();

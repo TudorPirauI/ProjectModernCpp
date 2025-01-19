@@ -20,6 +20,7 @@ public:
         ColumnWin,
         DiagonalPrincipalWin,
         DiagonalSecondaryWin,
+        Points
     };
 
     virtual ~Game() = default;
@@ -41,6 +42,8 @@ public:
     void                     SetGameState(GameState gameState);
     void                     IncreasePlayerScore(PlayerTurn turn);
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
+    [[nodiscard]] bool       IsStalemate();
+    PlayerTurn               GetWinByPoints();
     virtual void             SetNewCards();
 
     void SetPlayerTurn(const PlayerTurn &playerTurn);
