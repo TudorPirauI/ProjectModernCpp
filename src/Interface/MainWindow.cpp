@@ -170,19 +170,28 @@ void MainWindow::DrawNewGame() {
                 const bool illusionResponse  = illusionCheckBox->isChecked();
                 const bool explosionResponse = explosionCheckBox->isChecked();
 
-                m_CurrentGameMode = buttonGroup->checkedButton()->text().toStdString();
+                m_CurrentGameMode =
+                        buttonGroup->checkedButton()->text().replace("&", "").toStdString();
+                // this removes the mnemonic character from the text (thanks QT)
                 std::cout << "Selected game mode: " << m_CurrentGameMode << '\n';
 
                 const auto gameWidget = new QWidget(this);
 
-                if (m_CurrentGameMode == "&Antrenament" || m_CurrentGameMode == "Antrenament") {
-                    [[maybe_unused]]
+                if (m_CurrentGameMode == "Antrenament") {
                     const std::array options = {eterResponse, illusionResponse, explosionResponse};
                     const auto      *antrenamentGame =
                             new IAntrenament(player1Name.toStdString(), player2Name.toStdString(),
                                              options, gameWidget);
 
                     connect(antrenamentGame, &IAntrenament::GameFinished, this,
+                            &MainWindow::OnGameFinished);
+                } else if (m_CurrentGameMode == "Duelul Elementelor") {
+                    const std::array options = {eterResponse, illusionResponse, explosionResponse};
+                    const auto      *duelulElementelorGame =
+                            new IDuelulElementelor(player1Name.toStdString(),
+                                                   player2Name.toStdString(), options, gameWidget);
+
+                    connect(duelulElementelorGame, &IDuelulElementelor::GameFinished, this,
                             &MainWindow::OnGameFinished);
                 } else {
                     throw std::runtime_error("Invalid game mode selected");

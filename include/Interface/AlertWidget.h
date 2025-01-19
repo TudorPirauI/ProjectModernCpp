@@ -5,8 +5,6 @@
 #ifndef ALERTWIDGET_H
 #define ALERTWIDGET_H
 
-#include "pch.h"
-
 class AlertWidget final : public QWidget {
     Q_OBJECT
 

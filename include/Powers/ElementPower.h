@@ -32,6 +32,13 @@ enum class ElementIndexPower {
     Boulder
 };
 
+/*
+* const ElementIndexPower &power, const Position &firstPosition,
+                                const Position &secondPosition, const Card &card,
+                                const PlayerTurn playerTurn, int chosenNumber
+ */
+enum class ElementPowerInfo { PositionOne, PositionTwo, Card, Number };
+
 class ElementPower {
     ElementIndexPower m_Power;
 
@@ -50,8 +57,9 @@ public:
 
     ElementPower &operator=(ElementPower &&other) noexcept = default;
 
-    void               RandomPower();
-    static std::string GetElementPowerDescription(ElementIndexPower power);
+    void                                 RandomPower();
+    static std::vector<ElementPowerInfo> GetRequiredInfo(const ElementIndexPower &power);
+    static std::string                   GetElementPowerDescription(ElementIndexPower power);
 
     ~ElementPower() = default;
 

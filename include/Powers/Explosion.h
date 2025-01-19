@@ -2,7 +2,6 @@
 #define EXPLOSION_H
 
 #include "../include/GameComponents/Card.h"
-#include "pch.h"
 
 class Explosion {
 public:

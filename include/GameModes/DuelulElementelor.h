@@ -20,9 +20,9 @@ private:
     ElementPower m_AbilityPlayer2;
 
 public:
-    void         SetNewCards() override;
-    ElementPower GetPlayerAbility1() const;
-    ElementPower GetPlayerAbility2() const;
+    void                       SetNewCards() override;
+    [[nodiscard]] ElementPower GetPlayerAbility1() const;
+    [[nodiscard]] ElementPower GetPlayerAbility2() const;
 
     explicit DuelulElementelor(const std::string &nameOne, const std::string &nameTwo,
                                const std::array<bool, 3> &options);

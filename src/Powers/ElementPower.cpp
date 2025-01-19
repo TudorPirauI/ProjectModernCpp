@@ -14,6 +14,62 @@ void ElementPower::RandomPower() {
     m_Power = static_cast<ElementIndexPower>(dis(gen));
 }
 
+std::vector<ElementPowerInfo> ElementPower::GetRequiredInfo(const ElementIndexPower &power) {
+    switch (power) {
+        case ElementIndexPower::ControlledExplosion:
+            return {};
+        case ElementIndexPower::Destruction:
+            return {};
+        case ElementIndexPower::Flames:
+            return {ElementPowerInfo::PositionOne};
+        case ElementIndexPower::Lava:
+            return {ElementPowerInfo::Number};
+        case ElementIndexPower::FromAshes:
+            return {}; // todo: implement in frontend
+        case ElementIndexPower::Sparks:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo,
+                    ElementPowerInfo::Card};
+        case ElementIndexPower::Blizzard:
+            return {ElementPowerInfo::PositionOne};
+        case ElementIndexPower::Gale:
+            return {};
+        case ElementIndexPower::Hurricane:
+            return {ElementPowerInfo::PositionOne};
+        case ElementIndexPower::Gust:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo};
+        case ElementIndexPower::Mirage:
+            return {ElementPowerInfo::PositionOne};
+        case ElementIndexPower::Storm:
+            return {};
+        case ElementIndexPower::Tide:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo};
+        case ElementIndexPower::Fog:
+            return {};
+        case ElementIndexPower::Wave:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo,
+                    ElementPowerInfo::Card};
+        case ElementIndexPower::Whirlpool:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo};
+        case ElementIndexPower::Tsunami:
+            return {ElementPowerInfo::PositionOne};
+        case ElementIndexPower::Waterfall:
+            return {ElementPowerInfo::PositionOne};
+        case ElementIndexPower::Support:
+            return {ElementPowerInfo::PositionOne};
+        case ElementIndexPower::Earthquake:
+            return {};
+        case ElementIndexPower::Shattering:
+            return {ElementPowerInfo::PositionOne};
+        case ElementIndexPower::Granite:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::Card};
+        case ElementIndexPower::Avalanche:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo};
+        case ElementIndexPower::Boulder:
+            return {ElementPowerInfo::PositionOne, ElementPowerInfo::Card};
+    }
+    throw std::runtime_error("Unknown power.");
+}
+
 std::string ElementPower::GetElementPowerDescription(const ElementIndexPower power) {
     switch (power) {
         case ElementIndexPower::ControlledExplosion:
@@ -38,7 +94,7 @@ std::string ElementPower::GetElementPowerDescription(const ElementIndexPower pow
         case ElementIndexPower::Gale:
             return "All cards covered by other cards return to their owners' hands.";
         case ElementIndexPower::Hurricane:
-            return "Shift a fully occupied row by 1 position in the desired direction. Cards in "
+            return "Shift a fully occupied row by 1 position to the right. Cards in "
                    "the stack that move out of the board boundaries return to their owners' hands.";
         case ElementIndexPower::Gust:
             return "Move any visible card on the board horizontally or vertically to an adjacent "

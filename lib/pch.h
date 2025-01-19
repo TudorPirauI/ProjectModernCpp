@@ -24,6 +24,7 @@
 #include <QComboBox>
 #include <QFile>
 #include <QFont>
+#include <QFormLayout>
 #include <QGraphicsBlurEffect>
 #include <QGroupBox>
 #include <QLabel>

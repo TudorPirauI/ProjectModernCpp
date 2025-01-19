@@ -26,27 +26,28 @@ void SpecialOptions::SetPowers(const bool eter, const bool illusion, const bool 
         button->setFixedSize(100, 100);
 
         if (i == 0) {
+            button->setText("Eter");
+
             if (eter) {
                 button->setCheckable(eter);
-                button->setText("Eter");
             } else {
                 button->setChecked(false);
             }
         }
 
         if (i == 1) {
+            button->setText("Illusion");
             if (illusion) {
                 button->setCheckable(illusion);
-                button->setText("Illusion");
             } else {
                 button->setChecked(false);
             }
         }
 
         if (i == 2) {
+            button->setText("Explosion");
             if (explosion) {
                 button->setCheckable(explosion);
-                button->setText("Explosion");
             } else {
                 button->setChecked(false);
             }
