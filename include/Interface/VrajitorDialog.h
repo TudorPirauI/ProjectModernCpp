@@ -2,16 +2,16 @@
 // Created by mavri on 19 Jan 2025.
 //
 
-#ifndef ELEMENTDIALOG_H
-#define ELEMENTDIALOG_H
+#ifndef VRAJITORDIALOG_H
+#define VRAJITORDIALOG_H
 
-#include "Powers/ElementPower.h"
+#include "Powers/Wizard.h"
 
-class ElementDialog final : public QDialog {
+class VrajitorDialog final : public QDialog {
     Q_OBJECT
 
 public:
-    explicit ElementDialog(const ElementPower &power, QWidget *parent = nullptr);
+    explicit VrajitorDialog(const Wizard &power, QWidget *parent = nullptr);
 
 signals:
     void DialogAccepted(const std::vector<QString> &info, bool isWizardPower);
@@ -20,10 +20,10 @@ private slots:
     void onOkClicked();
 
 private:
-    ElementPower           m_Power;
+    Wizard                 m_Power;
     QFormLayout           *m_FormLayout;
     QPushButton           *m_OkButton;
     std::vector<QWidget *> m_Inputs;
 };
 
-#endif // ELEMENTDIALOG_H
+#endif // VRAJITORDIALOG_H

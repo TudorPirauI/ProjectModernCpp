@@ -11,8 +11,8 @@
 
 IDuelulElementelor::IDuelulElementelor(const std::string &nameOne, const std::string &nameTwo,
                                        const std::array<bool, 3> &options, QWidget *parent) :
-    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_CurrentExplosion({}),
-    m_SelectedCard(std::nullopt), m_ParentWidget(parent) {
+    QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_SelectedCard(std::nullopt),
+    m_ParentWidget(parent) {
 
     const auto mainLayout = new QVBoxLayout(this);
 

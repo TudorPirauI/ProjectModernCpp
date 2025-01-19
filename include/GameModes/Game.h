@@ -20,6 +20,7 @@ public:
         ColumnWin,
         DiagonalPrincipalWin,
         DiagonalSecondaryWin,
+        Points
     };
 
     virtual ~Game() = default;
@@ -41,6 +42,8 @@ public:
     void                     SetGameState(GameState gameState);
     void                     IncreasePlayerScore(PlayerTurn turn);
     void                     SetNextPlayerTurn(PlayerTurn playerTurn);
+    [[nodiscard]] bool       IsStalemate();
+    PlayerTurn               GetWinByPoints();
     virtual void             SetNewCards();
 
     void SetPlayerTurn(const PlayerTurn &playerTurn);
@@ -92,6 +95,21 @@ public:
     Position GetPlacementPosition(const Player &player, const Card &card);
     Position GetDefaultPosition();
     void     SaveGameState();
+    void     SetBoard(const GameBoard &map);
+
+    void SetPlayer1(const Player &player);
+    void SetPlayer2(const Player &player);
+
+    void SetCurrentPlayerTurn(const PlayerTurn &playerTurn);
+
+    void SetPlayer1Score(int score);
+    void SetPlayer2Score(int score);
+
+    void SetScoreToWin(int scoreToWin);
+    void SetIllusionEnabled(bool value);
+    void SetEterEnabled(bool value);
+    void SetExplosionEnabled(bool value);
+
     // void     to_json(nlohmann::json &j, const Game &game);
     // void     from_json(const nlohmann::json &j, Game &game);
 

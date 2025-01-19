@@ -62,13 +62,19 @@ void Player::AddToRemovedCards(const Card &card) {
     m_RemovedCards.emplace_back(card);
 }
 
-Hand Player::GetRemovedCards() const { return m_RemovedCards; }
+Hand &Player::GetRemovedCards() { return m_RemovedCards; }
 
 void Player::RemoveFromRemovedCards(const Card &card) {
     if (const auto it = std::ranges::find(m_RemovedCards, card); it != m_RemovedCards.end()) {
         m_RemovedCards.erase(it);
     }
 }
+
+void Player::SetUserName(const std::string &userName) { m_UserName = userName; }
+
+void Player::SetScore(int score) { m_Score = score; }
+
+void Player::SetRemovedCards(const Hand &removedCards) { m_RemovedCards = removedCards; }
 
 // void to_json(nlohmann::json &j, const Card &card) {
 //     j = nlohmann::json{{"value", card.GetValue()},

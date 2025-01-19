@@ -52,6 +52,9 @@ void Game::SwapTurn() {
 Game::Game() : m_Board(Board(0)), m_Player1(Player("", {})), m_Player2(Player("", {})) {}
 
 Game::WinningCondition Game::CheckWinningConditions() {
+    if (IsStalemate())
+        return WinningCondition::Points;
+
     const auto &lines             = m_Board.GetLineAdvantage();
     const auto &columns           = m_Board.GetColumnAdvantage();
     const auto &principalDiagonal = m_Board.GetPrincipalDiagonalAdvantage();
@@ -113,6 +116,54 @@ void Game::IncreasePlayerScore(const PlayerTurn turn) {
 
 void Game::SetNextPlayerTurn(const PlayerTurn playerTurn) { m_PlayerTurn = playerTurn; }
 
+bool Game::IsStalemate() {
+    const auto  currentPlayer = GetCurrentPlayer();
+    const auto &playerHand    = currentPlayer.GetHand();
+
+    if (playerHand.empty())
+        return true;
+
+    const auto board = m_Board.GetGameBoard();
+
+    if (!m_Board.IsBoardLocked())
+        return false;
+
+    const auto highestCard =
+            std::ranges::max_element(playerHand, [](const auto &lhs, const auto &rhs) {
+                return lhs.GetValue() < rhs.GetValue();
+            });
+
+    if (m_Board.GetGameBoard().size() != m_Board.GetMaxBoardSize() * m_Board.GetMaxBoardSize())
+        return false;
+
+    for (const auto &pos : board | std::views::keys) {
+        if (m_Board.IsPositionValid(pos, *highestCard)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+PlayerTurn Game::GetWinByPoints() {
+    const auto board = m_Board.GetGameBoard();
+
+    int playerOneScore = 0;
+    int playerTwoScore = 0;
+
+    for (const auto &stack : board | std::views::values) {
+        const auto cardOnTop = stack.top();
+
+        if (cardOnTop.GetPlacedBy() == PlayerTurn::Player1) {
+            playerOneScore += cardOnTop.GetValue();
+        } else {
+            playerTwoScore += cardOnTop.GetValue();
+        }
+    }
+
+    return playerOneScore > playerTwoScore ? PlayerTurn::Player1 : PlayerTurn::Player2;
+}
+
 void Game::SetNewCards() {}
 
 void Game::SetPlayerTurn(const PlayerTurn &playerTurn) { m_PlayerTurn = playerTurn; }
@@ -160,16 +211,16 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
                 }
             }
 
-            const auto &checkNewBoard = RemadeGameBoard(newBoard);
+            if (const auto &remadeGameBoard = RemadeGameBoard(newBoard);
+                remadeGameBoard.GetMaxBoardSize() != 0) {
+                m_Board = remadeGameBoard;
+                m_Board.UpdateDiagonals();
+                m_Board.CheckIsLocked();
 
-            if (checkNewBoard.GetMaxBoardSize() == 0)
-                return false;
+                return true;
+            }
 
-            m_Board = checkNewBoard;
-            m_Board.CheckIsLocked();
-
-            m_Board.UpdateDiagonals();
-            return true;
+            return false;
         }
         case WizardPower::CoverOpponentCard: {
             if (auto &stack = board[position];
@@ -182,7 +233,9 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
         }
         case WizardPower::CreatePit: {
             if (auto &stack = board[position]; stack.empty()) {
-                stack.emplace(true);
+                Card cardHole{1};
+                cardHole.SetIsHole(true);
+                stack.emplace(cardHole);
                 return true;
             }
 
@@ -193,52 +246,84 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
             auto newBoard = RemadeGameBoard(m_Board);
 
             if (auto &newGameBoard = newBoard.GetGameBoard();
-                newGameBoard[posStack].empty() and !newGameBoard[position].empty() and
+                newGameBoard[posStack].empty() && !newGameBoard[position].empty() &&
                 newGameBoard[position].top().GetPlacedBy() == playerTurn) {
 
+                std::stack<Card> tempStack;
                 while (!newGameBoard[position].empty()) {
-                    const auto &cardOnTop = newGameBoard[position].top();
+                    tempStack.push(newGameBoard[position].top());
+                    newGameBoard[position].pop();
+                }
+
+                newGameBoard.erase(position);
+
+                newBoard.SetGameBoard(newGameBoard);
+
+                while (!tempStack.empty()) {
+                    const auto &cardOnTop = tempStack.top();
                     const auto  result    = newBoard.InsertCard(
-                            cardOnTop, position, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
+                            cardOnTop, posStack, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
 
                     if (result != InsertOutputs::Success)
                         return false;
+
+                    tempStack.pop();
                 }
 
-                while (!board[position].empty()) {
-                    board[position].pop();
-                }
+                newGameBoard.erase(position);
 
-                newBoard.UpdateDiagonals();
-                m_Board = newBoard;
-                return true;
+                if (const auto &remadeGameBoard = RemadeGameBoard(newBoard);
+                    remadeGameBoard.GetMaxBoardSize() != 0) {
+                    m_Board = remadeGameBoard;
+                    m_Board.UpdateDiagonals();
+                    m_Board.CheckIsLocked();
+
+                    return true;
+                }
+                return false;
             }
 
             return false;
         }
         case WizardPower::MoveOpponentStack: {
             auto newBoard = RemadeGameBoard(m_Board);
+            std::cout << "MoveOpponentStack\n";
             if (auto &newGameBoard = newBoard.GetGameBoard();
-                newGameBoard[posStack].empty() and !newGameBoard[position].empty() and
+                newGameBoard[posStack].empty() && !newGameBoard[position].empty() &&
                 newGameBoard[position].top().GetPlacedBy() != playerTurn) {
 
+                std::stack<Card> tempStack;
                 while (!newGameBoard[position].empty()) {
-                    const auto &cardOnTop = newGameBoard[position].top();
+                    tempStack.push(newGameBoard[position].top());
+                    newGameBoard[position].pop();
+                }
+
+                newGameBoard.erase(position);
+
+                newBoard.SetGameBoard(newGameBoard);
+
+                while (!tempStack.empty()) {
+                    const auto &cardOnTop = tempStack.top();
                     const auto  result    = newBoard.InsertCard(
-                            cardOnTop, position, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
+                            cardOnTop, posStack, cardOnTop.GetPlacedBy(), GetCardType(card), *this);
 
                     if (result != InsertOutputs::Success)
                         return false;
+
+                    tempStack.pop();
                 }
 
-                while (!board[position].empty()) {
-                    board[position].pop();
+                newGameBoard.erase(position);
+
+                if (const auto &remadeGameBoard = RemadeGameBoard(newBoard);
+                    remadeGameBoard.GetMaxBoardSize() != 0) {
+                    m_Board = remadeGameBoard;
+                    m_Board.UpdateDiagonals();
+                    m_Board.CheckIsLocked();
+
+                    return true;
                 }
-
-                newBoard.UpdateDiagonals();
-                m_Board = newBoard;
-
-                return true;
+                return false;
             }
             return false;
         }
@@ -251,6 +336,9 @@ bool Game::VerifyWizardPower(const WizardPower &power, const Position &position,
             } else {
                 m_Player2.GiveEterCard(PlayerTurn::Player2);
             }
+
+            std::cout << "GainEterCard: true\n";
+
             return true;
         }
         case WizardPower::ShiftRowToEdge: {
@@ -896,10 +984,6 @@ Board Game::RemadeGameBoard(Board board) {
             const auto &card = tempStack.top();
             tempStack.pop();
 
-            std::cout << "[RMD BOARD]\nCard: " << card.GetValue()
-                      << "\nIs Hole: " << card.GetIsHole() << "\nPosition: (" << position.first
-                      << ", " << position.second << ")\n\n";
-
             const auto result = modifiedBoard.InsertCard(card, position, card.GetPlacedBy(),
                                                          GetCardType(card), *this, true);
 
@@ -1228,52 +1312,17 @@ void Game::SaveGameState() {
     //     std::cerr << "Unable to open file for saving game state\n";
     // }
 }
+void Game::SetBoard(const GameBoard &map) { m_Board.SetGameBoard(map); }
 
-// void Game::to_json(nlohmann::json &j, const Game &game) {
-//     j = nlohmann::json{
-//             {"boardSize", (static_cast<Game>(game).GetBoard().GetMaxBoardSize())},
-//             {"scoreToWin", game.GetScoreToWin()},
-//             {"player1", static_cast<Game>(game).GetPlayer1()},
-//             {"player2", static_cast<Game>(game).GetPlayer2()},
-//             {"options",
-//              {game.GetEterEnabled(), game.GetIllusionEnabled(), game.ExplosionEnabled()}},
-//             {"currentPlayer", game.GetCurrentPlayerTurn()},
-//             {"scorePlayer1", game.GetPlayer1Score()},
-//             {"scorePlayer2", game.GetPlayer2Score()},
-//             {"lastPositionPlayer1", static_cast<Game>(game).GetLastCardPlayer1()},
-//             {"lastPositionPlayer2", static_cast<Game>(game).GetLastCardPlayer2()},
-//             {"rowPlayer1", game.GetRowPlayer1()},
-//             {"rowPlayer2", game.GetRowPlayer2()}};
-// }
-//
-// void Game::from_json(const nlohmann::json &j, Game &game) {
-//     int                 boardSize, scoreToWin;
-//     std::string         nameOne, nameTwo;
-//     std::array<bool, 3> options;
-//     PlayerTurn          currentPlayer;
-//     int                 scorePlayer1, scorePlayer2;
-//     Position            lastPositionPlayer1, lastPositionPlayer2;
-//     int                 rowPlayer1, rowPlayer2;
-//
-//     j.at("boardSize").get_to(boardSize);
-//     j.at("scoreToWin").get_to(scoreToWin);
-//     j.at("player1").get_to(nameOne);
-//     j.at("player2").get_to(nameTwo);
-//     j.at("options").get_to(options);
-//     j.at("currentPlayer").get_to(currentPlayer);
-//     j.at("scorePlayer1").get_to(scorePlayer1);
-//     j.at("scorePlayer2").get_to(scorePlayer2);
-//     j.at("lastPositionPlayer1").get_to(lastPositionPlayer1);
-//     j.at("lastPositionPlayer2").get_to(lastPositionPlayer2);
-//     j.at("rowPlayer1").get_to(rowPlayer1);
-//     j.at("rowPlayer2").get_to(rowPlayer2);
-//
-//     game = Game(boardSize, scoreToWin, nameOne, nameTwo, options);
-//     game.SetNextPlayerTurn(currentPlayer);
-//     game.IncreasePlayerScore(PlayerTurn::Player1);
-//     game.IncreasePlayerScore(PlayerTurn::Player2);
-//     game.SetLastCardPlayer1(lastPositionPlayer1);
-//     game.SetLastCardPlayer2(lastPositionPlayer2);
-//     game.SetRowPlayer1(rowPlayer1);
-//     game.SetRowPlayer2(rowPlayer2);
-// }
+void Game::SetPlayer1(const Player &player) { m_Player1 = player; }
+void Game::SetPlayer2(const Player &player) { m_Player2 = player; }
+
+void Game::SetCurrentPlayerTurn(const PlayerTurn &playerTurn) { m_PlayerTurn = playerTurn; }
+
+void Game::SetPlayer1Score(const int score) { m_Player1.SetScore(score); }
+void Game::SetPlayer2Score(const int score) { m_Player2.SetScore(score); }
+
+void Game::SetScoreToWin(int scoreToWin) { m_ScoreToWin = scoreToWin; }
+void Game::SetIllusionEnabled(bool value) { m_IllusionEnabled = value; }
+void Game::SetEterEnabled(bool value) { m_EterEnabled = value; }
+void Game::SetExplosionEnabled(bool value) { m_ExplosionEnabled = value; }

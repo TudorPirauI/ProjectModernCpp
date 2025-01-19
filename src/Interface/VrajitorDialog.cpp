@@ -2,26 +2,23 @@
 // Created by mavri on 19 Jan 2025.
 //
 
-#include "Interface/ElementDialog.h"
+#include "Interface/VrajitorDialog.h"
 
-#include "Interface/IDuelulElementelor.h"
-
-ElementDialog::ElementDialog(const ElementPower &power, QWidget *parent) :
+VrajitorDialog::VrajitorDialog(const Wizard &power, QWidget *parent) :
     QDialog(parent), m_Power(power) {
     setMinimumSize(200, 150);
 
     m_FormLayout = new QFormLayout(this);
     m_OkButton   = new QPushButton("OK", this);
 
-    auto *descriptionLabel = new QLabel(
-            QString::fromStdString(ElementPower::GetElementPowerDescription(power.GetPower())),
-            this);
+    auto *descriptionLabel =
+            new QLabel(QString::fromStdString(m_Power.GetWizardPowerDescription()), this);
     m_FormLayout->addRow(descriptionLabel);
 
     auto *infoLabel = new QLabel("Required Information:", this);
     m_FormLayout->addRow(infoLabel);
 
-    const auto requiredInfo = ElementPower::GetRequiredInfo(power.GetPower());
+    const auto requiredInfo = m_Power.GetWizardRequiredInfo();
     for (const auto &info : requiredInfo) {
         QWidget *input = nullptr;
         switch (info) {
@@ -50,10 +47,10 @@ ElementDialog::ElementDialog(const ElementPower &power, QWidget *parent) :
     buttonLayout->addStretch();
 
     m_FormLayout->addRow(buttonLayout);
-    connect(m_OkButton, &QPushButton::clicked, this, &ElementDialog::onOkClicked);
+    connect(m_OkButton, &QPushButton::clicked, this, &VrajitorDialog::onOkClicked);
 }
 
-void ElementDialog::onOkClicked() {
+void VrajitorDialog::onOkClicked() {
     std::vector<QString> info;
     for (const auto &input : m_Inputs) {
         if (auto *lineEdit = qobject_cast<QLineEdit *>(input)) {
@@ -64,6 +61,6 @@ void ElementDialog::onOkClicked() {
         }
     }
 
-    emit DialogAccepted(info, false);
+    emit DialogAccepted(info, true);
     accept();
 }

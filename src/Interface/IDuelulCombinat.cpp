@@ -1,10 +1,11 @@
-#include "Interface/IDuelulVrajitorilor.h"
+#include "Interface/IDuelulCombinat.h"
 #include "Interface/AlertWidget.h"
+#include "Interface/ElementDialog.h"
 #include "Interface/ExplosionDialog.h"
 #include "Interface/VrajitorDialog.h"
 
-IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::string &nameTwo,
-                                         const std::array<bool, 3> &options, QWidget *parent) :
+IDuelulCombinat::IDuelulCombinat(const std::string &nameOne, const std::string &nameTwo,
+                                 const std::array<bool, 3> &options, QWidget *parent) :
     QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_SelectedCard(std::nullopt),
     m_ParentWidget(parent) {
 
@@ -18,7 +19,7 @@ IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::
     m_BoardWidget = new BoardWidget(this, 3);
     m_BoardWidget->setFixedSize(800, 800);
     connect(m_BoardWidget, &BoardWidget::BoardSlotClicked, this,
-            &IDuelulVrajitorilor::OnPositionSelected);
+            &IDuelulCombinat::OnPositionSelected);
     m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
 
     auto *boardLayout = new QHBoxLayout();
@@ -38,7 +39,7 @@ IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::
     m_HandWidget = new HandWidget(this);
     m_HandWidget->SetCards(m_CurrentGame.GetPlayer1().GetHand());
     m_HandWidget->setFixedSize(m_HandWidget->GetIdealWidth(), 200);
-    connect(m_HandWidget, &HandWidget::CardSelected, this, &IDuelulVrajitorilor::OnCardSelected);
+    connect(m_HandWidget, &HandWidget::CardSelected, this, &IDuelulCombinat::OnCardSelected);
 
     auto *handLayout = new QHBoxLayout();
     handLayout->addWidget(m_HandWidget);
@@ -50,37 +51,50 @@ IDuelulVrajitorilor::IDuelulVrajitorilor(const std::string &nameOne, const std::
     m_SpecialOptions->SetPowers(options[0], options[1], options[2]);
 
     connect(m_SpecialOptions, &SpecialOptions::OptionSelected, this,
-            &IDuelulVrajitorilor::OnModifierSelected);
+            &IDuelulCombinat::OnModifierSelected);
 
     mainLayout->addWidget(m_SpecialOptions);
 
-    m_WizardWidget = new VrajitorWidget(m_CurrentGame.GetPlayerAbility1(), this);
-    m_WizardWidget->setFixedSize(200, 50);
-    connect(m_WizardWidget, &VrajitorWidget::clicked, this, [this] {
+    m_ElementWidget = new ElementWidget(m_CurrentGame.GetElementalAbilityPlayer1(), this);
+    m_ElementWidget->setFixedSize(200, 50);
+    connect(m_ElementWidget, &ElementWidget::clicked, this, [this] {
         const auto power  = m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
-                                    ? m_CurrentGame.GetPlayerAbility1()
-                                    : m_CurrentGame.GetPlayerAbility2();
-        const auto dialog = new VrajitorDialog(power);
-        connect(dialog, &VrajitorDialog::DialogAccepted, this,
-                &IDuelulVrajitorilor::OnDialogAccepted);
+                                    ? m_CurrentGame.GetElementalAbilityPlayer1()
+                                    : m_CurrentGame.GetElementalAbilityPlayer2();
+        const auto dialog = new ElementDialog(power);
+        connect(dialog, &ElementDialog::DialogAccepted, this, &IDuelulCombinat::OnDialogAccepted);
         dialog->exec();
     });
 
     auto *elementLayout = new QHBoxLayout();
     elementLayout->addStretch();
-    elementLayout->addWidget(m_WizardWidget);
+    elementLayout->addWidget(m_ElementWidget);
     elementLayout->addStretch();
 
     mainLayout->addLayout(elementLayout);
 
-    // TODO: When a power insists on placing something specific (a single eter card, one of the past
-    // cards etc.) Simply set the hand to those cards via HandWidget (do not modify the current
-    // player's hand) :P
+    m_WizardWidget = new VrajitorWidget(m_CurrentGame.GetWizardAbilityPlayer1(), this);
+    m_WizardWidget->setFixedSize(200, 50);
+    connect(m_WizardWidget, &VrajitorWidget::clicked, this, [this] {
+        const auto power  = m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                    ? m_CurrentGame.GetWizardAbilityPlayer1()
+                                    : m_CurrentGame.GetWizardAbilityPlayer2();
+        const auto dialog = new VrajitorDialog(power);
+        connect(dialog, &VrajitorDialog::DialogAccepted, this, &IDuelulCombinat::OnDialogAccepted);
+        dialog->exec();
+    });
+
+    auto *wizardLayout = new QHBoxLayout();
+    wizardLayout->addStretch();
+    wizardLayout->addWidget(m_WizardWidget);
+    wizardLayout->addStretch();
+
+    mainLayout->addLayout(wizardLayout);
 
     parent->setLayout(mainLayout);
 }
 
-void IDuelulVrajitorilor::OnCardSelected(const int cardIndex) {
+void IDuelulCombinat::OnCardSelected(const int cardIndex) {
     const auto currentPlayer = m_CurrentGame.GetCurrentPlayer();
 
     if (cardIndex >= currentPlayer.GetHand().size() || cardIndex < 0) {
@@ -91,7 +105,7 @@ void IDuelulVrajitorilor::OnCardSelected(const int cardIndex) {
     m_SelectedCard = currentPlayer.GetHand()[cardIndex];
 }
 
-void IDuelulVrajitorilor::OnPositionSelected(const int x, const int y) {
+void IDuelulCombinat::OnPositionSelected(const int x, const int y) {
     if (!m_SelectedCard.has_value()) {
         const auto alertWidget = new AlertWidget(m_ParentWidget);
 
@@ -151,7 +165,7 @@ void IDuelulVrajitorilor::OnPositionSelected(const int x, const int y) {
     SwitchTurn();
 }
 
-void IDuelulVrajitorilor::OnModifierSelected(const int modifier) {
+void IDuelulCombinat::OnModifierSelected(const int modifier) {
     // 1 -> Illusion
     // 2 -> Explosion (should be triggered instantly)
     switch (modifier) {
@@ -171,9 +185,9 @@ void IDuelulVrajitorilor::OnModifierSelected(const int modifier) {
     }
 }
 
-void IDuelulVrajitorilor::OnExplosion() { m_CurrentGame.ApplyExplosion(m_CurrentExplosion); }
+void IDuelulCombinat::OnExplosion() { m_CurrentGame.ApplyExplosion(m_CurrentExplosion); }
 
-void IDuelulVrajitorilor::OnDialogAccepted(const std::vector<QString> &info) {
+void IDuelulCombinat::OnDialogAccepted(const std::vector<QString> &info, bool isWizardPower) {
     // Handle the received information
     Position positionOne{-200, -200};
     Position positionTwo{-200, -200};
@@ -214,32 +228,83 @@ void IDuelulVrajitorilor::OnDialogAccepted(const std::vector<QString> &info) {
         }
     }
 
-    // todo: switch case with the power type
+    if (isWizardPower) {
+        const auto result = m_CurrentGame.VerifyWizardPower(
+                m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                        ? m_CurrentGame.GetWizardAbilityPlayer1().GetType()
+                        : m_CurrentGame.GetWizardAbilityPlayer2().GetType(),
+                positionOne, positionTwo, card, m_CurrentGame.GetCurrentPlayerTurn());
 
-    const auto result = m_CurrentGame.VerifyWizardPower(
-            m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
-                    ? m_CurrentGame.GetPlayerAbility1().GetType()
-                    : m_CurrentGame.GetPlayerAbility2().GetType(),
-            positionOne, positionTwo, card, m_CurrentGame.GetCurrentPlayerTurn());
+        if (result) {
+            m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+            m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer().GetHand());
+            if (m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1) {
+                m_PlayerOneUsedPower = true;
+            } else {
+                m_PlayerTwoUsedPower = true;
+            }
 
-    if (result) {
-        m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
-        m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer().GetHand());
-        if (m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1) {
-            m_PlayerOneUsedPower = true;
-        } else {
-            m_PlayerTwoUsedPower = true;
+            m_WizardWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                             ? m_CurrentGame.GetWizardAbilityPlayer1()
+                                             : m_CurrentGame.GetWizardAbilityPlayer2());
+
+            std::cout << "Power activated\n";
+        }
+    } else {
+        switch (m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                        ? m_CurrentGame.GetElementalAbilityPlayer1().GetPower()
+                        : m_CurrentGame.GetElementalAbilityPlayer2().GetPower()) {
+            case ElementIndexPower::FromAshes: {
+                // sets your hand to one of your removed cards
+                m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer().GetRemovedCards());
+                break;
+            }
+            // case ElementIndexPower::Sparks: { // you'll just select the position from where it is
+            // play one of your own covered cards on another position
+            // m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer());
+            // break;
+            // }
+            case ElementIndexPower::Fog: {
+                // reset the illusion boolean
+                m_CurrentGame.GetCurrentPlayer().SetHasIllusionInGame(false);
+                break;
+            }
+            case ElementIndexPower::Granite: {
+                auto graniteCard = Card{10, PlayerTurn::Granite};
+                graniteCard.SetIsGranite(true);
+                m_HandWidget->SetCards({graniteCard});
+                break;
+            }
+            default:
+                break;
         }
 
-        m_WizardWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
-                                         ? m_CurrentGame.GetPlayerAbility1()
-                                         : m_CurrentGame.GetPlayerAbility2());
+        const auto result = m_CurrentGame.VerifyElementalPower(
+                m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                        ? m_CurrentGame.GetElementalAbilityPlayer1().GetPower()
+                        : m_CurrentGame.GetElementalAbilityPlayer2().GetPower(),
+                positionOne, positionTwo, card, m_CurrentGame.GetCurrentPlayerTurn(), number);
 
-        std::cout << "Power activated\n";
+        if (result) {
+            m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+            m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer().GetHand());
+            if (m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1) {
+                m_PlayerOneUsedPower = true;
+            } else {
+                m_PlayerTwoUsedPower = true;
+            }
+
+            m_ElementWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                              ? m_CurrentGame.GetElementalAbilityPlayer1()
+                                              : m_CurrentGame.GetElementalAbilityPlayer2(),
+                                      m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                              ? !m_PlayerOneUsedPower
+                                              : !m_PlayerTwoUsedPower);
+        }
     }
 }
 
-void IDuelulVrajitorilor::SwitchTurn() {
+void IDuelulCombinat::SwitchTurn() {
     m_IsIllusionSelected = false;
 
     m_SelectedCard.reset();
@@ -249,7 +314,7 @@ void IDuelulVrajitorilor::SwitchTurn() {
         const auto explosionDialog = new ExplosionDialog(m_CurrentExplosion, this);
 
         connect(explosionDialog, &ExplosionDialog::ExplosionTriggered, this,
-                &IDuelulVrajitorilor::OnExplosion);
+                &IDuelulCombinat::OnExplosion);
 
         explosionDialog->exec();
     }
@@ -261,9 +326,16 @@ void IDuelulVrajitorilor::SwitchTurn() {
 
         const auto &nextPlayer = m_CurrentGame.GetCurrentPlayer();
 
+        m_ElementWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                          ? m_CurrentGame.GetElementalAbilityPlayer1()
+                                          : m_CurrentGame.GetElementalAbilityPlayer2(),
+                                  m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                          ? !m_PlayerOneUsedPower
+                                          : !m_PlayerTwoUsedPower);
+
         m_WizardWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
-                                         ? m_CurrentGame.GetPlayerAbility1()
-                                         : m_CurrentGame.GetPlayerAbility2());
+                                         ? m_CurrentGame.GetWizardAbilityPlayer1()
+                                         : m_CurrentGame.GetWizardAbilityPlayer2());
 
         m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
         m_HandWidget->SetCards(nextPlayer.GetHand());
@@ -295,7 +367,7 @@ void IDuelulVrajitorilor::SwitchTurn() {
     if (currentScore >= m_CurrentGame.GetScoreToWin()) {
         alertWidget->ShowAlert(QString::fromStdString(winner.GetUserName() + " has won the game!"));
 
-        QTimer::singleShot(1500, this, &IDuelulVrajitorilor::GameFinished);
+        QTimer::singleShot(1500, this, &IDuelulCombinat::GameFinished);
     } else {
         const auto playerOneStats = m_CurrentGame.GetPlayer1().GetUserName() + " - " +
                                     std::to_string(m_CurrentGame.GetPlayer1Score());

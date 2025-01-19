@@ -22,11 +22,15 @@
 #include <QCheckBox>
 #include <QColorDialog>
 #include <QComboBox>
+#include <QDir>
 #include <QFile>
 #include <QFont>
 #include <QFormLayout>
 #include <QGraphicsBlurEffect>
 #include <QGroupBox>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
@@ -39,6 +43,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSlider>
+#include <QStack>
 #include <QStackedWidget>
 #include <QTimer>
 #include <QUrl>

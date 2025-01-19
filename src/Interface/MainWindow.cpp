@@ -1,9 +1,11 @@
 #include "Interface/MainWindow.h"
-#include <QListWidget>
 
+#include "GameComponents/JsonUtils.h"
 #include "Interface/AlertWidget.h"
 #include "Interface/IAntrenament.h"
+#include "Interface/IDuelulCombinat.h"
 #include "Interface/IDuelulElementelor.h"
+#include "Interface/IDuelulVrajitorilor.h"
 
 QColor MainWindow::m_Player1Color{QColor(173, 216, 230)};
 QColor MainWindow::m_Player2Color{QColor(255, 105, 97)};
@@ -117,7 +119,7 @@ void MainWindow::DrawNewGame() {
     CreateLabel("Select Game Mode:", newGameWidget);
     auto                          *buttonGroup = new QButtonGroup(this);
     const std::vector<std::string> gameModes   = {"Antrenament", "Duelul Vrajitorilor",
-                                                  "Duelul Elementelor", "Turneu", "Rapid"};
+                                                  "Duelul Elementelor", "Duelul Combinat"};
 
     const auto modeLayout = new QHBoxLayout();
     const auto modeWidget = new QWidget(this);
@@ -204,8 +206,23 @@ void MainWindow::DrawNewGame() {
 
                     connect(duelulElementelorGame, &IDuelulElementelor::GameFinished, this,
                             &MainWindow::OnGameFinished);
-                } else {
-                    throw std::runtime_error("Invalid game mode selected");
+                } else if (m_CurrentGameMode == "Duelul Vrajitorilor") {
+                    const std::array options = {eterResponse, illusionResponse, explosionResponse};
+                    const auto      *duelulVrajitorilorGame =
+                            new IDuelulVrajitorilor(player1Name.toStdString(),
+                                                    player2Name.toStdString(), options, gameWidget);
+
+                    connect(duelulVrajitorilorGame, &IDuelulVrajitorilor::GameFinished, this,
+                            &MainWindow::OnGameFinished);
+
+                } else if (m_CurrentGameMode == "Duelul Combinat") {
+                    const std::array options = {eterResponse, illusionResponse, explosionResponse};
+                    const auto      *duelulVrajitorilorGame =
+                            new IDuelulCombinat(player1Name.toStdString(),
+                                                player2Name.toStdString(), options, gameWidget);
+
+                    connect(duelulVrajitorilorGame, &IDuelulCombinat::GameFinished, this,
+                            &MainWindow::OnGameFinished);
                 }
 
                 m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
@@ -236,8 +253,14 @@ void MainWindow::DrawResumeGame() {
     label->setAlignment(Qt::AlignCenter);
     layout->addWidget(label);
 
-    m_GameListWidget           = new QListWidget(this);
-    const QStringList gameList = {"Game 1", "Game 2", "Game 3", "Game 4", "Game 5"};
+    m_GameListWidget = new QListWidget(this);
+    QDir savesDir(QCoreApplication::applicationDirPath() + "/saves");
+    if (!savesDir.exists()) {
+        savesDir.mkpath(".");
+    }
+
+    const auto gameList = savesDir.entryList(QStringList() << "*.json", QDir::Files);
+
     m_GameListWidget->addItems(gameList);
     m_GameListWidget->setFixedSize(400, 300);
     layout->addWidget(m_GameListWidget, 0, Qt::AlignCenter);
@@ -259,7 +282,31 @@ void MainWindow::DrawResumeGame() {
         if (selectedItem) {
             const QString selectedGame = selectedItem->text();
             qDebug() << "Loading game:" << selectedGame;
-            // Add logic to load the selected game
+
+            if (selectedItem->text().contains("antrenament")) {
+                QFile file(QCoreApplication::applicationDirPath() + "/saves/" +
+                           selectedItem->text());
+                if (!file.open(QIODevice::ReadOnly)) {
+                    QMessageBox::warning(this, "Error", "Could not open save file.");
+                    return;
+                }
+
+                const QByteArray    saveData = file.readAll();
+                const QJsonDocument jsonDoc(QJsonDocument::fromJson(saveData));
+                const QJsonObject   json = jsonDoc.object();
+
+                Antrenament game = JsonUtils::JsonToTrainingMode(json);
+
+                const auto  gameWidget      = new QWidget(this);
+                const auto *antrenamentGame = new IAntrenament(game, gameWidget);
+
+                connect(antrenamentGame, &IAntrenament::GameFinished, this,
+                        &MainWindow::OnGameFinished);
+
+                m_StackedWidget->removeWidget(m_StackedWidget->currentWidget());
+                m_StackedWidget->addWidget(gameWidget);
+                m_StackedWidget->setCurrentWidget(gameWidget);
+            }
         } else {
             qDebug() << "No game selected!";
         }

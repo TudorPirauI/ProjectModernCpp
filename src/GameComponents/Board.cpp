@@ -7,7 +7,6 @@
 bool Board::IsPositionValid(const Position &pos, const Card &card) const {
     if (const auto cardOnPosition = m_Board.find(pos);
         card.GetIsGranite() or cardOnPosition != m_Board.end()) {
-
         const auto cardOnTop = cardOnPosition->second.top();
 
         if (cardOnTop.GetValue() >= card.GetValue() or cardOnTop.GetIsGranite()) {
@@ -509,3 +508,5 @@ void Board::SetCross(const bool value) { m_Cross = value; }
 bool Board::GetTwoLines() const { return m_TwoLines; }
 bool Board::GetTwoColumns() const { return m_TwoColumns; }
 bool Board::GetCross() const { return m_Cross; }
+
+void Board::SetGameBoard(const GameBoard &gameBoard) { m_Board = gameBoard; }

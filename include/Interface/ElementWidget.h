@@ -13,7 +13,6 @@ class ElementWidget final : public QPushButton {
 public:
     explicit ElementWidget(const ElementPower &power, QWidget *parent = nullptr);
 
-    void SetText(const std::string &text);
     void SetPower(const ElementPower &power, bool enabled);
 
 signals:

@@ -39,9 +39,12 @@ void DuelulCombinat::SetNewCards() {
     m_Board.CleanUpBoard();
 }
 
-Wizard DuelulCombinat::GetWizardAbility() const { return m_WizardAbility1; }
+Wizard DuelulCombinat::GetWizardAbilityPlayer1() const { return m_WizardAbility1; }
 
-ElementPower DuelulCombinat::GetElementalAbility() const { return m_ElementalAbility1; }
+ElementPower DuelulCombinat::GetElementalAbilityPlayer1() const { return m_ElementalAbility1; }
+
+Wizard       DuelulCombinat::GetWizardAbilityPlayer2() const { return m_WizardAbility2; }
+ElementPower DuelulCombinat::GetElementalAbilityPlayer2() const { return m_ElementalAbility2; }
 
 DuelulCombinat::DuelulCombinat(const std::string &nameOne, const std::string &nameTwo,
                                const std::array<bool, 3> &options) :
@@ -88,8 +91,8 @@ void DuelulCombinat::SetElementalAbility(const ElementPower &elementalAbility) {
 //                        {"lastPositionPlayer2", duelulCombinat.GetLastCardPlayer2()},
 //                        {"rowPlayer1", duelulCombinat.GetRowPlayer1()},
 //                        {"rowPlayer2", duelulCombinat.GetRowPlayer2()},
-//                        {"wizardAbility1", duelulCombinat.GetWizardAbility()},
-//                        {"elementalAbility1", duelulCombinat.GetElementalAbility()}};
+//                        {"wizardAbility1", duelulCombinat.GetWizardAbilityPlayer1()},
+//                        {"elementalAbility1", duelulCombinat.GetElementalAbilityPlayer1()}};
 // }
 //
 // void DuelulCombinat::from_json(const nlohmann::json &j, DuelulCombinat &duelulCombinat) {

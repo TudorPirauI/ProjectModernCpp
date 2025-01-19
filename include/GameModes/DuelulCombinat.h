@@ -23,8 +23,11 @@ public:
 
     void SetNewCards() override;
 
-    Wizard       GetWizardAbility() const;
-    ElementPower GetElementalAbility() const;
+    Wizard       GetWizardAbilityPlayer1() const;
+    ElementPower GetElementalAbilityPlayer1() const;
+
+    Wizard       GetWizardAbilityPlayer2() const;
+    ElementPower GetElementalAbilityPlayer2() const;
 
     DuelulCombinat(const std::string &nameOne, const std::string &nameTwo,
                    const std::array<bool, 3> &options);

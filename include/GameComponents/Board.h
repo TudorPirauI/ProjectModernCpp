@@ -92,6 +92,7 @@ public:
     bool GetTwoLines() const;
     bool GetTwoColumns() const;
     bool GetCross() const;
+    void SetGameBoard(const GameBoard &gameBoard);
 };
 
 #endif // BOARD_H

@@ -11,14 +11,6 @@ ElementWidget::ElementWidget(const ElementPower &power, QWidget *parent) :
                 parent),
     m_Power(power) {
     SetPower(power, true);
-
-    // connect(this, &ElementWidget::clicked, this, [this] {
-    //     ElementDialog dialog(m_Power, this);
-    //     connect(&dialog, &ElementDialog::DialogAccepted, this, &ElementWidget::ElementClicked);
-    //     if (dialog.exec() == QDialog::Accepted) {
-    //         std::cout << "Dialog accepted\n";
-    //     }
-    // });
 }
 
 void ElementWidget::SetPower(const ElementPower &power, const bool enabled = true) {
