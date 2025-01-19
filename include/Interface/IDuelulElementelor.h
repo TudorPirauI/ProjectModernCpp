@@ -25,7 +25,7 @@ public slots:
     void OnPositionSelected(int x, int y);
     void OnModifierSelected(int modifier);
     void OnExplosion();
-    void OnElementClicked();
+    void OnDialogAccepted(const std::vector<QString> &info);
 
 signals:
     void GameFinished();

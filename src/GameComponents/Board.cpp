@@ -230,7 +230,8 @@ bool Board::UpdateDiagonals() {
 
     auto updateDiagonal = [&](auto &diagonal, auto condition) {
         for (const auto &position : m_Board | std::views::keys) {
-            if (!condition(position) or m_Board.at(position).top().GetIsHole())
+            if (!condition(position) or
+                (!m_Board.at(position).empty() && m_Board.at(position).top().GetIsHole()))
                 continue;
 
             if (m_Board.at(position).top().GetPlacedBy() == PlayerTurn::Player1) {

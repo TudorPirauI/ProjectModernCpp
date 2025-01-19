@@ -4,6 +4,8 @@
 
 #include "Interface/ElementDialog.h"
 
+#include "Interface/IDuelulElementelor.h"
+
 ElementDialog::ElementDialog(const ElementPower &power, QWidget *parent) :
     QDialog(parent), m_Power(power) {
     setMinimumSize(200, 150);
@@ -52,6 +54,16 @@ ElementDialog::ElementDialog(const ElementPower &power, QWidget *parent) :
 }
 
 void ElementDialog::onOkClicked() {
-    // Process the inputs if needed
+    std::vector<QString> info;
+    for (const auto &input : m_Inputs) {
+        if (auto *lineEdit = qobject_cast<QLineEdit *>(input)) {
+            if (const auto *label = qobject_cast<QLabel *>(m_FormLayout->labelForField(lineEdit))) {
+                QString labelText = label->text().replace("&", ""); // more mnemonics
+                info.push_back(labelText + " " + lineEdit->text());
+            }
+        }
+    }
+
+    emit DialogAccepted(info);
     accept();
 }

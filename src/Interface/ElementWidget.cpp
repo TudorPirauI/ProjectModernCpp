@@ -12,13 +12,13 @@ ElementWidget::ElementWidget(const ElementPower &power, QWidget *parent) :
     m_Power(power) {
     SetPower(power);
 
-    connect(this, &ElementWidget::clicked, this, [this] {
-        ElementDialog dialog(m_Power, this);
-        if (dialog.exec() == QDialog::Accepted) {
-            // emit ElementClicked();
-            std::cout << "Dialog accepted\n";
-        }
-    });
+    // connect(this, &ElementWidget::clicked, this, [this] {
+    //     ElementDialog dialog(m_Power, this);
+    //     connect(&dialog, &ElementDialog::DialogAccepted, this, &ElementWidget::ElementClicked);
+    //     if (dialog.exec() == QDialog::Accepted) {
+    //         std::cout << "Dialog accepted\n";
+    //     }
+    // });
 }
 
 void ElementWidget::SetPower(const ElementPower &power) {

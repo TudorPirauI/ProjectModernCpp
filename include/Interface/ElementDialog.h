@@ -6,13 +6,15 @@
 #define ELEMENTDIALOG_H
 
 #include "Powers/ElementPower.h"
-#include "pch.h"
 
-class ElementDialog : public QDialog {
+class ElementDialog final : public QDialog {
     Q_OBJECT
 
 public:
-    ElementDialog(const ElementPower &power, QWidget *parent = nullptr);
+    explicit ElementDialog(const ElementPower &power, QWidget *parent = nullptr);
+
+signals:
+    void DialogAccepted(const std::vector<QString> &info);
 
 private slots:
     void onOkClicked();

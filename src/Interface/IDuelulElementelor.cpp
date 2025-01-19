@@ -4,6 +4,7 @@
 
 #include "Interface/IDuelulElementelor.h"
 #include "Interface/AlertWidget.h"
+#include "Interface/ElementDialog.h"
 #include "Interface/ElementWidget.h"
 #include "Interface/ExplosionDialog.h"
 #include "Interface/SpecialOptions.h"
@@ -61,8 +62,15 @@ IDuelulElementelor::IDuelulElementelor(const std::string &nameOne, const std::st
 
     m_ElementWidget = new ElementWidget(m_CurrentGame.GetPlayerAbility1(), this);
     m_ElementWidget->setFixedSize(200, 50);
-    connect(m_ElementWidget, &ElementWidget::ElementClicked, this,
-            &IDuelulElementelor::OnElementClicked);
+    connect(m_ElementWidget, &ElementWidget::clicked, this, [this] {
+        const auto power  = m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                    ? m_CurrentGame.GetPlayerAbility1()
+                                    : m_CurrentGame.GetPlayerAbility2();
+        const auto dialog = new ElementDialog(power);
+        connect(dialog, &ElementDialog::DialogAccepted, this,
+                &IDuelulElementelor::OnDialogAccepted);
+        dialog->exec();
+    });
 
     auto *elementLayout = new QHBoxLayout();
     elementLayout->addStretch();
@@ -171,7 +179,72 @@ void IDuelulElementelor::OnModifierSelected(const int modifier) {
 
 void IDuelulElementelor::OnExplosion() { m_CurrentGame.ApplyExplosion(m_CurrentExplosion); }
 
-void IDuelulElementelor::OnElementClicked() { std::cout << "Element clicked\n"; }
+void IDuelulElementelor::OnDialogAccepted(const std::vector<QString> &info) {
+    // Handle the received information
+    Position positionOne{-200, -200};
+    Position positionTwo{-200, -200};
+    int      number = -200;
+    Card     card{10, m_CurrentGame.GetCurrentPlayerTurn()};
+    for (auto &data : info) {
+        QString copy = data;
+
+        // todo: swap this for regex in the future
+        if (data.contains("Position: ") && positionOne.first == -200) {
+            copy.replace("Position: ", "");
+            const auto positions = copy.split(" ");
+
+            std::cout << "Position 1: ";
+            for (const auto &pos : positions) {
+                std::cout << pos.toStdString() << ' ';
+            }
+            std::cout << '\n';
+
+            positionOne.first  = positions[0].toInt();
+            positionOne.second = positions[1].toInt();
+        } else if (data.contains("Position: ")) {
+            copy.replace("Position: ", "");
+            const auto positions = copy.split(" ");
+
+            std::cout << "Position 2: ";
+            for (const auto &pos : positions) {
+                std::cout << pos.toStdString() << ' ';
+            }
+            std::cout << '\n';
+
+            positionTwo.first  = positions[0].toInt();
+            positionTwo.second = positions[1].toInt();
+        } else if (data.contains("Card")) {
+            card.SetValue(data.split(" ")[1].toInt()); // todo: check this lol
+        } else if (data.contains("Number")) {
+            number = data.split(" ")[1].toInt();
+        }
+
+        // std::cout << data.toStdString() << '\n';
+    }
+
+    // Fixes something from the backend I hope
+    // std::swap(positionOne.first, positionOne.second);
+    // std::swap(positionTwo.first, positionTwo.second);
+
+    std::cout << "First position: (" << positionOne.first << ", " << positionOne.second << ")\n"
+              << "Second position: (" << positionTwo.first << ", " << positionTwo.second << ")\n"
+              << "Card: " << card.GetValue() << '\n'
+              << "Number: " << number << '\n';
+
+    const auto result = m_CurrentGame.VerifyElementalPower(
+            m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                    ? m_CurrentGame.GetPlayerAbility1().GetPower()
+                    : m_CurrentGame.GetPlayerAbility2().GetPower(),
+            positionOne, positionTwo, card, m_CurrentGame.GetCurrentPlayerTurn(), number);
+
+    if (result) {
+        // we should re-render the board and hand
+        m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
+        m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer().GetHand());
+    }
+
+    std::cout << "Success: " << result << '\n';
+}
 
 void IDuelulElementelor::SwitchTurn() {
     m_IsIllusionSelected = false;
@@ -194,6 +267,10 @@ void IDuelulElementelor::SwitchTurn() {
         m_CurrentGame.SwapTurn();
 
         const auto &nextPlayer = m_CurrentGame.GetCurrentPlayer();
+
+        m_ElementWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                          ? m_CurrentGame.GetPlayerAbility1()
+                                          : m_CurrentGame.GetPlayerAbility2());
 
         m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
         m_HandWidget->SetCards(nextPlayer.GetHand());
