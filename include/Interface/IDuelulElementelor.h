@@ -39,6 +39,9 @@ private:
 
     bool m_IsIllusionSelected{false};
 
+    bool m_PlayerOneUsedPower{false};
+    bool m_PlayerTwoUsedPower{false};
+
     QWidget        *m_ParentWidget;
     BoardWidget    *m_BoardWidget;
     HandWidget     *m_HandWidget;

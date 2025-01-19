@@ -10,7 +10,7 @@ ElementWidget::ElementWidget(const ElementPower &power, QWidget *parent) :
     QPushButton(QString::fromStdString(ElementPower::GetElementPowerDescription(power.GetPower())),
                 parent),
     m_Power(power) {
-    SetPower(power);
+    SetPower(power, true);
 
     // connect(this, &ElementWidget::clicked, this, [this] {
     //     ElementDialog dialog(m_Power, this);
@@ -21,7 +21,10 @@ ElementWidget::ElementWidget(const ElementPower &power, QWidget *parent) :
     // });
 }
 
-void ElementWidget::SetPower(const ElementPower &power) {
+void ElementWidget::SetPower(const ElementPower &power, const bool enabled = true) {
     setText("Use Power");
     setToolTip(QString::fromStdString(ElementPower::GetElementPowerDescription(power.GetPower())));
+    if (!enabled) {
+        setEnabled(false);
+    }
 }

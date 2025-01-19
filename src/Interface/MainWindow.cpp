@@ -1,5 +1,7 @@
 #include "Interface/MainWindow.h"
 #include <QListWidget>
+
+#include "Interface/AlertWidget.h"
 #include "Interface/IAntrenament.h"
 #include "Interface/IDuelulElementelor.h"
 
@@ -158,11 +160,20 @@ void MainWindow::DrawNewGame() {
 
                 if (player1Name.isEmpty() || player2Name.isEmpty()) {
                     qDebug() << "Player names cannot be empty!\n";
+                    const auto alertWidget = new AlertWidget(this);
+
+                    alertWidget->ShowAlert("Player names cannot be empty!");
+
                     return;
                 }
 
                 if (buttonGroup->checkedButton() == nullptr) {
                     qDebug() << "Please select a game mode!\n";
+
+                    const auto alertWidget = new AlertWidget(this);
+
+                    alertWidget->ShowAlert("You must select a game mode!");
+
                     return;
                 }
 

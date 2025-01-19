@@ -218,18 +218,35 @@ void IDuelulElementelor::OnDialogAccepted(const std::vector<QString> &info) {
         } else if (data.contains("Number")) {
             number = data.split(" ")[1].toInt();
         }
-
-        // std::cout << data.toStdString() << '\n';
     }
 
-    // Fixes something from the backend I hope
-    // std::swap(positionOne.first, positionOne.second);
-    // std::swap(positionTwo.first, positionTwo.second);
-
-    std::cout << "First position: (" << positionOne.first << ", " << positionOne.second << ")\n"
-              << "Second position: (" << positionTwo.first << ", " << positionTwo.second << ")\n"
-              << "Card: " << card.GetValue() << '\n'
-              << "Number: " << number << '\n';
+    switch (m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                    ? m_CurrentGame.GetPlayerAbility1().GetPower()
+                    : m_CurrentGame.GetPlayerAbility2().GetPower()) {
+        case ElementIndexPower::FromAshes: {
+            // sets your hand to one of your removed cards
+            m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer().GetRemovedCards());
+            break;
+        }
+        // case ElementIndexPower::Sparks: { // you'll just select the position from where it is
+        // play one of your own covered cards on another position
+        // m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer());
+        // break;
+        // }
+        case ElementIndexPower::Fog: {
+            // reset the illusion boolean
+            m_CurrentGame.GetCurrentPlayer().SetHasIllusionInGame(false);
+            break;
+        }
+        case ElementIndexPower::Granite: {
+            auto graniteCard = Card{10, PlayerTurn::Granite};
+            graniteCard.SetIsGranite(true);
+            m_HandWidget->SetCards({graniteCard});
+            break;
+        }
+        default:
+            break;
+    }
 
     const auto result = m_CurrentGame.VerifyElementalPower(
             m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
@@ -238,12 +255,21 @@ void IDuelulElementelor::OnDialogAccepted(const std::vector<QString> &info) {
             positionOne, positionTwo, card, m_CurrentGame.GetCurrentPlayerTurn(), number);
 
     if (result) {
-        // we should re-render the board and hand
         m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
         m_HandWidget->SetCards(m_CurrentGame.GetCurrentPlayer().GetHand());
-    }
+        if (m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1) {
+            m_PlayerOneUsedPower = true;
+        } else {
+            m_PlayerTwoUsedPower = true;
+        }
 
-    std::cout << "Success: " << result << '\n';
+        m_ElementWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                          ? m_CurrentGame.GetPlayerAbility1()
+                                          : m_CurrentGame.GetPlayerAbility2(),
+                                  m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                          ? !m_PlayerOneUsedPower
+                                          : !m_PlayerTwoUsedPower);
+    }
 }
 
 void IDuelulElementelor::SwitchTurn() {
@@ -270,7 +296,10 @@ void IDuelulElementelor::SwitchTurn() {
 
         m_ElementWidget->SetPower(m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
                                           ? m_CurrentGame.GetPlayerAbility1()
-                                          : m_CurrentGame.GetPlayerAbility2());
+                                          : m_CurrentGame.GetPlayerAbility2(),
+                                  m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
+                                          ? !m_PlayerOneUsedPower
+                                          : !m_PlayerTwoUsedPower);
 
         m_BoardWidget->SetBoard(m_CurrentGame.GetBoard());
         m_HandWidget->SetCards(nextPlayer.GetHand());
@@ -296,27 +325,6 @@ void IDuelulElementelor::SwitchTurn() {
     const auto currentScore = m_CurrentGame.GetCurrentPlayerTurn() == PlayerTurn::Player1
                                       ? m_CurrentGame.GetPlayer1Score()
                                       : m_CurrentGame.GetPlayer2Score();
-
-    std::cout << winner.GetUserName() << " has won the round!\n" << "Reason: ";
-
-    switch (winningReason) {
-        case Game::WinningCondition::LineWin:
-            std::cout << "Line win";
-            break;
-        case Game::WinningCondition::ColumnWin:
-            std::cout << "Column win";
-            break;
-        case Game::WinningCondition::DiagonalPrincipalWin:
-            std::cout << "Diagonal principal win";
-            break;
-        case Game::WinningCondition::DiagonalSecondaryWin:
-            std::cout << "Diagonal secondary win";
-            break;
-        default:
-            std::cout << "Bruh";
-    }
-
-    std::cout << '\n';
 
     const auto alertWidget = new AlertWidget(m_ParentWidget);
 
