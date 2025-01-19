@@ -10,9 +10,9 @@
 #include "Interface/SpecialOptions.h"
 
 IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTwo,
-                           const std::array<bool, 3> &options, QWidget *parent, bool rapid) :
+                           const std::array<bool, 3> &options, QWidget *parent, int rapid) :
     QWidget(parent), m_CurrentGame(nameOne, nameTwo, options), m_SelectedCard(std::nullopt),
-    m_ParentWidget(parent) {
+    m_ParentWidget(parent), m_Rapid(rapid) {
 
     const auto mainLayout = new QVBoxLayout(this);
 
@@ -83,7 +83,43 @@ IAntrenament::IAntrenament(const std::string &nameOne, const std::string &nameTw
     connect(m_InactivityTimer, &QTimer::timeout, this, &IAntrenament::ShowHintPopup);
     m_InactivityTimer->start();
 
+    if (m_Rapid > 0) {
+        m_TurnTimer = new QTimer(this);
+        m_TurnTimer->setInterval(m_Rapid * 1000);
+        connect(m_TurnTimer, &QTimer::timeout, this, &IAntrenament::OnTurnTimeExpired);
+        StartTurnTimer();
+    }
+
     parent->setLayout(mainLayout);
+}
+
+void IAntrenament::OnTurnTimeExpired() {
+    const auto currentPlayer = m_CurrentGame.GetCurrentPlayerTurn();
+    const auto alertWidget   = new AlertWidget(m_ParentWidget);
+
+    const auto player1Name = QString::fromStdString(m_CurrentGame.GetPlayer1().GetUserName());
+    const auto player2Name = QString::fromStdString(m_CurrentGame.GetPlayer2().GetUserName());
+
+    if (currentPlayer == PlayerTurn::Player1) {
+        alertWidget->ShowAlert(player1Name + "'s time has expired! " + player2Name +
+                               " wins the game!");
+    } else {
+        alertWidget->ShowAlert(player2Name + "'s time has expired! " + player1Name +
+                               " wins the game!");
+    }
+    QTimer::singleShot(3000, this, &IAntrenament::GameFinished);
+}
+
+void IAntrenament::StartTurnTimer() {
+    if (m_Rapid > 0) {
+        m_TurnTimer->start();
+    }
+}
+
+void IAntrenament::StopTurnTimer() {
+    if (m_Rapid > 0) {
+        m_TurnTimer->stop();
+    }
 }
 
 void IAntrenament::ShowHintPopup() {
@@ -202,9 +238,10 @@ void IAntrenament::OnExplosion() { m_CurrentGame.ApplyExplosion(m_CurrentExplosi
 
 void IAntrenament::SwitchTurn() {
     m_InactivityTimer->start();
+    StopTurnTimer();
+    StartTurnTimer();
 
     m_IsIllusionSelected = false;
-
     m_SelectedCard.reset();
 
     if (m_CurrentGame.ExplosionEnabled() && m_CurrentGame.CheckExplosion()) {

@@ -148,6 +148,14 @@ void MainWindow::DrawNewGame() {
     const auto explosionCheckBox = new QCheckBox("Explosion", this);
     optionsLayout->addWidget(explosionCheckBox);
 
+    CreateLabel("Time Limit:", optionsWidget);
+    const auto timeLimitComboBox = new QComboBox(this);
+    timeLimitComboBox->addItem("None", 0);
+    timeLimitComboBox->addItem("60 seconds", 60);
+    timeLimitComboBox->addItem("90 seconds", 90);
+    timeLimitComboBox->addItem("120 seconds", 120);
+    optionsLayout->addWidget(timeLimitComboBox);
+
     modeLayout->addWidget(optionsWidget);
     layout->addWidget(modeWidget);
 
@@ -156,7 +164,7 @@ void MainWindow::DrawNewGame() {
 
     connect(startGameButton, &QPushButton::clicked, this,
             [this, player1Input, player2Input, buttonGroup, eterCheckBox, illusionCheckBox,
-             explosionCheckBox] {
+             explosionCheckBox, timeLimitComboBox] {
                 const auto player1Name = player1Input->text();
                 const auto player2Name = player2Input->text();
 
@@ -182,6 +190,7 @@ void MainWindow::DrawNewGame() {
                 const bool eterResponse      = eterCheckBox->isChecked();
                 const bool illusionResponse  = illusionCheckBox->isChecked();
                 const bool explosionResponse = explosionCheckBox->isChecked();
+                const int  timeLimit         = timeLimitComboBox->currentData().toInt();
 
                 m_CurrentGameMode =
                         buttonGroup->checkedButton()->text().replace("&", "").toStdString();
@@ -194,7 +203,7 @@ void MainWindow::DrawNewGame() {
                     const std::array options = {eterResponse, illusionResponse, explosionResponse};
                     const auto      *antrenamentGame =
                             new IAntrenament(player1Name.toStdString(), player2Name.toStdString(),
-                                             options, gameWidget);
+                                             options, gameWidget, timeLimit);
 
                     connect(antrenamentGame, &IAntrenament::GameFinished, this,
                             &MainWindow::OnGameFinished);

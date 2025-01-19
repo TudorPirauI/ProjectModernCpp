@@ -16,7 +16,7 @@ class IAntrenament final : public QWidget {
 
 public:
     IAntrenament(const std::string &nameOne, const std::string &nameTwo,
-                 const std::array<bool, 3> &options, QWidget *parent, bool rapid = false);
+                 const std::array<bool, 3> &options, QWidget *parent, int rapid = 0);
 
     IAntrenament(Antrenament &other, QWidget *parent);
 
@@ -26,12 +26,15 @@ public slots:
     void OnModifierSelected(int modifier);
     void OnExplosion();
     void ShowHintPopup();
+    void OnTurnTimeExpired(); // New slot for handling turn time expiration
 
 signals:
     void GameFinished();
 
 private:
     void SwitchTurn();
+    void StartTurnTimer();
+    void StopTurnTimer();
 
     Antrenament         m_CurrentGame;
     Explosion           m_CurrentExplosion;
@@ -46,6 +49,7 @@ private:
     SpecialOptions *m_SpecialOptions;
 
     QTimer *m_InactivityTimer;
+    QTimer *m_TurnTimer; // New QTimer for turn time limit
+    int     m_Rapid; // Time limit for each turn in seconds
 };
-
 #endif // IANTRENAMENT_H
