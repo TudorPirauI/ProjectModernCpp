@@ -16,7 +16,6 @@ void Arena::PlacePiece(const int x, const int y, const PlayerPiece &player) {
     }
 }
 
-// todo: use getleft, getright, getdown, getup to use the actual board corners
 bool Arena::CheckWin(const PlayerPiece &player) const {
     const Position &left  = GetLeft();
     const Position &right = GetRight();

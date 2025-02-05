@@ -252,7 +252,7 @@ bool Board::UpdateDiagonals() {
     updateDiagonal(m_PrincipalDiagonal, isOnPrincipalDiagonal);
     updateDiagonal(m_SecondaryDiagonal, isOnSecondaryDiagonal);
 
-    return true; // TODO: This was missing a return, see if this was the right value lol
+    return true;
 }
 
 int Board::GetMaxBoardSize() const { return m_MaxBoardSize; }

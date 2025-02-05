@@ -116,14 +116,14 @@ public:
     Explosion GenerateExplosion() const;
     bool      ApplyExplosion(const Explosion &explosion);
 
-    // TODO: Simple recomandation system
-    // Takes in -> Current board, current players, current hand of each players
-    // first check: can we win in the next move? if yes, do it (override another card and make a
-    // straight line, column or diagonal / just by placing a card)
-    // second check: can the opponent win in the next move? if yes, block it
-    // if we can't do either, priortize placing cards that would make another card win in the next
-    // if we can't do the above, try prioritizing having as many face cards up as possible (placing
-    // cards over the opponent's)
+    // Simple recomandation system
+    //  Takes in -> Current board, current players, current hand of each players
+    //  first check: can we win in the next move? if yes, do it (override another card and make a
+    //  straight line, column or diagonal / just by placing a card)
+    //  second check: can the opponent win in the next move? if yes, block it
+    //  if we can't do either, priortize placing cards that would make another card win in the next
+    //  if we can't do the above, try prioritizing having as many face cards up as possible (placing
+    //  cards over the opponent's)
 protected:
     Board      m_Board;
     Player     m_Player1;

@@ -780,7 +780,6 @@ bool Game::VerifyElementalPower(const ElementIndexPower &power, const Position &
             if (auto &cardOnTop = board[firstPosition].top();
                 cardOnTop.GetPlacedBy() == playerTurn && cardOnTop.GetValue() >= 1 &&
                 cardOnTop.GetValue() <= 3) {
-                // todo: see if that != playerTurn was somehow right (doubt it)
                 cardOnTop.SetModifier(1);
                 std::cout << "Support: true\n";
                 return true;
@@ -1021,8 +1020,6 @@ bool Game::ApplyExplosion(const Explosion &explosion) {
                 auto stack = newGameBoard[position];
 
                 newGameBoard.erase(position);
-
-                // todo: return the shit to the players
 
                 break;
             }
