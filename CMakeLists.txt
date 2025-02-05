@@ -40,9 +40,6 @@ if (NOT DEFINED CMAKE_BUILD_PARALLEL_LEVEL)
     set(CMAKE_BUILD_PARALLEL_LEVEL ${N})
 endif ()
 
-file(GLOB SOURCES src/**/*.cpp src/*.cpp)
-file(GLOB HEADERS include/**/*.h include/*.h)
-
 set(SOURCES
         src/main.cpp
         src/Powers/ElementPower.cpp

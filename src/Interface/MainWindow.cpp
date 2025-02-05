@@ -269,7 +269,8 @@ void MainWindow::DrawResumeGame() {
         savesDir.mkpath(".");
     }
 
-    std::regex gameFileRegex(R"((\w+)-(\w+)-(\w+)-(\d{14})\.json)");
+    std::regex gameFileRegex(
+            R"((antrenament|combinat|elementelor|vrajitorilor|turneu)-(\w+)-(\w+)-(\d{14})(-viteza)?\.json)");
     const auto gameList = savesDir.entryList(QStringList() << "*.json", QDir::Files);
 
     for (const auto &gameFile : gameList) {
