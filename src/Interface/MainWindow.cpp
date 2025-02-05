@@ -269,9 +269,31 @@ void MainWindow::DrawResumeGame() {
         savesDir.mkpath(".");
     }
 
+    std::regex gameFileRegex(R"((\w+)-(\w+)-(\w+)-(\d{14})\.json)");
     const auto gameList = savesDir.entryList(QStringList() << "*.json", QDir::Files);
 
-    m_GameListWidget->addItems(gameList);
+    for (const auto &gameFile : gameList) {
+        std::smatch match;
+        std::string gameFileStr = gameFile.toStdString();
+
+        if (std::regex_match(gameFileStr, match, gameFileRegex)) {
+            const QString gameType = QString::fromStdString(match[1]);
+            const QString player1  = QString::fromStdString(match[2]);
+            const QString player2  = QString::fromStdString(match[3]);
+            const QString dateStr  = QString::fromStdString(match[4]);
+
+            QDateTime dateTime   = QDateTime::fromString(dateStr, "yyyyMMddHHmmss");
+            QString   prettyDate = dateTime.toString("dd MMM yyyy, hh:mm:ss");
+
+            auto *item = new QListWidgetItem(gameFile);
+            item->setToolTip(QString("Game Type: %1\nPlayer 1: %2\nPlayer 2: %3\nDate: %4")
+                                     .arg(gameType, player1, player2, prettyDate));
+            m_GameListWidget->addItem(item);
+        } else {
+            m_GameListWidget->addItem(gameFile);
+        }
+    }
+
     m_GameListWidget->setFixedSize(400, 300);
     layout->addWidget(m_GameListWidget, 0, Qt::AlignCenter);
 

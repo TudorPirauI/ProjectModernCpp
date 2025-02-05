@@ -11,6 +11,7 @@
 #include <random>
 #include <ranges>
 #include <sstream>
+#include <regex>
 #include <stack>
 #include <string>
 #include <vector>
