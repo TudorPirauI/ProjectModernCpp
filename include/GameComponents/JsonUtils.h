@@ -16,7 +16,17 @@
 #include "GameModes/DuelulVrajitorilor.h"
 #include "GameModes/Game.h"
 
-class JsonUtils {
+#if defined(_WIN32) || defined(_WIN64)
+#ifdef JSONUTILS_EXPORTS
+#define JSONUTILS_API __declspec(dllexport)
+#else
+#define JSONUTILS_API __declspec(dllimport)
+#endif
+#else
+#define JSONUTILS_API __attribute__((visibility("default")))
+#endif
+
+class JSONUTILS_API JsonUtils {
 public:
     static QJsonObject CardToJson(Card &card);
     static QJsonArray  StackToJson(std::stack<Card> &stack);
@@ -39,7 +49,7 @@ public:
     static std::pair<int, int> JsonToPair(const QJsonObject &json);
     static Card                JsonToCard(const QJsonObject &json);
     static std::vector<Card>   JsonToHand(const QJsonArray &jsonArray);
-    static Antrenament                JsonToTrainingMode(const QJsonObject &json);
+    static Antrenament         JsonToTrainingMode(const QJsonObject &json);
     static QJsonObject         ElementPowersToJson(ElementPower &powers);
     static QJsonObject         WizardPowersToJson(Wizard &powers);
 };

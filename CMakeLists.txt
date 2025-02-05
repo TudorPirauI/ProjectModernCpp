@@ -43,6 +43,77 @@ endif ()
 file(GLOB SOURCES src/**/*.cpp src/*.cpp)
 file(GLOB HEADERS include/**/*.h include/*.h)
 
+set(SOURCES
+        src/main.cpp
+        src/Powers/ElementPower.cpp
+        src/Powers/Explosion.cpp
+        src/Powers/ElementPower.cpp
+        src/Powers/MagicPower.cpp
+        src/Powers/Wizard.cpp
+        src/Interface/AlertWidget.cpp
+        src/Interface/BoardWidget.cpp
+        src/Interface/ElementDialog.cpp
+        src/Interface/ElementWidget.cpp
+        src/Interface/ExplosionDialog.cpp
+        src/Interface/HandWidget.cpp
+        src/Interface/IAntrenament.cpp
+        src/Interface/IDuelulCombinat.cpp
+        src/Interface/IDuelulElementelor.cpp
+        src/Interface/IDuelulVrajitorilor.cpp
+        src/Interface/IRapid.cpp
+        src/Interface/ITurneu.cpp
+        src/Interface/MainWindow.cpp
+        src/Interface/SpecialOptions.cpp
+        src/Interface/VrajitorDialog.cpp
+        src/Interface/VrajitorWidget.cpp
+        src/GameModes/Antrenament.cpp
+        src/GameModes/DuelulCombinat.cpp
+        src/GameModes/DuelulElementelor.cpp
+        src/GameModes/DuelulVrajitorilor.cpp
+        src/GameModes/Game.cpp
+        src/GameModes/Turneu.cpp
+        src/GameModes/Viteza.cpp
+        src/GameComponents/Arena.cpp
+        src/GameComponents/Board.cpp
+        src/GameComponents/Card.cpp
+        src/GameComponents/Player.cpp
+)
+
+set(HEADERS
+        include/Powers/ElementPower.h
+        include/Powers/Explosion.h
+        include/Powers/ElementPower.h
+        include/Powers/MagicPower.h
+        include/Powers/Wizard.h
+        include/Interface/AlertWidget.h
+        include/Interface/BoardWidget.h
+        include/Interface/ElementDialog.h
+        include/Interface/ElementWidget.h
+        include/Interface/ExplosionDialog.h
+        include/Interface/HandWidget.h
+        include/Interface/IAntrenament.h
+        include/Interface/IDuelulCombinat.h
+        include/Interface/IDuelulElementelor.h
+        include/Interface/IDuelulVrajitorilor.h
+        include/Interface/IRapid.h
+        include/Interface/ITurneu.h
+        include/Interface/MainWindow.h
+        include/Interface/SpecialOptions.h
+        include/Interface/VrajitorDialog.h
+        include/Interface/VrajitorWidget.h
+        include/GameModes/Antrenament.h
+        include/GameModes/DuelulCombinat.h
+        include/GameModes/DuelulElementelor.h
+        include/GameModes/DuelulVrajitorilor.h
+        include/GameModes/Game.h
+        include/GameModes/Turneu.h
+        include/GameModes/Viteza.h
+        include/GameComponents/Arena.h
+        include/GameComponents/Board.h
+        include/GameComponents/Card.h
+        include/GameComponents/Player.h
+)
+
 include_directories(include)
 include_directories("./lib")
 
@@ -133,3 +204,12 @@ target_link_libraries(Eter PRIVATE
         Qt6::Widgets
         Qt6::Multimedia
 )
+
+# Add the JsonUtils library
+add_subdirectory(src/GameComponents)
+target_link_libraries(${PROJECT_NAME} PRIVATE JsonUtils)
+
+# Define JSONUTILS_EXPORTS for Windows to handle DLL export/import
+if (WIN32)
+    target_compile_definitions(JsonUtils PRIVATE JSONUTILS_EXPORTS)
+endif ()

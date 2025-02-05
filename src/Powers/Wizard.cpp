@@ -4,14 +4,14 @@
 #include "Powers/ElementPower.h"
 
 int Wizard::RandomPower() {
-    static std::random_device            rd;
-    static std::mt19937                  gen(rd());
-    static std::uniform_int_distribution dis(0, 7);
+    static std::random_device              rd;
+    static std::mt19937                    gen(rd());
+    static std::uniform_int_distribution<> dis(0, static_cast<int>(WizardPower::NoPower) - 1);
 
     return dis(gen);
 }
 
-Wizard::Wizard() : m_Type(WizardPower::CreatePit) {}
+Wizard::Wizard() : m_Type(static_cast<WizardPower>(RandomPower())) {}
 
 WizardPower Wizard::GetType() const { return m_Type; }
 

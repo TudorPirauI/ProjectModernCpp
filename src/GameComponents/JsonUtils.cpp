@@ -3,6 +3,10 @@
 //
 
 #include "../include/GameComponents/JsonUtils.h"
+#include <QFile>
+#include <QIODevice>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 QJsonObject JsonUtils::CardToJson(Card &card) {
     QJsonObject json;
