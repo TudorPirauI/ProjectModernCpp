@@ -194,37 +194,27 @@ void IDuelulCombinat::OnDialogAccepted(const std::vector<QString> &info, bool is
     int      number = -200;
     Card     card{10, m_CurrentGame.GetCurrentPlayerTurn()};
     for (auto &data : info) {
-        QString copy = data;
+        std::regex positionRegex(R"(Position: (\d+) (\d+))");
+        std::regex cardRegex(R"(Card (\d+))");
+        std::regex numberRegex(R"(Number (\d+))");
 
-        // todo: swap this for regex in the future
-        if (data.contains("Position: ") && positionOne.first == -200) {
-            copy.replace("Position: ", "");
-            const auto positions = copy.split(" ");
+        std::smatch match;
+        std::string dataStr = data.toStdString();
 
-            std::cout << "Position 1: ";
-            for (const auto &pos : positions) {
-                std::cout << pos.toStdString() << ' ';
+        if (std::regex_search(dataStr, match, positionRegex)) {
+            if (positionOne.first == -200) {
+                std::cout << "Position 1: " << match[1] << ' ' << match[2] << '\n';
+                positionOne.first  = std::stoi(match[1]);
+                positionOne.second = std::stoi(match[2]);
+            } else {
+                std::cout << "Position 2: " << match[1] << ' ' << match[2] << '\n';
+                positionTwo.first  = std::stoi(match[1]);
+                positionTwo.second = std::stoi(match[2]);
             }
-            std::cout << '\n';
-
-            positionOne.first  = positions[0].toInt();
-            positionOne.second = positions[1].toInt();
-        } else if (data.contains("Position: ")) {
-            copy.replace("Position: ", "");
-            const auto positions = copy.split(" ");
-
-            std::cout << "Position 2: ";
-            for (const auto &pos : positions) {
-                std::cout << pos.toStdString() << ' ';
-            }
-            std::cout << '\n';
-
-            positionTwo.first  = positions[0].toInt();
-            positionTwo.second = positions[1].toInt();
-        } else if (data.contains("Card")) {
-            card.SetValue(data.split(" ")[1].toInt());
-        } else if (data.contains("Number")) {
-            number = data.split(" ")[1].toInt();
+        } else if (std::regex_search(dataStr, match, cardRegex)) {
+            card.SetValue(std::stoi(match[1]));
+        } else if (std::regex_search(dataStr, match, numberRegex)) {
+            number = std::stoi(match[1]);
         }
     }
 
