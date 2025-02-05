@@ -50,4 +50,5 @@ make
 ```
 You should see the `Eter` executable. If needed, `chmod +x` it, then execute it.
 
-Youtube video: https://youtu.be/eY3YxK9hn2I
+First Youtube video: https://youtu.be/eY3YxK9hn2I  
+**Second Youtube video: https://youtu.be/3cs_jyMnrPw**
