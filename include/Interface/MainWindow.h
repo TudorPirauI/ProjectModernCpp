@@ -1,11 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-// todo: the methods are implemented they just need to be used in frontend
-// "Choose one of your own cards that was removed from the game and play it "
-//         "immediately.";
-// power: FromAshes elemental_power
-
 #include <QListWidget>
 class MainWindow final : public QMainWindow {
     Q_OBJECT
@@ -37,9 +32,7 @@ private:
 
     GameState       m_CurrentState;
     QStackedWidget *m_StackedWidget;
-
-    // TODO: We should load the settings from a file and only fall back to these defaults if the
-    // file is missing or corrupted
+    
     QString m_GameResolution{"2560x1440"};
     bool    m_FullScreen{true};
     int     m_MasterVolume{100};

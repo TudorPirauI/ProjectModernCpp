@@ -22,6 +22,7 @@ AlertWidget::AlertWidget(QWidget *parent) : QWidget(parent) {
     m_CloseTimer = new QTimer(this);
     connect(m_CloseTimer, &QTimer::timeout, this, &AlertWidget::close);
 }
+
 void AlertWidget::ShowAlert(const QString &message, const int duration) {
     m_MessageLabel->setText(message);
     m_CloseTimer->start(duration);

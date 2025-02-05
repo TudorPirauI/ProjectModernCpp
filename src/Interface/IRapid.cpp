@@ -49,7 +49,6 @@
 //
 //     if (!m_CurrentGame.GetBoard().IsPositionValid({x, y}, m_SelectedCard.value())) {
 //         std::cout << "You cannot place a card there!";
-//         // TODO: make the invalid positions unclickable in BoardWidget
 //         return;
 //     }
 //

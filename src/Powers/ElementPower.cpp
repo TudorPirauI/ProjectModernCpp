@@ -25,7 +25,7 @@ std::vector<ElementPowerInfo> ElementPower::GetRequiredInfo(const ElementIndexPo
         case ElementIndexPower::Lava:
             return {ElementPowerInfo::Number};
         case ElementIndexPower::FromAshes:
-            return {}; // todo: implement in frontend
+            return {};
         case ElementIndexPower::Sparks:
             return {ElementPowerInfo::PositionOne, ElementPowerInfo::PositionTwo,
                     ElementPowerInfo::Card};
