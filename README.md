@@ -1,6 +1,5 @@
 # ProjectModernCpp
 
-## Echipa VandGolf4
 
 Membri:
 
